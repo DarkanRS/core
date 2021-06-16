@@ -1,5 +1,7 @@
 package com.rs.lib.web;
 
+import com.rs.lib.util.Logger;
+
 import io.undertow.Handlers;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.RoutingHandler;
@@ -24,6 +26,12 @@ public class WebAPI extends Thread {
 		this.prefixPath = prefixPath;
 		this.ip = ip;
 		this.port = port;
+		this.setName("WebAPI Thread");
+		this.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			public void uncaughtException(Thread th, Throwable ex) {
+				Logger.handle(ex);
+			}
+		});
 	}
 	
 	public void start() {

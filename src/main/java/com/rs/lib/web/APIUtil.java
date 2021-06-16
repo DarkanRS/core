@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 import com.google.gson.JsonIOException;
 import com.rs.lib.file.JsonFileManager;
+import com.rs.lib.thread.CatchExceptionRunnable;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
@@ -46,22 +47,26 @@ public class APIUtil {
 		return false;
 	}
 	
-	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
-		API_REQUEST_POOL.execute(() -> {
-			cb.accept(postSync(returnType, body, url, apiKey));
-		});
+	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<APIResponse<T>> cb) {
+		API_REQUEST_POOL.submit(new CatchExceptionRunnable(() -> cb.accept(postSync(returnType, body, url, apiKey))));
 	}
 	
-	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) {
+	public static <T> APIResponse<T> postSync(Class<T> returnType, Object body, String url, String apiKey) {
 			try {
 				HttpClient client = HttpClient.newHttpClient();
 				HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
 				CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 				HttpResponse<String> response = future.get();
-				return JsonFileManager.fromJSONString(response.body(), returnType);
+				if (returnType == null)
+					return new APIResponse<T>(response.body(), null);
+				try {
+					return new APIResponse<T>(response.body(), JsonFileManager.fromJSONString(response.body(), returnType));
+				} catch(Exception e) {
+					return new APIResponse<T>(response.body(), null);
+				}
 			} catch(Exception e) {
 				e.printStackTrace();
-				return null;
+				return new APIResponse<T>(e.getMessage(), null);
 			}
 	}
 	
