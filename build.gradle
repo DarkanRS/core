@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-compileJava.options.encoding = 'UTF-8'
-
 repositories {
 	mavenLocal()
 	mavenCentral()
