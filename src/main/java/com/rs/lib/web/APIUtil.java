@@ -47,26 +47,31 @@ public class APIUtil {
 		return false;
 	}
 	
-	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<APIResponse<T>> cb) {
-		API_REQUEST_POOL.submit(new CatchExceptionRunnable(() -> cb.accept(postSync(returnType, body, url, apiKey))));
+	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
+		API_REQUEST_POOL.submit(new CatchExceptionRunnable(() -> {
+			T response = postSync(returnType, body, url, apiKey);
+			if (cb != null)
+				cb.accept(response);
+		}));
 	}
 	
-	public static <T> APIResponse<T> postSync(Class<T> returnType, Object body, String url, String apiKey) {
+	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) {
 			try {
 				HttpClient client = HttpClient.newHttpClient();
 				HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
 				CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 				HttpResponse<String> response = future.get();
 				if (returnType == null)
-					return new APIResponse<T>(response.body(), null);
+					return null;
 				try {
-					return new APIResponse<T>(response.body(), JsonFileManager.fromJSONString(response.body(), returnType));
+					return JsonFileManager.fromJSONString(response.body(), returnType);
 				} catch(Exception e) {
-					return new APIResponse<T>(response.body(), null);
+					System.err.println("Error parsing body into "+returnType+": " + response.body());
+					return null;
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
-				return new APIResponse<T>(e.getMessage(), null);
+				return null;
 			}
 	}
 	
