@@ -1,4 +1,4 @@
-package com.rs.lib.thread;
+package com.rs.lib.db;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
