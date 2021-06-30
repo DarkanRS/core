@@ -1,18 +1,24 @@
 package com.rs.lib.db;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
+import com.rs.lib.thread.CatchExceptionRunnable;
 import com.rs.lib.util.MongoUtil;
 
 public abstract class DBItemManager {
 
+	private ExecutorService executor;
 	private String collection;
 	private DBConnection conn;
 	private MongoCollection<Document> documents;
 	
 	public DBItemManager(String collection) {
 		this.collection = collection;
+		this.executor = Executors.newSingleThreadExecutor(new DBThreadFactory());
 	}
 
 	public void init(DBConnection conn) {
@@ -35,4 +41,7 @@ public abstract class DBItemManager {
 		return documents;
 	}
 	
+	public void execute(Runnable task) {
+		executor.execute(new CatchExceptionRunnable(task));
+	}
 }
