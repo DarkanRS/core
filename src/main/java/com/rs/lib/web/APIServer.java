@@ -9,20 +9,18 @@ public class APIServer {
 
 	private String prefixPath;
 	private int port;
-	private String ip;
 	private ExceptionHandler api;
 	private Undertow server;
 
-	public APIServer(String prefixPath, int port, String ip, ExceptionHandler api) {
+	public APIServer(String prefixPath, int port, ExceptionHandler api) {
 		this.prefixPath = prefixPath;
 		this.port = port;
-		this.ip = ip;
 		this.api = api;
 	}
 
 	public void start() {
 		server = Undertow.builder()
-				.addHttpListener(port, ip)
+				.addHttpListener(port, "0.0.0.0")
 				.setServerOption(UndertowOptions.RECORD_REQUEST_START_TIME, true)
 				.setHandler(Handlers.path().addPrefixPath(prefixPath, api))
 				.build();

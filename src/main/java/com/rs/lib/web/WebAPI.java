@@ -17,14 +17,12 @@ public class WebAPI extends Thread {
 	}
 	
 	private String prefixPath;
-	private String ip;
 	private int port;
 	protected RoutingHandler routes = Handlers.routing();
 	private APIServer server;
 	
-	public WebAPI(String prefixPath, String ip, int port) {
+	public WebAPI(String prefixPath, int port) {
 		this.prefixPath = prefixPath;
-		this.ip = ip;
 		this.port = port;
 		this.setName("WebAPI Thread");
 		this.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -44,8 +42,8 @@ public class WebAPI extends Thread {
 	
 	@Override
 	public void run() {
-		System.out.println("Starting " + getClass().getSimpleName() + " on " + ip + ":" + port);
-		server = new APIServer(prefixPath, port, ip, new ExceptionHandler(routes) {
+		System.out.println("Starting " + getClass().getSimpleName() + " on 0.0.0.0:" + port);
+		server = new APIServer(prefixPath, port, new ExceptionHandler(routes) {
 			@Override
 			public void handleRequest(HttpServerExchange exchange) throws Exception {
 				System.out.println("Request: <" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + " " + exchange.getProtocol() + "> from " + exchange.getSourceAddress());
@@ -53,7 +51,7 @@ public class WebAPI extends Thread {
 			}
 		});
 		server.start();
-		System.out.println(getClass().getSimpleName() + " listening on " + ip + ":" + port);
+		System.out.println(getClass().getSimpleName() + " listening on 0.0.0.0:" + port);
 	}
 	
 }
