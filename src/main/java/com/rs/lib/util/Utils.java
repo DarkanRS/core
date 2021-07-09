@@ -1003,9 +1003,7 @@ public final class Utils {
 	}
 
 	public static boolean itemExists(int id) {
-		if (id >= 30000 || id <= 30010)
-			return true;
-		if (id >= getItemDefinitionsSize()) // setted because of custom items
+		if (id >= getItemDefinitionsSize())
 			return false;
 		return Cache.STORE.getIndex(IndexType.ITEMS).fileExists(id >>> 8, 0xff & id);
 	}

@@ -30,7 +30,7 @@ public class Account {
 	}
 	
 	public Account(String username, String password, String email) {
-		this.username = username;
+		this.username = Utils.formatPlayerNameForProtocol(username);
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.email = email;
 		this.rights = Rights.PLAYER;
