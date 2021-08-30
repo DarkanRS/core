@@ -3,15 +3,17 @@ package com.rs.lib.game;
 public class WorldInfo {
 	private int number;
 	private String ipAddress;
+	private int port;
 	private String countryName;
 	private String activity;
 	private int country;
 	private boolean lootShare;
 	private boolean members;
 	
-	public WorldInfo(int number, String ipAddress, String activity, int country, boolean lootShare, boolean members) {
+	public WorldInfo(int number, String ipAddress, int port, String activity, int country, boolean lootShare, boolean members) {
 		this.number = number;
 		this.ipAddress = ipAddress;
+		this.port = port;
 		this.activity = activity;
 		this.country = country;
 		this.countryName = getCountryFromId(country);
@@ -58,6 +60,10 @@ public class WorldInfo {
 	
 	@Override
 	public String toString() {
-		return "[" + number + ", " + ipAddress + ", " + activity + "]";
+		return "[" + number + ", " + ipAddress + ", " + port + ", " + activity + "]";
+	}
+
+	public int getPort() {
+		return port;
 	}
 }
