@@ -12,8 +12,9 @@ public class UpdateGESlot extends PacketEncoder {
 	private int price;
 	private int amount;
 	private int currAmount;
+	private int totalPrice;
 
-	public UpdateGESlot(int slot, int progress, int item, int price, int amount, int currAmount) {
+	public UpdateGESlot(int slot, int progress, int item, int price, int amount, int currAmount, int totalPrice) {
 		super(ServerPacket.UPDATE_GE_SLOT);
 		this.slot = slot;
 		this.progress = progress;
@@ -21,6 +22,7 @@ public class UpdateGESlot extends PacketEncoder {
 		this.price = price;
 		this.amount = amount;
 		this.currAmount = currAmount;
+		this.totalPrice = totalPrice;
 	}
 
 	@Override
@@ -31,7 +33,7 @@ public class UpdateGESlot extends PacketEncoder {
 		stream.writeInt(price);
 		stream.writeInt(amount);
 		stream.writeInt(currAmount);
-		stream.writeInt(price * currAmount);
+		stream.writeInt(totalPrice);
 	}
 
 }
