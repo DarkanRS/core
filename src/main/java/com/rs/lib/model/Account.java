@@ -152,4 +152,9 @@ public class Account {
 	public void setLastIP(String lastIp) {
 		this.lastIp = lastIp;
 	}
+	
+
+	public boolean onlineTo(Account account) {
+		return social.onlineTo(account);
+	}
 }

@@ -25,4 +25,8 @@ public class Friend {
 	public boolean isOffline() {
 		return offline;
 	}
+
+	public boolean onlineTo(Account player) {
+		return account.getSocial().onlineTo(player);
+	}
 }

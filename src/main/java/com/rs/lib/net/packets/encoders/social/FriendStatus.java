@@ -25,19 +25,19 @@ public class FriendStatus extends PacketEncoder {
 	
 	public void encodePlayer(Account player, Friend other, OutputStream stream) {
 		boolean online = false;
-		if (!other.isOffline() && other.getAccount().getSocial().onlineTo(player) && player.getSocial().onlineTo(other.getAccount()))
+		if (!other.isOffline() && player.onlineTo(other.getAccount()))
 			online = true;
 		stream.writeByte(0); //idk, was called warnMessage in matrix?
 		stream.writeString(other.getAccount().getDisplayName());
 		stream.writeString(other.getAccount().getSocial() == null ? "Player not found" : ""); //previous name
-		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().getNumber() : 1100 : 0);
+		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().getNumber() : 0 : 0);
 		stream.writeByte(player.getSocial().getFriendsChat().getRank(other.getAccount().getUsername()));
 		stream.writeByte(0);
 		if (online) {
 			String worldText = "None";
 			if (other.getWorld() != null) {
-				if (other.getWorld().getNumber() > 1000)
-					worldText = "Lobby " + (other.getWorld().getNumber() - 1000);
+				if (other.getWorld().getNumber() > 1100)
+					worldText = "Lobby " + (other.getWorld().getNumber() - 1100);
 				else
 					worldText = "World " + other.getWorld().getNumber();
 			}

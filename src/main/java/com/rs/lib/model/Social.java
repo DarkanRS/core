@@ -52,7 +52,6 @@ public class Social {
 	}
 	
 	public void setStatus(int status) {
-		System.out.println(status);
 		this.status = (byte) status;
 	}
 
