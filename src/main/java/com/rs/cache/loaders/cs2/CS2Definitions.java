@@ -15,7 +15,7 @@ public class CS2Definitions {
 	private static HashMap<Integer, CS2Script> scripts = new HashMap<Integer, CS2Script>();
 	
 	public static void main(String[] args) throws IOException {
-		//Cache.init();
+		Cache.init("../darkan-cache/");
 		int id = 0;
 		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
 			CS2Script s = getScript(i);
@@ -24,7 +24,7 @@ public class CS2Definitions {
 			if (s.name != null)
 				System.out.println(s.name);
 			for (int x = 0;x < s.operations.length;x++) {
-				if (s.operations[x] == CS2Instruction.GET_OBJECT_SCREEN_POSITION) {
+				if (s.operations[x] == CS2Instruction.instr6739) {
 					System.out.println(i);
 					System.out.println(Arrays.toString(s.operations));
 					id = i;
