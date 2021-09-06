@@ -67,20 +67,20 @@ public class Social {
 		this.friendsChat = friendsChat;
 	}
 
-	public void addFriend(String name) {
-		friends.add(name);
+	public void addFriend(Account account) {
+		friends.add(account.getUsername());
 	}
 
-	public void addIgnore(String name) {
-		ignores.add(name);
+	public void addIgnore(Account account) {
+		ignores.add(account.getUsername());
 	}
 
-	public void removeFriend(String name) {
-		friends.remove(name);
+	public void removeFriend(Account account) {
+		friends.remove(account.getUsername());
 	}
 
-	public void removeIgnore(String name) {
-		ignores.remove(name);
+	public void removeIgnore(Account account) {
+		ignores.remove(account.getUsername());
 	}
 
 	public String getClanName() {

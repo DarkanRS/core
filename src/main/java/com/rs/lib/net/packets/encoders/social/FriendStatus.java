@@ -29,7 +29,7 @@ public class FriendStatus extends PacketEncoder {
 			online = true;
 		stream.writeByte(0); //idk, was called warnMessage in matrix?
 		stream.writeString(other.getAccount().getDisplayName());
-		stream.writeString(other.getAccount().getSocial() == null ? "Player not found" : ""); //previous name
+		stream.writeString(other.getAccount().getPrevDisplayName());
 		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().getNumber() : 0 : 0);
 		stream.writeByte(player.getSocial().getFriendsChat().getRank(other.getAccount().getUsername()));
 		stream.writeByte(0);

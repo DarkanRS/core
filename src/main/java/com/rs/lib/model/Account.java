@@ -14,6 +14,7 @@ public class Account {
 	
 	private String username;
 	private String displayName;
+	private String prevDisplayName = "";
 	private String email;
 	private Rights rights;
 	private Set<byte[]> prevPasswords;
@@ -27,11 +28,13 @@ public class Account {
 	public Account(String username) {
 		this.username = username;
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
+		this.prevDisplayName = "";
 	}
 	
 	public Account(String username, String password, String email) {
 		this.username = Utils.formatPlayerNameForProtocol(username);
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
+		this.prevDisplayName = "";
 		this.email = email;
 		this.rights = Rights.PLAYER;
 		this.password = Crypt.encrypt(password);
@@ -156,5 +159,13 @@ public class Account {
 
 	public boolean onlineTo(Account account) {
 		return social.onlineTo(account);
+	}
+
+	public String getPrevDisplayName() {
+		return prevDisplayName;
+	}
+
+	public void setPrevDisplayName(String prevDisplayName) {
+		this.prevDisplayName = prevDisplayName;
 	}
 }

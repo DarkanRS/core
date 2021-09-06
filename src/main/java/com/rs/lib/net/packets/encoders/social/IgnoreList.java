@@ -1,25 +1,27 @@
 package com.rs.lib.net.packets.encoders.social;
 
+import java.util.Map;
+
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
-import com.rs.lib.util.Utils;
 
 public class IgnoreList extends PacketEncoder {
 	
-	private String[] ignores;
+	private Map<String, String> ignores;
 
-	public IgnoreList(String... ignores) {
+	public IgnoreList(Map<String, String> ignores) {
 		super(ServerPacket.UPDATE_IGNORE_LIST);
+		this.ignores = ignores;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeByte(ignores.length);
-		for (String username : ignores) {
+		stream.writeByte(ignores.size());
+		for (String username : ignores.keySet()) {
 			if (username != null) {
-				stream.writeString(Utils.formatPlayerNameForDisplay(username));
-				stream.writeString(""); //Changed display name
+				stream.writeString(username);
+				stream.writeString(ignores.get(username));
 			}
 		}
 	}

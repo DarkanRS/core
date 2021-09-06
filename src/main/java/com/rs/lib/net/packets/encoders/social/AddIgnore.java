@@ -1,25 +1,24 @@
 package com.rs.lib.net.packets.encoders.social;
 
 import com.rs.lib.io.OutputStream;
+import com.rs.lib.model.Account;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 
 public class AddIgnore extends PacketEncoder {
 
-	private String name;
+	private Account account;
 	
-	public AddIgnore(String name) {
+	public AddIgnore(Account account) {
 		super(ServerPacket.ADD_IGNORE);
-		this.name = name;
+		this.account = account;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		if (name != null) {
-			stream.writeByte(0x2);
-			stream.writeString(name);
-			stream.writeString(""); //updated name
-		}
+		stream.writeByte(0x2);
+		stream.writeString(account.getDisplayName());
+		stream.writeString(account.getPrevDisplayName());
 	}
 
 }
