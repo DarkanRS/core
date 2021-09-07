@@ -27,6 +27,6 @@ public class Friend {
 	}
 
 	public boolean onlineTo(Account player) {
-		return account.getSocial().onlineTo(player);
+		return account.onlineTo(player);
 	}
 }

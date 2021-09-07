@@ -156,9 +156,10 @@ public class Account {
 		this.lastIp = lastIp;
 	}
 	
-
-	public boolean onlineTo(Account account) {
-		return social.onlineTo(account);
+	public boolean onlineTo(Account other) {
+		if (other.getSocial().getStatus() == 2 || (other.getSocial().getStatus() == 1 && !other.getSocial().getFriends().contains(getUsername())))
+			return false;
+		return true;
 	}
 
 	public String getPrevDisplayName() {

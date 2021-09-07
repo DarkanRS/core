@@ -106,11 +106,5 @@ public class Social {
 	public void setFcStatus(int fcStatus) {
 		this.fcStatus = (byte) fcStatus;
 	}
-
-	public boolean onlineTo(Account other) {
-		if (other.getSocial().getStatus() == 2 || (other.getSocial().getStatus() == 1 && !friends.contains(other.getUsername())))
-			return false;
-		return true;
-	}
 	
 }
