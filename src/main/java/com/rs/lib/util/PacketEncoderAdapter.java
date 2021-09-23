@@ -9,14 +9,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.rs.lib.net.packets.Packet;
+import com.rs.lib.net.packets.PacketEncoder;
 
-public class PacketAdapter implements JsonSerializer<Packet>, JsonDeserializer<Packet> {
+public class PacketEncoderAdapter implements JsonSerializer<PacketEncoder>, JsonDeserializer<PacketEncoder> {
 
-	private static final String CLASS_KEY = "2_CMK";
+	private static final String CLASS_KEY = "1_CMK";
 
 	@Override
-	public Packet deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+	public PacketEncoder deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 		JsonObject jsonObj = jsonElement.getAsJsonObject();
 		String className = jsonObj.get(CLASS_KEY).getAsString();
 		try {
@@ -28,7 +28,7 @@ public class PacketAdapter implements JsonSerializer<Packet>, JsonDeserializer<P
 	}
 
 	@Override
-	public JsonElement serialize(Packet object, Type type, JsonSerializationContext jsonSerializationContext) {
+	public JsonElement serialize(PacketEncoder object, Type type, JsonSerializationContext jsonSerializationContext) {
 		JsonElement jsonEle = jsonSerializationContext.serialize(object, object.getClass());
 		jsonEle.getAsJsonObject().addProperty(CLASS_KEY, object.getClass().getCanonicalName());
 		return jsonEle;
