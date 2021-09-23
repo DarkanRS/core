@@ -11,6 +11,9 @@ public class GroundItem extends Item {
 	private String creatorUsername;
 	private int creatorId;
 	private GroundItemType type;
+	private int ticks;
+	private int privateTime;
+	private int deleteTime;
 
 	public GroundItem(int id) {
 		super(id);
@@ -22,14 +25,16 @@ public class GroundItem extends Item {
 		return this;
 	}
 	
-	public GroundItem(Item item, WorldTile tile, String creator, GroundItemType type) {
+	public GroundItem(Item item, WorldTile tile, String ownerUsername, GroundItemType type) {
 		super(item.getId(), item.getAmount(), item.getMetaData());
 		this.tile = tile;
-		if (creator != null) {
-			this.creatorUsername = creator;
-			this.visibleToId = this.creatorId = creator.hashCode();
+		if (ownerUsername != null) {
+			this.creatorUsername = ownerUsername;
+			this.visibleToId = this.creatorId = ownerUsername.hashCode();
 		}
 		this.type = type;
+		this.privateTime = -1;
+		this.deleteTime = -1;
 	}
 	
 	public GroundItem(Item item, WorldTile tile, GroundItemType type) {
@@ -63,6 +68,10 @@ public class GroundItem extends Item {
 	public boolean isPrivate() {
 		return visibleToId != 0;
 	}
+	
+//	public void setInvisible(boolean invisible) {
+//		type = invisible ? GroundItemType.INVISIBLE : GroundItemType.NORMAL;
+//	}
 
 	@Override
 	public String toString() {
@@ -72,8 +81,36 @@ public class GroundItem extends Item {
 	public void removeOwner() {
 		visibleToId = 0;
 	}
+	
+	public void tick() {
+		ticks++;
+	}
 
 	public int getSourceId() {
 		return creatorId;
+	}
+
+	public int getTicks() {
+		return ticks;
+	}
+
+	public int getPrivateTime() {
+		return privateTime;
+	}
+	
+	public void setPrivateTime(int privateTime) {
+		this.privateTime = privateTime;
+	}
+	
+	public void setDeleteTime(int deleteTime) {
+		this.deleteTime = deleteTime;
+	}
+
+	public int getDeleteTime() {
+		return deleteTime;
+	}
+
+	public void setHiddenTime(int ticks) {
+		privateTime = this.ticks + ticks;
 	}
 }
