@@ -6,27 +6,58 @@ import java.util.Map;
 import com.rs.lib.util.Utils;
 
 public class FriendsChat {
-	
 	private String name;
-	private Map<String, Integer> friendsChatRanks;
-	private byte rankToEnter;
-	private byte rankToSpeak;
-	private byte rankToKick;
-	private byte rankToLS;
-	private int lsp;
+	private Map<String, Rank> friendsChatRanks;
+	private Rank rankToEnter;
+	private Rank rankToSpeak;
+	private Rank rankToKick;
+	private Rank rankToLS;
 	private boolean coinshare;
-	private byte fcStatus;
+	
+	public enum Rank {
+		UNRANKED(-1),
+		FRIEND(0),
+		RECRUIT(1),
+		CORPORAL(2),
+		SERGEANT(3),
+		LIEUTENANT(4),
+		CAPTAIN(5),
+		GENERAL(6),
+		OWNER(7),
+		JMOD(127);
+		
+		private static Map<Integer, Rank> MAP = new HashMap<>();
+		
+		static {
+			for (Rank r : Rank.values())
+				MAP.put(r.getId(), r);
+		}
+		
+		public static Rank forId(int id) {
+			return MAP.get(id);
+		}
+		
+		private int id;
+		
+		private Rank(int id) {
+			this.id = id;
+		}
+		
+		public int getId() {
+			return id;
+		}
+	}
 	
 	public FriendsChat() {
 		friendsChatRanks = new HashMap<>(200);
-		rankToKick = 7;
-		rankToLS = -1;
+		rankToKick = Rank.OWNER;
+		rankToLS = Rank.UNRANKED;
 	}
 	
-	public int getRank(String username) {
-		Integer rank = getFriendsChatRanks().get(username);
+	public Rank getRank(String username) {
+		Rank rank = getFriendsChatRanks().get(username);
 		if (rank == null)
-			return -1;
+			return Rank.UNRANKED;
 		return rank;
 	}
 
@@ -38,52 +69,44 @@ public class FriendsChat {
 		this.name = name;
 	}
 
-	public Map<String, Integer> getFriendsChatRanks() {
+	public Map<String, Rank> getFriendsChatRanks() {
 		return friendsChatRanks;
 	}
 
-	public void setFriendsChatRanks(Map<String, Integer> friendsChatRanks) {
+	public void setFriendsChatRanks(Map<String, Rank> friendsChatRanks) {
 		this.friendsChatRanks = friendsChatRanks;
 	}
 
-	public byte getRankToEnter() {
+	public Rank getRankToEnter() {
 		return rankToEnter;
 	}
 
-	public void setRankToEnter(byte rankToEnter) {
+	public void setRankToEnter(Rank rankToEnter) {
 		this.rankToEnter = rankToEnter;
 	}
 
-	public byte getRankToSpeak() {
+	public Rank getRankToSpeak() {
 		return rankToSpeak;
 	}
 
-	public void setRankToSpeak(byte rankToSpeak) {
+	public void setRankToSpeak(Rank rankToSpeak) {
 		this.rankToSpeak = rankToSpeak;
 	}
 
-	public byte getRankToKick() {
+	public Rank getRankToKick() {
 		return rankToKick;
 	}
 
-	public void setRankToKick(byte rankToKick) {
+	public void setRankToKick(Rank rankToKick) {
 		this.rankToKick = rankToKick;
 	}
 
-	public byte getRankToLS() {
+	public Rank getRankToLS() {
 		return rankToLS;
 	}
 
-	public void setRankToLS(byte rankToLS) {
+	public void setRankToLS(Rank rankToLS) {
 		this.rankToLS = rankToLS;
-	}
-
-	public int getLsp() {
-		return lsp;
-	}
-
-	public void setLsp(int lsp) {
-		this.lsp = lsp;
 	}
 
 	public boolean isCoinshare() {
@@ -93,18 +116,12 @@ public class FriendsChat {
 	public void setCoinshare(boolean coinshare) {
 		this.coinshare = coinshare;
 	}
-
-	public byte getFcStatus() {
-		return fcStatus;
-	}
-
-	public void setFcStatus(byte fcStatus) {
-		this.fcStatus = fcStatus;
-	}
-
-	public void setRank(String name, int rank) {
-		if (rank < 0 || rank > 6)
+	
+	public void setRank(String name, Rank rank) {
+		if (rank == null) {
+			getFriendsChatRanks().remove(name);
 			return;
+		}
 		getFriendsChatRanks().put(Utils.formatPlayerNameForProtocol(name), rank);
 	}
 }

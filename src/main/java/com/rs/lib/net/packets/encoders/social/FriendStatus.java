@@ -31,7 +31,7 @@ public class FriendStatus extends PacketEncoder {
 		stream.writeString(other.getAccount().getDisplayName());
 		stream.writeString(other.getAccount().getPrevDisplayName());
 		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().getNumber() : 0 : 0);
-		stream.writeByte(player.getSocial().getFriendsChat().getRank(other.getAccount().getUsername()));
+		stream.writeByte(player.getSocial().getFriendsChat().getRank(other.getAccount().getUsername()).getId());
 		stream.writeByte(0);
 		if (online) {
 			String worldText = "None";

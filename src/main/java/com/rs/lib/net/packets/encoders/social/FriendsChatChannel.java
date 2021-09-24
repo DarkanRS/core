@@ -10,6 +10,7 @@ public class FriendsChatChannel extends PacketEncoder {
 	
 	public FriendsChatChannel(byte[] block) {
 		super(ServerPacket.FRIENDS_CHAT_CHANNEL);
+		this.block = block;
 	}
 
 	@Override
