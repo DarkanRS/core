@@ -1,5 +1,6 @@
 package com.rs.cache.loaders;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,6 +62,16 @@ public class BASDefinitions {
 	public boolean aBool2787;
 	
 	private static final ConcurrentHashMap<Integer, BASDefinitions> RENDER_ANIM_CACHE = new ConcurrentHashMap<Integer, BASDefinitions>();
+	
+	public static void main(String[] args) throws IOException {
+		Cache.init("../darkan-cache/");
+		int search = 772;
+		for (int i = 0;i < Utils.getBASAnimDefSize();i++) {
+			BASDefinitions def = BASDefinitions.getDefs(i);
+			if (def.walkAnimation == search || def.runningAnimation == search || def.walkDir1 == search || def.walkDir2 == search || def.walkDir3 == search || def.standAnimation == search)
+				System.out.println(i);
+		}
+	}
 
 	public static final BASDefinitions getDefs(int emoteId) {
 		BASDefinitions defs = RENDER_ANIM_CACHE.get(emoteId);
