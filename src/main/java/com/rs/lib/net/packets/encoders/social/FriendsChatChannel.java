@@ -6,14 +6,16 @@ import com.rs.lib.net.packets.PacketEncoder;
 
 public class FriendsChatChannel extends PacketEncoder {
 	
-	public FriendsChatChannel() {
+	private byte[] block;
+	
+	public FriendsChatChannel(byte[] block) {
 		super(ServerPacket.FRIENDS_CHAT_CHANNEL);
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-//		if (manager != null)
-//			stream.writeBytes(manager.getDataBlock());
+		if (block != null)
+			stream.writeBytes(block);
 	}
 
 }
