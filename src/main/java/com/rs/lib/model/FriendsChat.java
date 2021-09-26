@@ -8,10 +8,10 @@ import com.rs.lib.util.Utils;
 public class FriendsChat {
 	private String name;
 	private Map<String, Rank> friendsChatRanks;
-	private Rank rankToEnter;
-	private Rank rankToSpeak;
-	private Rank rankToKick;
-	private Rank rankToLS;
+	private Rank rankToEnter = Rank.UNRANKED;
+	private Rank rankToSpeak = Rank.UNRANKED;
+	private Rank rankToKick = Rank.OWNER;
+	private Rank rankToLS = Rank.FRIEND;
 	private boolean coinshare;
 	
 	public enum Rank {
