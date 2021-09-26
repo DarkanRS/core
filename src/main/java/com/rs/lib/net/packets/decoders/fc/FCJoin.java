@@ -10,13 +10,18 @@ public class FCJoin extends Packet {
 
 	private String name;
 	
+	//Required for reflection in decoder parsing
+	public FCJoin() {
+		
+	}
+	
 	public FCJoin(String name) {
 		this.name = name;
 	}
 	
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
-		FCJoin p = new FCJoin(null);
+		FCJoin p = new FCJoin();
 		if (stream.getRemaining() > 0)
 			p.name = stream.readString();
 		return p;
