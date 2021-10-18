@@ -44,7 +44,7 @@ public class Account {
 	}
 	
 	public Account(CreateAccount request) {
-		this(request.getUsername(), request.getPassword(), request.getEmail());
+		this(request.username(), request.password(), request.email());
 	}
 	
 	public String getUsername() {
