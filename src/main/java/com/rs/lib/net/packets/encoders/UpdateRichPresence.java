@@ -18,15 +18,15 @@ public class UpdateRichPresence extends PacketEncoder {
 	@Override
 	public void encodeBody(OutputStream stream) {
 		stream.writeString(fieldName);
-		if (value instanceof Integer) {
+		if (value instanceof Integer i) {
 			stream.writeInt(0);
-			stream.writeInt((Integer) value);
-		} else if (value instanceof String) {
+			stream.writeInt(i);
+		} else if (value instanceof String s) {
 			stream.writeInt(1);
-			stream.writeString((String) value);
-		} else if (value instanceof Long) {
+			stream.writeString(s);
+		} else if (value instanceof Long l) {
 			stream.writeInt(2);
-			stream.writeLong((Long) value);
+			stream.writeLong(l);
 		}
 	}
 }

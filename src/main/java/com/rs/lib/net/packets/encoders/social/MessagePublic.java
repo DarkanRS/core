@@ -26,11 +26,10 @@ public class MessagePublic extends PacketEncoder {
 		stream.writeShort(message.getEffects());
 		stream.writeByte(messageIcon);
 		String filtered = message.getMessage();
-		if (message instanceof QuickChatMessage) {
-			QuickChatMessage qcMessage = (QuickChatMessage) message;
-			stream.writeShort(qcMessage.getFileId());
-			if (qcMessage.getData() != null)
-				stream.writeBytes(qcMessage.getData());
+		if (message instanceof QuickChatMessage qc) {
+			stream.writeShort(qc.getFileId());
+			if (qc.getData() != null)
+				stream.writeBytes(qc.getData());
 		} else {
 			byte[] chatStr = new byte[250];
 			chatStr[0] = (byte) filtered.length();

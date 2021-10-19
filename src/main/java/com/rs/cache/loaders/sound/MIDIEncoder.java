@@ -37,8 +37,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					int ch = (sm.getChannel() ^ prevChannel) << 4;
 					switch (sm.getCommand()) {
 					case NOTE_OFF:
@@ -96,8 +95,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					switch (sm.getCommand()) {
 					case NOTE_OFF:
 					case NOTE_ON:
@@ -110,8 +108,7 @@ public class MIDIEncoder {
 						lastTick = (int) event.getTick();
 						break;
 					}
-				} else if (message instanceof MetaMessage) {
-					MetaMessage mm = (MetaMessage) message;
+				} else if (message instanceof MetaMessage mm) {
 					switch (mm.getType()) {
 					case END_OF_TRACK:
 					case SET_TEMPO:
@@ -140,8 +137,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE) {
 						dos.write(sm.getData1() - lastController);
 						lastController = sm.getData1();
@@ -155,8 +151,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && (sm.getData1() == 64 || sm.getData1() == 65 || sm.getData1() == 120 || sm.getData1() == 121 || sm.getData1() == 123)) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -169,8 +164,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == KEY_AFTER_TOUCH) {
 						dos.write(sm.getData2() - lastKeyAfterTouchVelocity);
 						lastKeyAfterTouchVelocity = sm.getData2();
@@ -183,8 +177,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CHANNEL_AFTER_TOUCH) {
 						dos.write(sm.getData1() - lastChannelAfterTouch);
 						lastChannelAfterTouch = sm.getData1();
@@ -197,8 +190,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == PITCH_WHEEL_CHANGE) {
 						dos.write(sm.getData2() - lastWheelChangeT);
 						lastWheelChangeT = sm.getData2();
@@ -211,8 +203,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 1) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -225,8 +216,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 7) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -239,8 +229,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 10) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -253,8 +242,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == NOTE_OFF || sm.getCommand() == NOTE_ON || sm.getCommand() == KEY_AFTER_TOUCH) {
 						dos.write(sm.getData1() - lastNote);
 						lastNote = sm.getData1();
@@ -267,8 +255,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == NOTE_ON) {
 						dos.write(sm.getData2() - lastNoteOnVelocity);
 						lastNoteOnVelocity = sm.getData2();
@@ -282,8 +269,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && !(sm.getData1() == 64 || sm.getData1() == 65 || sm.getData1() == 120 || sm.getData1() == 121 || sm.getData1() == 123 || sm.getData1() == 0 || sm.getData1() == 32 || sm.getData1() == 1 || sm.getData1() == 33 || sm.getData1() == 7
 							|| sm.getData1() == 39 || sm.getData1() == 10 || sm.getData1() == 42 || sm.getData1() == 99 || sm.getData1() == 98 || sm.getData1() == 101 || sm.getData1() == 100)) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
@@ -297,8 +283,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == NOTE_OFF) {
 						dos.write(sm.getData2() - lastNoteOffVelocity);
 						lastNoteOffVelocity = sm.getData2();
@@ -311,8 +296,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 33) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -325,8 +309,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 39) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -339,8 +322,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 42) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -353,8 +335,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && (sm.getData1() == 0 || sm.getData1() == 32)) {
 						System.out.println("WARNING SONG USES SOUND BANKS BYTE: " + sm.getData1() + " VALUE: " + sm.getData2() + " ");
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
@@ -370,8 +351,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == PITCH_WHEEL_CHANGE) {
 						dos.write(sm.getData1() - lastWheelChangeB);
 						lastWheelChangeB = sm.getData1();
@@ -384,8 +364,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 99) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -398,8 +377,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 98) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -412,8 +390,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 101) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -426,8 +403,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage) {
-					ShortMessage sm = (ShortMessage) message;
+				if (message instanceof ShortMessage sm) {
 					if (sm.getCommand() == CONTROL_CHANGE && sm.getData1() == 100) {
 						dos.write(sm.getData2() - lastControllerValue[sm.getData1()]);
 						lastControllerValue[sm.getData1()] = sm.getData2();
@@ -440,8 +416,7 @@ public class MIDIEncoder {
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				MidiMessage message = event.getMessage();
-				if (message instanceof MetaMessage) {
-					MetaMessage mm = (MetaMessage) message;
+				if (message instanceof MetaMessage mm) {
 					if (mm.getType() == SET_TEMPO) {
 						dos.write(mm.getData());
 					}

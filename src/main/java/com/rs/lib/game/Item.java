@@ -118,8 +118,8 @@ public class Item {
 	
 	public int getMetaDataI(String key, int defaultVal) {
 		if (metaData != null && metaData.get(key) != null) {
-			if (metaData.get(key) instanceof Integer)
-				return (int) metaData.get(key);
+			if (metaData.get(key) instanceof Integer value)
+				return value;
 			return (int) Math.floor(((double) metaData.get(key)));
 		}
 		return defaultVal;

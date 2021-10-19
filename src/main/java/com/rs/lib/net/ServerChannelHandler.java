@@ -73,12 +73,11 @@ public final class ServerChannelHandler extends SimpleChannelHandler {
 		if (Globals.DEBUG)
 			System.out.println("Connection disconnected " + e.getChannel().getRemoteAddress());
 		Object sessionObject = ctx.getAttachment();
-		if (sessionObject != null && sessionObject instanceof Session) {
-			Session session = (Session) sessionObject;
-			if (session.getDecoder() == null)
+		if (sessionObject != null && sessionObject instanceof Session s) {
+			if (s.getDecoder() == null)
 				return;
-			if (session.getDecoder() instanceof GameDecoder)
-				session.getChannel().close();
+			if (s.getDecoder() instanceof GameDecoder)
+				s.getChannel().close(); //TODO this might be messing with attempting to reestablish
 		}
 	}
 
@@ -89,13 +88,11 @@ public final class ServerChannelHandler extends SimpleChannelHandler {
 		}
 		ChannelBuffer buf = (ChannelBuffer) e.getMessage();
 		Object sessionObject = ctx.getAttachment();
-		if (sessionObject != null && sessionObject instanceof Session) {
-			Session session = (Session) sessionObject;
-
+		if (sessionObject != null && sessionObject instanceof Session session) {
 			if (session.getDecoder() == null) {
 				return;
 			}
-
+			
 			byte[] b = new byte[(session.buffer.length - session.bufferOffset) + buf.readableBytes()];
 			if ((session.buffer.length - session.bufferOffset) > 0)
 				System.arraycopy(session.buffer, session.bufferOffset, b, 0, session.buffer.length - session.bufferOffset);
