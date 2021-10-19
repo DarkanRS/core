@@ -22,12 +22,10 @@ public class WorldInfo {
 	}
 	
 	public static String getCountryFromId(int country) {
-		switch(country) {
-		case 1:
-			return "USA";
-		default:
-			return "'Murica";
-		}
+		return switch(country) {
+			case 1 -> "USA";
+			default -> "Murica";
+		};
 	}
 	
 	public String getActivity() {

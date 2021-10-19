@@ -203,23 +203,12 @@ public class ObjectDefinitions {
 	public String getOption(ClientPacket option) {
 		int op = -1;
 		switch(option) {
-		case OBJECT_OP1:
-			op = 0;
-			break;
-		case OBJECT_OP2:
-			op = 1;
-			break;
-		case OBJECT_OP3:
-			op = 2;
-			break;
-		case OBJECT_OP4:
-			op = 3;
-			break;
-		case OBJECT_OP5:
-			op = 4;
-			break;
-		default:
-			break;
+			case OBJECT_OP1 -> op = 0;
+			case OBJECT_OP2 -> op = 1;
+			case OBJECT_OP3 -> op = 2;
+			case OBJECT_OP4 -> op = 3;
+			case OBJECT_OP5 -> op = 4;
+			default -> throw new IllegalArgumentException("Unexpected value: " + option);
 		}
 		if (options == null || op < 0 || options.length < op || options[op] == null)
 			return "";
