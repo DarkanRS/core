@@ -9,12 +9,14 @@ public class GenericAttribMap {
 		this.attribs = new ConcurrentHashMap<>();
 	}
 	
-	public void setO(String name, Object value) {
+	@SuppressWarnings("unchecked")
+	public <T> T setO(String name, Object value) {
 		if (value == null) {
-			attribs.remove(name);
-			return;
+			Object old = attribs.remove(name);
+			return old == null ? null : (T) old;
 		}
-		attribs.put("O"+name, value);
+		Object old = attribs.put("O"+name, value);
+		return old == null ? null : (T) old;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -47,9 +49,10 @@ public class GenericAttribMap {
 	}
 	
 	public int getI(String name, int def) {
-		if (attribs.get("I"+name) == null)
+		Object val = attribs.get("I"+name);
+		if (val == null)
 			return def;
-		return (Integer) attribs.get("I"+name);
+		return (int) (val instanceof Integer ? (int) val : (double) val);
 	}
 	
 	public int getI(String name) {
@@ -81,12 +84,33 @@ public class GenericAttribMap {
 		attribs.clear();
 	}
 
-	public void remove(String name) {
-		attribs.remove(name);
+	public int removeI(String name) {
+		int i = getI(name);
+		attribs.remove("I"+name);
+		return i;
 	}
 
-	public boolean removeI(String name) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean removeB(String name) {
+		boolean b = getB(name);
+		attribs.remove("B"+name);
+		return b;
+	}
+	
+	public <T> T removeO(String name) {
+		T o = getO(name);
+		attribs.remove("O"+name);
+		return o;
+	}
+
+	public long removeL(String name) {
+		long l = getL(name);
+		attribs.remove("L"+name);
+		return l;
+	}
+
+	public int removeI(String name, int defaultVal) {
+		int i = getI(name, defaultVal);
+		attribs.remove("I"+name);
+		return i;
 	}
 }
