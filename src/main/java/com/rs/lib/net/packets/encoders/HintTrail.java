@@ -13,7 +13,7 @@ public class HintTrail extends PacketEncoder {
 	private int[] stepsX, stepsY;
 	private int size;
 	
-	public HintTrail(WorldTile start, WorldTile end, int modelId, int[] stepsX, int[] stepsY, int size) {
+	public HintTrail(WorldTile start, int modelId, int[] stepsX, int[] stepsY, int size) {
 		super(ServerPacket.HINT_TRAIL);
 		this.start = start;
 		this.modelId = modelId;
