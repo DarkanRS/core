@@ -61,10 +61,6 @@ public class Account {
 		return email;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public Set<byte[]> getPrevPasswords() {
 		return prevPasswords;
 	}
