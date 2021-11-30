@@ -38,6 +38,13 @@ public class CutsceneDefinitions {
 		CACHE.put(id, defs);
 		return defs;
 	}
+
+    public static boolean cutsceneExists(int dent) {
+        byte[] data = Cache.STORE.getIndex(IndexType.CUTSCENES).getFile(dent);
+            if(data != null)
+                return true;
+        return false;
+    }
 	
 	private void decode(InputStream buffer) {
 		readValues(buffer);
