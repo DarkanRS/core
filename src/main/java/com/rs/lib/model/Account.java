@@ -13,9 +13,10 @@ import com.rs.lib.web.dto.CreateAccount;
 public class Account {
 	
 	private String username;
+	private String email;
+	private String recoveryEmail;
 	private String displayName;
 	private String prevDisplayName = "";
-	private String email;
 	private Rights rights;
 	private Set<byte[]> prevPasswords;
 	private byte[] password;
@@ -36,6 +37,7 @@ public class Account {
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.prevDisplayName = "";
 		this.email = email;
+		this.recoveryEmail = email;
 		this.rights = Rights.PLAYER;
 		this.password = Crypt.encrypt(password);
 		this.prevPasswords = new HashSet<>();
@@ -57,10 +59,6 @@ public class Account {
 
 	public String getEmail() {
 		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public Set<byte[]> getPrevPasswords() {
@@ -168,5 +166,13 @@ public class Account {
 
 	public void setPrevDisplayName(String prevDisplayName) {
 		this.prevDisplayName = prevDisplayName;
+	}
+
+	public String getRecoveryEmail() {
+		return recoveryEmail;
+	}
+
+	public void setRecoveryEmail(String recoveryEmail) {
+		this.recoveryEmail = recoveryEmail;
 	}
 }
