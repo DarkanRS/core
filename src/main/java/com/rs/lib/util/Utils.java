@@ -758,19 +758,6 @@ public final class Utils {
 		return ANGLE_DIRECTION_DELTA[v];
 	}
 
-    public static int getClosestNumberFromArray(int[] numbers, int number) {
-        int distance = Math.abs(numbers[0] - number);
-        int idx = 0;
-        for(int c = 1; c < numbers.length; c++){
-            int cdistance = Math.abs(numbers[c] - number);
-            if(cdistance < distance){
-                idx = c;
-                distance = cdistance;
-            }
-        }
-        return numbers[idx];
-    }
-
 	public static String ticksToTime(double ticks) {
 		long millis = Math.round(ticks) * 600;
 		int seconds = (int) (millis / 1000);
