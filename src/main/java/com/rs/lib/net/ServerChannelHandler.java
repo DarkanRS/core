@@ -106,7 +106,6 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		System.out.println("Channel read: " + msg + " - " + (msg instanceof ByteBuf));
 		if (!(msg instanceof ByteBuf))
 			return;
 		ByteBuf buf = (ByteBuf) msg;
