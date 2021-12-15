@@ -34,7 +34,7 @@ public final class GrabDecoder extends Decoder {
 			System.out.println("Incoming crash from: " + session.getIP() + " - Size: " + stream.getRemaining());
 			session.getChannel().close();
 		}
-		while (stream.getRemaining() >= 6 && session.getChannel().isConnected()) {
+		while (stream.getRemaining() >= 6 && session.getChannel().isActive()) {
 			int packetId = stream.readUnsignedByte();
 			if (packetId == 0 || packetId == 1)
 				decodeRequestCacheContainer(stream, packetId == 1);

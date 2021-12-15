@@ -19,17 +19,17 @@ package com.rs.lib.net;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
-
 import com.rs.lib.Constants;
 import com.rs.lib.io.IsaacKeyPair;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketEncoder;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 
 public class Session {
 
@@ -129,15 +129,15 @@ public class Session {
 	}
 
 	public final ChannelFuture write(OutputStream outStream) {
-		if (outStream == null || !channel.isConnected())
+		if (outStream == null || !channel.isActive())
 			return null;
-		return channel.write(ChannelBuffers.copiedBuffer(outStream.getBuffer(), 0, outStream.getOffset()));
+		return channel.writeAndFlush(Unpooled.copiedBuffer(outStream.getBuffer(), 0, outStream.getOffset()));
 	}
 
-	public final ChannelFuture write(ChannelBuffer outStream) {
-		if (outStream == null || !channel.isConnected())
+	public final ChannelFuture write(ByteBuf outStream) {
+		if (outStream == null || !channel.isActive())
 			return null;
-		return channel.write(outStream);
+		return channel.writeAndFlush(outStream);
 	}
 
 	public final Channel getChannel() {
@@ -172,11 +172,11 @@ public class Session {
 	}
 
 	public String getIP() {
-		return channel == null ? "" : channel.getRemoteAddress().toString().split(":")[0].replace("/", "");
+		return channel == null ? "" : channel.remoteAddress().toString().split(":")[0].replace("/", "");
 	}
 
 	public String getLocalAddress() {
-		return channel.getLocalAddress().toString();
+		return channel.localAddress().toString();
 	}
 	
 	public void refreshLastPacket() {

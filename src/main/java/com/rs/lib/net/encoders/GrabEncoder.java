@@ -18,16 +18,16 @@ package com.rs.lib.net.encoders;
 
 import java.io.IOException;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
-
 import com.rs.cache.Cache;
 import com.rs.lib.Constants;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.Encoder;
 import com.rs.lib.net.Session;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 
 public final class GrabEncoder extends Encoder {
 
@@ -77,7 +77,7 @@ public final class GrabEncoder extends Encoder {
 		}
 	}
 
-	public final ChannelBuffer getArchivePacketData(int indexId, int archiveId, boolean priority) {
+	public final ByteBuf getArchivePacketData(int indexId, int archiveId, boolean priority) {
 		try {
 			if (indexId != 255) {
 				if (archiveId > Cache.STORE.getIndices()[indexId].getMainFile().getArchivesCount())
@@ -97,7 +97,7 @@ public final class GrabEncoder extends Encoder {
 		int settings = compression;
 		if (!priority)
 			settings |= 0x80;
-		ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
+		ByteBuf buffer = Unpooled.buffer();
 		buffer.writeByte(indexId);
 		buffer.writeInt(archiveId);
 		buffer.writeByte(settings);
