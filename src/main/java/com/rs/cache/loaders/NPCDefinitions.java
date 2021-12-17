@@ -887,36 +887,22 @@ public final class NPCDefinitions {
 	}
 	
 	public int getBonus(Bonus bonus) {
-		switch(bonus) {
-		case CRUSH_ATT:
-			return getCrushAtt();
-		case CRUSH_DEF:
-			return getCrushDef();
-		case MAGIC_ATT:
-			return getMagicAtt();
-		case MAGIC_DEF:
-			return getMagicDef();
-		case MAGIC_STR:
-			return getMagicStr();
-		case MELEE_STR:
-			return getMeleeStr();
-		case RANGE_ATT:
-			return getRangeAtt();
-		case RANGE_DEF:
-			return getRangeDef();
-		case RANGE_STR:
-			return getRangeStr();
-		case SLASH_ATT:
-			return getSlashAtt();
-		case SLASH_DEF:
-			return getSlashDef();
-		case STAB_ATT:
-			return getStabAtt();
-		case STAB_DEF:
-			return getStabDef();
-		default:
-			return 0;
-		}
+		return switch(bonus) {
+			case CRUSH_ATT -> getCrushAtt();
+			case CRUSH_DEF -> getCrushDef();
+			case MAGIC_ATT -> getMagicAtt();
+			case MAGIC_DEF -> getMagicDef();
+			case MAGIC_STR -> getMagicStr();
+			case MELEE_STR -> getMeleeStr();
+			case RANGE_ATT -> getRangeAtt();
+			case RANGE_DEF -> getRangeDef();
+			case RANGE_STR -> getRangeStr();
+			case SLASH_ATT -> getSlashAtt();
+			case SLASH_DEF -> getSlashDef();
+			case STAB_ATT -> getStabAtt();
+			case STAB_DEF -> getStabDef();
+			default -> 0;
+		};
 	}
 
 	public boolean isDungNPC() {
