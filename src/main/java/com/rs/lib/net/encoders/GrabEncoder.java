@@ -1,17 +1,33 @@
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Copyright © 2021 Trenton Kress
+//  This file is part of project: Darkan
+//
 package com.rs.lib.net.encoders;
 
 import java.io.IOException;
-
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
 
 import com.rs.cache.Cache;
 import com.rs.lib.Constants;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.Encoder;
 import com.rs.lib.net.Session;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 
 public final class GrabEncoder extends Encoder {
 
@@ -61,7 +77,7 @@ public final class GrabEncoder extends Encoder {
 		}
 	}
 
-	public final ChannelBuffer getArchivePacketData(int indexId, int archiveId, boolean priority) {
+	public final ByteBuf getArchivePacketData(int indexId, int archiveId, boolean priority) {
 		try {
 			if (indexId != 255) {
 				if (archiveId > Cache.STORE.getIndices()[indexId].getMainFile().getArchivesCount())
@@ -81,7 +97,7 @@ public final class GrabEncoder extends Encoder {
 		int settings = compression;
 		if (!priority)
 			settings |= 0x80;
-		ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
+		ByteBuf buffer = Unpooled.buffer();
 		buffer.writeByte(indexId);
 		buffer.writeInt(archiveId);
 		buffer.writeByte(settings);

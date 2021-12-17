@@ -1,30 +1,50 @@
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Copyright © 2021 Trenton Kress
+//  This file is part of project: Darkan
+//
 package com.rs.lib.net;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
-import java.util.concurrent.Executors;
-
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.decoders.GameDecoder;
-import com.rs.lib.thread.DecoderThreadFactory;
 import com.rs.lib.util.Logger;
 
-public final class ServerChannelHandler extends SimpleChannelHandler {
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.AttributeKey;
+import io.netty.util.concurrent.GlobalEventExecutor;
+import io.netty.channel.ChannelHandler.Sharable;
 
+@Sharable
+public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
+
+	private static final AttributeKey<Session> SESSION_KEY = AttributeKey.valueOf("session");
 	private static ChannelGroup CHANNELS;
 	private static ServerBootstrap BOOTSTRAP;
+	private static EventLoopGroup BOSS_GROUP;
+	private static EventLoopGroup WORKER_GROUP;
 	private Class<? extends Decoder> baseDecoderClass;
 
 	public static final void init(int port, Class<? extends Decoder> baseDecoderClass) {
@@ -37,58 +57,60 @@ public final class ServerChannelHandler extends SimpleChannelHandler {
 
 	private ServerChannelHandler(int port, Class<? extends Decoder> baseDecoderClass) {
 		this.baseDecoderClass = baseDecoderClass;
-		CHANNELS = new DefaultChannelGroup();
-		BOOTSTRAP = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newSingleThreadExecutor(new DecoderThreadFactory()), Executors.newSingleThreadExecutor(new DecoderThreadFactory()), 1));
-		BOOTSTRAP.getPipeline().addLast("handler", this);
-		BOOTSTRAP.setOption("reuseAddress", true); // reuses adress for bind
-		BOOTSTRAP.setOption("child.tcpNoDelay", true);
-		BOOTSTRAP.setOption("child.TcpAckFrequency", true);
-		BOOTSTRAP.setOption("child.keepAlive", true);
-		BOOTSTRAP.bind(new InetSocketAddress(port));
+		BOSS_GROUP = new NioEventLoopGroup(1);
+		WORKER_GROUP = new NioEventLoopGroup();
+		CHANNELS = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+		BOOTSTRAP = new ServerBootstrap();
+		BOOTSTRAP.group(BOSS_GROUP, WORKER_GROUP)
+		.channel(NioServerSocketChannel.class)
+		.childHandler(this)
+		.option(ChannelOption.SO_REUSEADDR, true)
+		.childOption(ChannelOption.TCP_NODELAY, true)
+		.childOption(ChannelOption.SO_KEEPALIVE, true)
+		.bind(new InetSocketAddress(port));
 	}
 
 	@Override
-	public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) {
-		CHANNELS.add(e.getChannel());
+	public void channelRegistered(ChannelHandlerContext ctx) {
+		CHANNELS.add(ctx.channel());
 	}
 
 	@Override
-	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) {
-		CHANNELS.remove(e.getChannel());
+	public void channelUnregistered(ChannelHandlerContext ctx) {
+		CHANNELS.remove(ctx.channel());
 	}
 
 	@Override
-	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+	public void channelActive(ChannelHandlerContext ctx) {
 		try {
-			ctx.setAttachment(new Session(e.getChannel(), baseDecoderClass.getConstructor().newInstance()));
+			ctx.channel().attr(SESSION_KEY).set(new Session(ctx.channel(), baseDecoderClass.getConstructor().newInstance()));
 			if (Globals.DEBUG)
-				System.out.println("Connection from " + e.getChannel().getRemoteAddress());
+				System.out.println("Connection from " + ctx.channel().remoteAddress());
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
 			Logger.handle(e1);
 		}
 	}
 
 	@Override
-	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+	public void channelInactive(ChannelHandlerContext ctx) {
 		if (Globals.DEBUG)
-			System.out.println("Connection disconnected " + e.getChannel().getRemoteAddress());
-		Object sessionObject = ctx.getAttachment();
-		if (sessionObject != null && sessionObject instanceof Session s) {
-			if (s.getDecoder() == null)
+			System.out.println("Connection disconnected " + ctx.channel().remoteAddress());
+		Session session = ctx.channel().attr(SESSION_KEY).get();
+		if (session != null) {
+			if (session.getDecoder() == null)
 				return;
-			if (s.getDecoder() instanceof GameDecoder)
-				s.getChannel().close(); //TODO this might be messing with attempting to reestablish
+			if (session.getDecoder() instanceof GameDecoder)
+				session.getChannel().close(); //TODO this might be messing with attempting to reestablish
 		}
 	}
 
 	@Override
-	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-		if (!(e.getMessage() instanceof ChannelBuffer)) {
+	public void channelRead(ChannelHandlerContext ctx, Object msg) {
+		if (!(msg instanceof ByteBuf))
 			return;
-		}
-		ChannelBuffer buf = (ChannelBuffer) e.getMessage();
-		Object sessionObject = ctx.getAttachment();
-		if (sessionObject != null && sessionObject instanceof Session session) {
+		ByteBuf buf = (ByteBuf) msg;
+		Session session = ctx.channel().attr(SESSION_KEY).get();
+		if (session != null) {
 			if (session.getDecoder() == null) {
 				return;
 			}
@@ -115,13 +137,14 @@ public final class ServerChannelHandler extends SimpleChannelHandler {
 	}
 
 	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent ee) throws Exception {
-		
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		//Logger.handle(cause);
 	}
 
 	public static final void shutdown() {
 		CHANNELS.close().awaitUninterruptibly();
-		BOOTSTRAP.releaseExternalResources();
+		BOSS_GROUP.shutdownGracefully();
+		WORKER_GROUP.shutdownGracefully();
 	}
 
 }

@@ -1,3 +1,19 @@
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Copyright © 2021 Trenton Kress
+//  This file is part of project: Darkan
+//
 package com.rs.lib.model;
 
 import java.text.SimpleDateFormat;
@@ -13,9 +29,10 @@ import com.rs.lib.web.dto.CreateAccount;
 public class Account {
 	
 	private String username;
+	private String email;
+	private String recoveryEmail;
 	private String displayName;
 	private String prevDisplayName = "";
-	private String email;
 	private Rights rights;
 	private Set<byte[]> prevPasswords;
 	private byte[] password;
@@ -36,6 +53,7 @@ public class Account {
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.prevDisplayName = "";
 		this.email = email;
+		this.recoveryEmail = email;
 		this.rights = Rights.PLAYER;
 		this.password = Crypt.encrypt(password);
 		this.prevPasswords = new HashSet<>();
@@ -57,10 +75,6 @@ public class Account {
 
 	public String getEmail() {
 		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public Set<byte[]> getPrevPasswords() {
@@ -168,5 +182,13 @@ public class Account {
 
 	public void setPrevDisplayName(String prevDisplayName) {
 		this.prevDisplayName = prevDisplayName;
+	}
+
+	public String getRecoveryEmail() {
+		return recoveryEmail;
+	}
+
+	public void setRecoveryEmail(String recoveryEmail) {
+		this.recoveryEmail = recoveryEmail;
 	}
 }

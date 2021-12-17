@@ -1,3 +1,19 @@
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Copyright © 2021 Trenton Kress
+//  This file is part of project: Darkan
+//
 package com.rs.lib.util;
 
 import java.awt.Color;
@@ -58,27 +74,24 @@ public final class Utils {
 
 	public static final int[] ROTATION_DIR_X = { -1, 0, 1, 0 };
 	public static final int[] ROTATION_DIR_Y = { 0, 1, 0, -1 };
-	
+
 	public static DecimalFormat FORMAT = new DecimalFormat("###,###.##");
 
 	private static final byte[][] ANGLE_DIRECTION_DELTA = { { 0, -1 }, { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 } };
-	
-	public static char[] CP_1252_CHARACTERS = { '\u20ac', '\0', '\u201a', '\u0192', '\u201e', '\u2026', '\u2020', '\u2021', '\u02c6', 
-			'\u2030', '\u0160', '\u2039', '\u0152', '\0', '\u017d', '\0', '\0', '\u2018', '\u2019', '\u201c', 
-			'\u201d', '\u2022', '\u2013', '\u2014', '\u02dc', '\u2122', '\u0161', '\u203a', '\u0153', 
-			'\0', '\u017e', '\u0178' };
-	
+
+	public static char[] CP_1252_CHARACTERS = { '\u20ac', '\0', '\u201a', '\u0192', '\u201e', '\u2026', '\u2020', '\u2021', '\u02c6', '\u2030', '\u0160', '\u2039', '\u0152', '\0', '\u017d', '\0', '\0', '\u2018', '\u2019', '\u201c', '\u201d', '\u2022', '\u2013', '\u2014', '\u02dc', '\u2122', '\u0161', '\u203a', '\u0153', '\0', '\u017e', '\u0178' };
+
 	public String getLevelDifferenceColor(int hiddenLevel, int displayedLevel) {
 		int levelDifference = displayedLevel - hiddenLevel;
-		
+
 		if (levelDifference > 0)
-			return String.format("%02X%02X%02X", 255, levelDifference > 10 ? 0 : 255 - (25 * levelDifference), 0); 
+			return String.format("%02X%02X%02X", 255, levelDifference > 10 ? 0 : 255 - (25 * levelDifference), 0);
 		else if (levelDifference < 0)
-			return String.format("%02X%02X%02X", levelDifference < -10 ? 0 : 255 - (25 * Math.abs(levelDifference)), 255, 0); 
+			return String.format("%02X%02X%02X", levelDifference < -10 ? 0 : 255 - (25 * Math.abs(levelDifference)), 255, 0);
 		else
-			return String.format("%02X%02X%02X", 255, 255, 0); 
+			return String.format("%02X%02X%02X", 255, 255, 0);
 	}
-	
+
 	public static int RGB_to_RS2HSB(int red, int green, int blue) {
 		float[] HSB = Color.RGBtoHSB(red, green, blue, null);
 		float hue = (HSB[0]);
@@ -98,32 +111,32 @@ public final class Utils {
 	}
 
 	public static int[] randSum(int numVars, int total) {
-	    double randNums[] = new double[numVars], sum = 0;
+		double randNums[] = new double[numVars], sum = 0;
 
-	    for (int i = 0; i < randNums.length; i++) {
-	        randNums[i] = Math.random();
-	        sum += randNums[i];
-	    }
+		for (int i = 0; i < randNums.length; i++) {
+			randNums[i] = Math.random();
+			sum += randNums[i];
+		}
 
-	    for (int i = 0; i < randNums.length; i++) {
-	    	randNums[i] = randNums[i] / sum * total;
-	    }
+		for (int i = 0; i < randNums.length; i++) {
+			randNums[i] = randNums[i] / sum * total;
+		}
 
-	    int[] randInt = new int[numVars];
-	    for (int i = 0;i < numVars;i++)
-	    	randInt[i] = (int) randNums[i];
-	    
-	    return randInt;
+		int[] randInt = new int[numVars];
+		for (int i = 0; i < numVars; i++)
+			randInt[i] = (int) randNums[i];
+
+		return randInt;
 	}
-	
+
 	public static int interfaceIdFromHash(int hash) {
 		return hash >> 16;
 	}
-	
+
 	public static int componentIdFromHash(int hash) {
 		return hash - ((hash >> 16) << 16);
 	}
-	
+
 	public static Map<String, Object> cloneMap(Map<String, Object> from) {
 		if (from == null)
 			return null;
@@ -132,17 +145,17 @@ public final class Utils {
 		for (Entry<String, Object> entry : from.entrySet()) {
 			newMap.put(entry.getKey(), entry.getValue());
 		}
-		
+
 		return newMap;
 	}
-	
+
 	public static Object CS2ValTranslate(CS2Type valueType, Object o) {
 		if (valueType == CS2Type.ICOMPONENT) {
 			if (o instanceof String)
 				return o;
 			long interfaceId = ((int) o) >> 16;
 			long componentId = ((int) o) - (interfaceId << 16);
-			return "IComponent("+interfaceId+", "+componentId+")";
+			return "IComponent(" + interfaceId + ", " + componentId + ")";
 		} else if (valueType == CS2Type.LOCATION) {
 			if (o instanceof String)
 				return o;
@@ -153,49 +166,50 @@ public final class Utils {
 			int idx = (int) o;
 			if (idx >= Constants.SKILL_NAME.length)
 				return o;
-			return idx+"("+Constants.SKILL_NAME[((int) o)]+")";
+			return idx + "(" + Constants.SKILL_NAME[((int) o)] + ")";
 		} else if (valueType == CS2Type.ITEM) {
 			if (o instanceof String)
 				return o;
-			return ((int) o)+" ("+ItemDefinitions.getDefs(((int) o)).getName()+")"; 
+			return ((int) o) + " (" + ItemDefinitions.getDefs(((int) o)).getName() + ")";
 		} else if (valueType == CS2Type.NPCDEF) {
 			if (o instanceof String)
 				return o;
-			return ((int) o)+" ("+NPCDefinitions.getDefs(((int) o)).getName()+")"; 
+			return ((int) o) + " (" + NPCDefinitions.getDefs(((int) o)).getName() + ")";
 		} else if (valueType == CS2Type.STRUCT) {
-			return o + ": " + StructDefinitions.getStruct((int) o); 
+			return o + ": " + StructDefinitions.getStruct((int) o);
 		} else if (valueType == CS2Type.ENUM) {
-			return o + ": " + EnumDefinitions.getEnum((int) o); 
+			return o + ": " + EnumDefinitions.getEnum((int) o);
 		}
 		return o;
 	}
-	
+
 	public static int[] range(int min, int max) {
-		int[] range = new int[max-min+1];
-		for (int i = min,j=0;i <= max;i++,j++)
-			range[j] = i; 
+		int[] range = new int[max - min + 1];
+		for (int i = min, j = 0; i <= max; i++, j++)
+			range[j] = i;
 		return range;
 	}
-	
+
 	public static int[] range(int min, int max, int step) {
-		int[] range = new int[(max-min)/step+1];
-		for (int i = min,j=0;i <= max;i+=step,j++)
-			range[j] = i; 
+		int[] range = new int[(max - min) / step + 1];
+		for (int i = min, j = 0; i <= max; i += step, j++)
+			range[j] = i;
 		return range;
 	}
 
 	public static String formatDouble(double d) {
 		return FORMAT.format(d);
 	}
-	
+
 	public static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
-	 
-	    BigDecimal bd = new BigDecimal(Double.toString(value));
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(Double.toString(value));
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
-	
+
 	public static int[] shuffleIntArray(int[] array) {
 		int[] shuffledArray = new int[array.length];
 		System.arraycopy(array, 0, shuffledArray, 0, array.length);
@@ -209,50 +223,50 @@ public final class Utils {
 
 		return shuffledArray;
 	}
-	
+
 	public static int findClosestIdx(int[] arr, int target) {
 		int distance = Math.abs(arr[0] - target);
 		int idx = 0;
-		for(int c = 1; c < arr.length; c++){
-		    int cdistance = Math.abs(arr[c] - target);
-		    if(cdistance < distance){
-		        idx = c;
-		        distance = cdistance;
-		    }
+		for (int c = 1; c < arr.length; c++) {
+			int cdistance = Math.abs(arr[c] - target);
+			if (cdistance < distance) {
+				idx = c;
+				distance = cdistance;
+			}
 		}
 		return idx;
 	}
-	
+
 	public static double clampD(double val, double min, double max) {
-	    return Math.max(min, Math.min(max, val));
+		return Math.max(min, Math.min(max, val));
 	}
-	
+
 	public static int clampI(int val, int min, int max) {
-	    return Math.max(min, Math.min(max, val));
+		return Math.max(min, Math.min(max, val));
 	}
-	
+
 	public static long gcm(long a, long b) {
-	    return b == 0 ? a : gcm(b, a % b); // Not bad for one line of code :)
+		return b == 0 ? a : gcm(b, a % b); // Not bad for one line of code :)
 	}
-	
+
 	public static int[] asFractionArr(long a, long b) {
-		 int gcm = (int) gcm(a, b);
-		 return new int[] { (int) (a / gcm), (int) (b / gcm) };
+		int gcm = (int) gcm(a, b);
+		return new int[] { (int) (a / gcm), (int) (b / gcm) };
 	}
 
 	public static String asFraction(long a, long b) {
-	    long gcm = gcm(a, b);
-	    return (a / gcm) + "/" + (b / gcm);
+		long gcm = gcm(a, b);
+		return (a / gcm) + "/" + (b / gcm);
 	}
-	
+
 	public static Rational toRational(double number) {
 		return toRational(number, 5);
 	}
-	
+
 	public static boolean skillSuccess(int level, int rate1, int rate99) {
 		return skillSuccess(level, 1.0, rate1, rate99);
 	}
-	
+
 	public static boolean skillSuccess(int level, double percModifier, int rate1, int rate99) {
 		rate1 = (int) (percModifier * (double) rate1);
 		rate99 = (int) (percModifier * (double) rate99);
@@ -299,15 +313,15 @@ public final class Utils {
 		}
 		return rationalNumber;
 	}
-	
+
 	public static int getRSColor(int red, int green, int blue) {
 		float[] HSB = Color.RGBtoHSB(red, green, blue, null);
 		float hue = (HSB[0]);
 		float saturation = (HSB[1]);
 		float brightness = (HSB[2]);
-		int encode_hue = (int) (hue * 63);			//to 6-bits
-		int encode_saturation = (int) (saturation * 7);		//to 3-bits
-		int encode_brightness = (int) (brightness * 127); 	//to 7-bits
+		int encode_hue = (int) (hue * 63); // to 6-bits
+		int encode_saturation = (int) (saturation * 7); // to 3-bits
+		int encode_brightness = (int) (brightness * 127); // to 7-bits
 		return (encode_hue << 10) + (encode_saturation << 7) + (encode_brightness);
 	}
 
@@ -324,7 +338,7 @@ public final class Utils {
 
 		return result;
 	}
-	
+
 	public static int leastCommonMultiple(int a, int b) {
 		return a * (b / greatestCommonDenominator(a, b));
 	}
@@ -341,34 +355,34 @@ public final class Utils {
 		for (int i = 0; i < str.length(); i++) {
 			char c;
 			switch (c = str.charAt(i)) {
-				case '\0' :
-					result.append("\\0");
-					break;
-				case '\t' :
-					result.append("\\t");
-					break;
-				case '\n' :
-					result.append("\\n");
-					break;
-				case '\r' :
-					result.append("\\r");
-					break;
-				case '\\' :
-					result.append("\\\\");
-					break;
-				case '\"' :
-					result.append("\\\"");
-					break;
-				default :
-					if (c < 32) {
-						String oct = Integer.toOctalString(c);
-						result.append("\\000".substring(0, 4 - oct.length())).append(oct);
-					} else if (c >= 32 && c < 127)
-						result.append(str.charAt(i));
-					else {
-						String hex = Integer.toHexString(c);
-						result.append("\\u0000".substring(0, 6 - hex.length())).append(hex);
-					}
+			case '\0':
+				result.append("\\0");
+				break;
+			case '\t':
+				result.append("\\t");
+				break;
+			case '\n':
+				result.append("\\n");
+				break;
+			case '\r':
+				result.append("\\r");
+				break;
+			case '\\':
+				result.append("\\\\");
+				break;
+			case '\"':
+				result.append("\\\"");
+				break;
+			default:
+				if (c < 32) {
+					String oct = Integer.toOctalString(c);
+					result.append("\\000".substring(0, 4 - oct.length())).append(oct);
+				} else if (c >= 32 && c < 127)
+					result.append(str.charAt(i));
+				else {
+					String hex = Integer.toHexString(c);
+					result.append("\\u0000".substring(0, 6 - hex.length())).append(hex);
+				}
 			}
 		}
 		return result.append("\"").toString();
@@ -376,20 +390,20 @@ public final class Utils {
 
 	public static String quote(char c) {
 		switch (c) {
-			case '\0' :
-				return "\'\\0\'";
-			case '\t' :
-				return "\'\\t\'";
-			case '\n' :
-				return "\'\\n\'";
-			case '\r' :
-				return "\'\\r\'";
-			case '\\' :
-				return "\'\\\\\'";
-			case '\"' :
-				return "\'\\\"\'";
-			case '\'' :
-				return "\'\\\'\'";
+		case '\0':
+			return "\'\\0\'";
+		case '\t':
+			return "\'\\t\'";
+		case '\n':
+			return "\'\\n\'";
+		case '\r':
+			return "\'\\r\'";
+		case '\\':
+			return "\'\\\\\'";
+		case '\"':
+			return "\'\\\"\'";
+		case '\'':
+			return "\'\\\'\'";
 		}
 		if (c < 32) {
 			String oct = Integer.toOctalString(c);
@@ -402,11 +416,11 @@ public final class Utils {
 			return "\'\\u0000".substring(0, 7 - hex.length()) + hex + "\'";
 		}
 	}
-	
+
 	public static char cp1252ToChar(byte i) {
 		int i_35_ = i & 0xff;
 		if (0 == i_35_) {
-			throw new IllegalArgumentException("Non cp1252 character 0x"+Integer.toString(i_35_, 16)+" provided");
+			throw new IllegalArgumentException("Non cp1252 character 0x" + Integer.toString(i_35_, 16) + " provided");
 		}
 		if (i_35_ >= 128 && i_35_ < 160) {
 			int i_36_ = CP_1252_CHARACTERS[i_35_ - 128];
@@ -481,7 +495,7 @@ public final class Utils {
 		}
 		return i_18_;
 	}
-	
+
 	static int getNumOfChars(CharSequence str, char val) {
 		int count = 0;
 		int size = str.length();
@@ -492,7 +506,7 @@ public final class Utils {
 		}
 		return count;
 	}
-	
+
 	public static String[] splitByChar(String str, char val) {
 		int numChars = getNumOfChars(str, val);
 		String[] arr_4 = new String[numChars + 1];
@@ -535,7 +549,7 @@ public final class Utils {
 
 		return new String(arr_4, 0, offset);
 	}
-	
+
 	public static int writeString(CharSequence string, int start, int end, byte[] buffer, int offset) {
 		int length = end - start;
 
@@ -651,91 +665,90 @@ public final class Utils {
 		}
 		return field.get(object);
 	}
-	
-    public static String wrap(final String str, final int wrapLength) {
-        return wrap(str, wrapLength, null, false);
-    }
-	
-    public static String wrap(final String str, final int wrapLength, final String newLineStr, final boolean wrapLongWords) {
-        return wrap(str, wrapLength, newLineStr, wrapLongWords, " ");
-    }
-	
-	 public static String wrap(final String str, int wrapLength, String newLineStr, final boolean wrapLongWords, String wrapOn) {
-	        if (str == null) {
-	            return null;
-	        }
-	        if (newLineStr == null) {
-	            newLineStr = System.lineSeparator();
-	        }
-	        if (wrapLength < 1) {
-	            wrapLength = 1;
-	        }
-	        if (wrapOn == null || wrapOn.equals("")) {
-	            wrapOn = " ";
-	        }
-	        final Pattern patternToWrapOn = Pattern.compile(wrapOn);
-	        final int inputLineLength = str.length();
-	        int offset = 0;
-	        final StringBuilder wrappedLine = new StringBuilder(inputLineLength + 32);
 
-	        while (offset < inputLineLength) {
-	            int spaceToWrapAt = -1;
-	            Matcher matcher = patternToWrapOn.matcher(
-	                str.substring(offset, Math.min((int)Math.min(Integer.MAX_VALUE, offset + wrapLength + 1L), inputLineLength)));
-	            if (matcher.find()) {
-	                if (matcher.start() == 0) {
-	                    offset += matcher.end();
-	                    continue;
-	                }
-	                spaceToWrapAt = matcher.start() + offset;
-	            }
+	public static String wrap(final String str, final int wrapLength) {
+		return wrap(str, wrapLength, null, false);
+	}
 
-	            // only last line without leading spaces is left
-	            if(inputLineLength - offset <= wrapLength) {
-	                break;
-	            }
+	public static String wrap(final String str, final int wrapLength, final String newLineStr, final boolean wrapLongWords) {
+		return wrap(str, wrapLength, newLineStr, wrapLongWords, " ");
+	}
 
-	            while(matcher.find()){
-	                spaceToWrapAt = matcher.start() + offset;
-	            }
+	public static String wrap(final String str, int wrapLength, String newLineStr, final boolean wrapLongWords, String wrapOn) {
+		if (str == null) {
+			return null;
+		}
+		if (newLineStr == null) {
+			newLineStr = System.lineSeparator();
+		}
+		if (wrapLength < 1) {
+			wrapLength = 1;
+		}
+		if (wrapOn == null || wrapOn.equals("")) {
+			wrapOn = " ";
+		}
+		final Pattern patternToWrapOn = Pattern.compile(wrapOn);
+		final int inputLineLength = str.length();
+		int offset = 0;
+		final StringBuilder wrappedLine = new StringBuilder(inputLineLength + 32);
 
-	            if (spaceToWrapAt >= offset) {
-	                // normal case
-	                wrappedLine.append(str, offset, spaceToWrapAt);
-	                wrappedLine.append(newLineStr);
-	                offset = spaceToWrapAt + 1;
+		while (offset < inputLineLength) {
+			int spaceToWrapAt = -1;
+			Matcher matcher = patternToWrapOn.matcher(str.substring(offset, Math.min((int) Math.min(Integer.MAX_VALUE, offset + wrapLength + 1L), inputLineLength)));
+			if (matcher.find()) {
+				if (matcher.start() == 0) {
+					offset += matcher.end();
+					continue;
+				}
+				spaceToWrapAt = matcher.start() + offset;
+			}
 
-	            } else {
-	                // really long word or URL
-	                if (wrapLongWords) {
-	                    // wrap really long word one line at a time
-	                    wrappedLine.append(str, offset, wrapLength + offset);
-	                    wrappedLine.append(newLineStr);
-	                    offset += wrapLength;
-	                } else {
-	                    // do not wrap really long word, just extend beyond limit
-	                    matcher = patternToWrapOn.matcher(str.substring(offset + wrapLength));
-	                    if (matcher.find()) {
-	                        spaceToWrapAt = matcher.start() + offset + wrapLength;
-	                    }
+			// only last line without leading spaces is left
+			if (inputLineLength - offset <= wrapLength) {
+				break;
+			}
 
-	                    if (spaceToWrapAt >= 0) {
-	                        wrappedLine.append(str, offset, spaceToWrapAt);
-	                        wrappedLine.append(newLineStr);
-	                        offset = spaceToWrapAt + 1;
-	                    } else {
-	                        wrappedLine.append(str, offset, str.length());
-	                        offset = inputLineLength;
-	                    }
-	                }
-	            }
-	        }
+			while (matcher.find()) {
+				spaceToWrapAt = matcher.start() + offset;
+			}
 
-	        // Whatever is left in line is short enough to just pass through
-	        wrappedLine.append(str, offset, str.length());
+			if (spaceToWrapAt >= offset) {
+				// normal case
+				wrappedLine.append(str, offset, spaceToWrapAt);
+				wrappedLine.append(newLineStr);
+				offset = spaceToWrapAt + 1;
 
-	        return wrappedLine.toString();
-	    }
+			} else {
+				// really long word or URL
+				if (wrapLongWords) {
+					// wrap really long word one line at a time
+					wrappedLine.append(str, offset, wrapLength + offset);
+					wrappedLine.append(newLineStr);
+					offset += wrapLength;
+				} else {
+					// do not wrap really long word, just extend beyond limit
+					matcher = patternToWrapOn.matcher(str.substring(offset + wrapLength));
+					if (matcher.find()) {
+						spaceToWrapAt = matcher.start() + offset + wrapLength;
+					}
+
+					if (spaceToWrapAt >= 0) {
+						wrappedLine.append(str, offset, spaceToWrapAt);
+						wrappedLine.append(newLineStr);
+						offset = spaceToWrapAt + 1;
+					} else {
+						wrappedLine.append(str, offset, str.length());
+						offset = inputLineLength;
+					}
+				}
+			}
+		}
+
+		// Whatever is left in line is short enough to just pass through
+		wrappedLine.append(str, offset, str.length());
+
+		return wrappedLine.toString();
+	}
 
 	public static byte[] getDirection(int angle) {
 		int v = angle >> 11;
@@ -865,7 +878,7 @@ public final class Utils {
 			}
 		}
 	}
-	
+
 	public static final int getDistanceI(WorldTile t1, WorldTile t2) {
 		return getDistanceI(t1.getX(), t1.getY(), t2.getX(), t2.getY());
 	}
@@ -913,7 +926,7 @@ public final class Utils {
 		}
 		return new int[][] { xs, xy };
 	}
-	
+
 	public static final int getAngleTo(WorldTile fromTile, WorldTile toTile) {
 		return getAngleTo(toTile.getX() - fromTile.getX(), toTile.getY() - fromTile.getY());
 	}
@@ -921,17 +934,17 @@ public final class Utils {
 	public static final int getAngleTo(int xOffset, int yOffset) {
 		return ((int) (Math.atan2(-xOffset, -yOffset) * 2607.5945876176133)) & 0x3fff;
 	}
-	
+
 	public static final int[] getBackFace(int dir) {
 		double ang = dir / 2607.5945876176133;
 		return new int[] { (int) Math.round(Math.sin(ang)), (int) Math.round(Math.cos(ang)) };
 	}
-	
+
 	public static final int[] getFrontFace(int dir) {
 		int[] front = getBackFace(dir);
 		return new int[] { front[0] * -1, front[1] * -1 };
 	}
-	
+
 //	public static final Direction getMoveDirection(int xOffset, int yOffset) {
 //		if (xOffset < 0) {
 //			if (yOffset < 0)
@@ -992,12 +1005,12 @@ public final class Utils {
 		int lastArchiveId = Cache.STORE.getIndex(IndexType.ITEMS).getLastArchiveId();
 		return (lastArchiveId * 256 + Cache.STORE.getIndex(IndexType.ITEMS).getValidFilesCount(lastArchiveId));
 	}
-	
+
 	public static final int getItemDefinitionsSize(Store store) {
 		int lastArchiveId = store.getIndex(IndexType.ITEMS).getLastArchiveId();
 		return (lastArchiveId * 256 + store.getIndex(IndexType.ITEMS).getValidFilesCount(lastArchiveId));
 	}
-	
+
 	public static final int getVarbitDefinitionsSize() {
 		return Cache.STORE.getIndex(IndexType.VARBITS).getLastArchiveId() * 0x3ff;
 	}
@@ -1053,15 +1066,15 @@ public final class Utils {
 		final int n = Math.abs(max - min);
 		return Math.min(min, max) + (n == 0 ? 0 : random(n));
 	}
-	
+
 	public static final int randomInclusive(int min, int max) {
-		return random(min, max+1);
+		return random(min, max + 1);
 	}
 
 	public static final double random(double min, double max) {
 		return min + (max - min) * RANDOM.nextDouble();
 	}
-	
+
 	public static final double randomD() {
 		return RANDOM.nextDouble();
 	}
@@ -1483,7 +1496,7 @@ public final class Utils {
 		}
 		return classes;
 	}
-	
+
 	public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
 		ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
@@ -1546,8 +1559,7 @@ public final class Utils {
 		if (speed == 0) // cant be 0, happens cuz method wrong and so /10 needed
 			// so may round to 0
 			speed = 1;
-		return (int) ((delay * 10) + (distance
-				* ((30 / speed) * 10) /** Math.cos(Math.toRadians(curve)) */
+		return (int) ((delay * 10) + (distance * ((30 / speed) * 10) /** Math.cos(Math.toRadians(curve)) */
 		));
 	}
 
@@ -1556,8 +1568,7 @@ public final class Utils {
 		if (speed == 0) // cant be 0, happens cuz method wrong and so /10 needed
 			// so may round to 0
 			speed = 1;
-		return (delay * 10) + (distance
-				* ((30 / speed) * 10) /** Math.cos(Math.toRadians(curve)) */
+		return (delay * 10) + (distance * ((30 / speed) * 10) /** Math.cos(Math.toRadians(curve)) */
 		);
 	}
 
@@ -1603,13 +1614,13 @@ public final class Utils {
 		return (time + 29) / 30;
 		/* return Math.max(1, (time+14)/30); */
 	}
-	
+
 	public static boolean isWithin(int i, int min, int max) {
 		if (i > min && i < max)
 			return true;
 		return false;
 	}
-	
+
 	public static boolean isWithinInclusive(int i, int min, int max) {
 		if (i >= min && i <= max)
 			return true;
@@ -1629,7 +1640,7 @@ public final class Utils {
 		string.append(":" + (seconds > 9 ? seconds : ("0" + seconds)));
 		return string.toString();
 	}
-	
+
 	public static int djb2(String str) {
 		int hash = 0;
 		for (int i = 0; i < str.length(); i++) {
@@ -1683,7 +1694,7 @@ public final class Utils {
 	}
 
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-	
+
 	public static boolean validEmail(String emailStr) {
 		Matcher matcher = Utils.VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
 		return matcher.find();
@@ -1705,7 +1716,7 @@ public final class Utils {
 
 	public static String addArticle(String name) {
 		String s = "";
-		switch(name.toCharArray()[0]) {
+		switch (name.toCharArray()[0]) {
 		case 'a':
 		case 'e':
 		case 'i':
@@ -1718,16 +1729,16 @@ public final class Utils {
 		case 'U':
 			s += "an ";
 			break;
-			default:
-				s += "a ";
-				break;
+		default:
+			s += "a ";
+			break;
 		}
 		s += name;
 		return s;
 	}
 
 	public static int diff(int a, int b) {
-		return Math.abs(a-b);
+		return Math.abs(a - b);
 	}
 
 	public static String removeInvalidChars(String s) {
@@ -1742,12 +1753,12 @@ public final class Utils {
 		if (num < 0)
 			return "";
 		if (num < 10000)
-			return ""+num;
+			return "" + num;
 		if (num < 10000000)
-			return (num / 1000)+"K";
-		return (num / 1000000)+"M";
+			return (num / 1000) + "K";
+		return (num / 1000000) + "M";
 	}
-	
+
 	public static Object[] streamObjects(Object... objects) {
 		List<Object> list = new ArrayList<>();
 		for (Object object : objects) {

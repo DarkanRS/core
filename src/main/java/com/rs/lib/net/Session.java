@@ -1,19 +1,35 @@
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Copyright © 2021 Trenton Kress
+//  This file is part of project: Darkan
+//
 package com.rs.lib.net;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
 
 import com.rs.lib.Constants;
 import com.rs.lib.io.IsaacKeyPair;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketEncoder;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 
 public class Session {
 
@@ -113,15 +129,15 @@ public class Session {
 	}
 
 	public final ChannelFuture write(OutputStream outStream) {
-		if (outStream == null || !channel.isConnected())
+		if (outStream == null || !channel.isActive())
 			return null;
-		return channel.write(ChannelBuffers.copiedBuffer(outStream.getBuffer(), 0, outStream.getOffset()));
+		return channel.writeAndFlush(Unpooled.copiedBuffer(outStream.getBuffer(), 0, outStream.getOffset()));
 	}
 
-	public final ChannelFuture write(ChannelBuffer outStream) {
-		if (outStream == null || !channel.isConnected())
+	public final ChannelFuture write(ByteBuf outStream) {
+		if (outStream == null || !channel.isActive())
 			return null;
-		return channel.write(outStream);
+		return channel.writeAndFlush(outStream);
 	}
 
 	public final Channel getChannel() {
@@ -156,11 +172,11 @@ public class Session {
 	}
 
 	public String getIP() {
-		return channel == null ? "" : channel.getRemoteAddress().toString().split(":")[0].replace("/", "");
+		return channel == null ? "" : channel.remoteAddress().toString().split(":")[0].replace("/", "");
 	}
 
 	public String getLocalAddress() {
-		return channel.getLocalAddress().toString();
+		return channel.localAddress().toString();
 	}
 	
 	public void refreshLastPacket() {
