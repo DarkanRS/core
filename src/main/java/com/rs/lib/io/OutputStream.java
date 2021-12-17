@@ -16,6 +16,7 @@
 //
 package com.rs.lib.io;
 
+import com.rs.lib.model.Account;
 import com.rs.lib.util.Utils;
 
 public final class OutputStream extends Stream {
@@ -342,6 +343,16 @@ public final class OutputStream extends Stream {
 		} else {
 			getBuffer()[bytePos] &= ~(BIT_MASK[numBits] << bitOffset - numBits);
 			getBuffer()[bytePos] |= (value & BIT_MASK[numBits]) << bitOffset - numBits;
+		}
+	}
+	
+	public void writeDisplayName(Account account) {
+		writeString(account.getDisplayName());
+		if (account.getPrevDisplayName().equals(account.getDisplayName()))
+			writeByte(0);
+		else {
+			writeByte(1);
+			writeString(account.getPrevDisplayName());
 		}
 	}
 
