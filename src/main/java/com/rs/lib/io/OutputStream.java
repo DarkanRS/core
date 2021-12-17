@@ -348,7 +348,7 @@ public final class OutputStream extends Stream {
 	
 	public void writeDisplayName(Account account) {
 		writeString(account.getDisplayName());
-		if (account.getPrevDisplayName().equals(account.getDisplayName()))
+		if (account.getPrevDisplayName() == null || account.getPrevDisplayName().isEmpty() || account.getPrevDisplayName().equals(account.getDisplayName()))
 			writeByte(0);
 		else {
 			writeByte(1);
