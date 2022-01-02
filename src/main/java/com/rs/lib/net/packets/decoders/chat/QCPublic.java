@@ -27,6 +27,7 @@ public class QCPublic extends Packet {
 	private int chatType;
 	private int qcId;
 	private byte[] messageData;
+	private byte[] completedData;
 
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
@@ -51,6 +52,14 @@ public class QCPublic extends Packet {
 
 	public byte[] getMessageData() {
 		return messageData;
+	}
+
+	public byte[] getCompletedData() {
+		return completedData;
+	}
+
+	public void setCompletedData(byte[] completedData) {
+		this.completedData = completedData;
 	}
 
 }

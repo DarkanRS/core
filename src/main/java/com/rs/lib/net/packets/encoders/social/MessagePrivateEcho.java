@@ -36,9 +36,7 @@ public class MessagePrivateEcho extends PacketEncoder {
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeByte(1); //Displayname true
-		stream.writeString(account.getDisplayName());
-		stream.writeString(account.getUsername());
+		stream.writeDisplayName(account);
 		for (int i = 0; i < 5; i++)
 			stream.writeByte(Utils.getRandomInclusive(255));
 		stream.writeByte(account.getRights().getCrown());
