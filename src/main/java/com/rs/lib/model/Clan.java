@@ -27,7 +27,7 @@ public class Clan {
 	
 	public static final int MAX_MEMBERS = 100;
 
-	private String clanLeaderUsername; // index in list
+	private String clanLeaderUsername;
 	private String name;
 	private List<ClanMember> members;
 	private List<String> bannedUsers;
@@ -41,14 +41,10 @@ public class Clan {
 	private String threadId;
 	private String motto;
 
-	// motif
 	private int mottifTop, mottifBottom;
 	private int[] mottifColors;
 
-	// channel
 	private int minimumRankForKick;
-
-	// infle
 
 	public Clan(String clanName, Account leader) {
 		setDefaults();
