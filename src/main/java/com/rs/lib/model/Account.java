@@ -150,6 +150,11 @@ public class Account {
 		this.banned = 0;
 	}
 	
+	public void copyPunishments(Account account) {
+		this.banned = account.banned;
+		this.muted = account.muted;
+	}
+	
 	public boolean hasRights(Rights rights) {
 		return this.rights.ordinal() >= rights.ordinal();
 	}
@@ -190,5 +195,9 @@ public class Account {
 
 	public void setRecoveryEmail(String recoveryEmail) {
 		this.recoveryEmail = recoveryEmail;
+	}
+
+	public void setSocial(Social social) {
+		this.social = social;
 	}
 }
