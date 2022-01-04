@@ -18,21 +18,20 @@ package com.rs.lib.net.packets.encoders.social;
 
 import com.rs.lib.game.QuickChatMessage;
 import com.rs.lib.io.OutputStream;
+import com.rs.lib.model.Account;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 import com.rs.lib.util.Utils;
 
 public class QuickChatClan extends PacketEncoder {
 	
-	private String displayName;
-	private int rights;
+	private Account account;
 	private QuickChatMessage message;
 	private boolean guest;
 
-	public QuickChatClan(String displayName, int rights, QuickChatMessage message, boolean guest) {
+	public QuickChatClan(Account account, QuickChatMessage message, boolean guest) {
 		super(ServerPacket.MESSAGE_QUICKCHAT_CLANCHANNEL);
-		this.displayName = displayName;
-		this.rights = rights;
+		this.account = account;
 		this.message = message;
 		this.guest = guest;
 	}
@@ -40,10 +39,10 @@ public class QuickChatClan extends PacketEncoder {
 	@Override
 	public void encodeBody(OutputStream stream) {
 		stream.writeByte(guest ? 0 : 1);
-		stream.writeString(displayName);
+		stream.writeString(account.getDisplayName());
 		for (int i = 0; i < 5; i++)
 			stream.writeByte(Utils.getRandomInclusive(255));
-		stream.writeByte(rights);
+		stream.writeByte(account.getRights().getCrown());
 		stream.writeShort(message.getFileId());
 		if (message.getData() != null)
 			stream.writeBytes(message.getData());

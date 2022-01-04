@@ -30,12 +30,13 @@ public class QuickChatPrivateEcho extends PacketEncoder {
 
 	public QuickChatPrivateEcho(Account account, QuickChatMessage message) {
 		super(ServerPacket.MESSAGE_QUICKCHAT_PRIVATE_ECHO);
+		this.account = account;
 		this.message = message;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeDisplayName(account);
+		stream.writeDisplayNameChat(account);
 		for (int i = 0; i < 5; i++)
 			stream.writeByte(Utils.random(255));
 		stream.writeByte(account.getRights().getCrown());
