@@ -22,6 +22,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -29,6 +30,7 @@ import java.util.function.Consumer;
 import com.google.gson.JsonIOException;
 import com.rs.lib.file.JsonFileManager;
 import com.rs.lib.thread.CatchExceptionRunnable;
+import com.rs.lib.util.Logger;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
@@ -65,30 +67,30 @@ public class APIUtil {
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
 		API_REQUEST_POOL.submit(new CatchExceptionRunnable(() -> {
-			T response = postSync(returnType, body, url, apiKey);
+			T response = null;
+			try {
+				response = postSync(returnType, body, url, apiKey);
+			} catch (InterruptedException | ExecutionException e) {
+				Logger.handle(e);
+			}
 			if (cb != null)
 				cb.accept(response);
 		}));
 	}
 	
-	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) {
-			try {
-				HttpClient client = HttpClient.newHttpClient();
-				HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
-				CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-				HttpResponse<String> response = future.get();
-				if (returnType == null)
-					return null;
-				try {
-					return JsonFileManager.fromJSONString(response.body(), returnType);
-				} catch(Exception e) {
-					System.err.println("Error parsing body into "+returnType+": " + response.body());
-					return null;
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-				return null;
-			}
+	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException {
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
+		CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+		HttpResponse<String> response = future.get();
+		if (returnType == null)
+			return null;
+		try {
+			return JsonFileManager.fromJSONString(response.body(), returnType);
+		} catch (Exception e) {
+			System.err.println("Error parsing body into " + returnType + ": " + response.body());
+			return null;
+		}
 	}
 	
 }

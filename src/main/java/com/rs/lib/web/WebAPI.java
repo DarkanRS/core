@@ -62,7 +62,6 @@ public class WebAPI extends Thread {
 		server = new APIServer(prefixPath, port, new ExceptionHandler(routes) {
 			@Override
 			public void handleRequest(HttpServerExchange exchange) throws Exception {
-				System.out.println("Request: <" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + " " + exchange.getProtocol() + "> from " + exchange.getSourceAddress());
 				super.handleRequest(exchange);
 			}
 		});

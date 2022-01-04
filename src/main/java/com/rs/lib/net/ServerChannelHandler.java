@@ -119,6 +119,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 			if ((session.buffer.length - session.bufferOffset) > 0)
 				System.arraycopy(session.buffer, session.bufferOffset, b, 0, session.buffer.length - session.bufferOffset);
 			buf.readBytes(b, session.buffer.length - session.bufferOffset, b.length - (session.buffer.length - session.bufferOffset));
+			buf.release();
 
 			session.buffer = b;
 			session.bufferOffset = 0;
