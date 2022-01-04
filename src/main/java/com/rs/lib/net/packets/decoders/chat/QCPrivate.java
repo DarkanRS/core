@@ -27,6 +27,7 @@ public class QCPrivate extends Packet {
 	private String toUsername;
 	private int qcId;
 	private byte[] messageData;
+	private byte[] completedData;
 
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
@@ -50,5 +51,13 @@ public class QCPrivate extends Packet {
 
 	public byte[] getMessageData() {
 		return messageData;
+	}
+
+	public byte[] getCompletedData() {
+		return completedData;
+	}
+
+	public void setCompletedData(byte[] completedData) {
+		this.completedData = completedData;
 	}
 }

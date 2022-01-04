@@ -346,12 +346,13 @@ public final class OutputStream extends Stream {
 		}
 	}
 	
-	public void writeDisplayName(Account account) {
-		writeString(account.getDisplayName());
-		if (account.getPrevDisplayName() == null || account.getPrevDisplayName().isEmpty() || account.getPrevDisplayName().equals(account.getDisplayName()))
+	public void writeDisplayNameChat(Account account) {
+		if (account.getPrevDisplayName() == null || account.getPrevDisplayName().isEmpty() || account.getPrevDisplayName().equals(account.getDisplayName())) {
 			writeByte(0);
-		else {
+			writeString(account.getDisplayName());
+		} else {
 			writeByte(1);
+			writeString(account.getDisplayName());
 			writeString(account.getPrevDisplayName());
 		}
 	}
