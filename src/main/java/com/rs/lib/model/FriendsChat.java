@@ -19,8 +19,6 @@ package com.rs.lib.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.rs.lib.util.Utils;
-
 public class FriendsChat {
 	private String name;
 	private Map<String, Rank> friendsChatRanks;
@@ -138,6 +136,6 @@ public class FriendsChat {
 			getFriendsChatRanks().remove(name);
 			return;
 		}
-		getFriendsChatRanks().put(Utils.formatPlayerNameForProtocol(name), rank);
+		getFriendsChatRanks().put(name, rank);
 	}
 }
