@@ -179,8 +179,8 @@ public enum ServerPacket {
 	REQUEST_FPS(159, 8),
 	GAME_MESSAGE(160, -1),
 	DISCORD_RICH_PRESENCE_UPDATE(161, -1),
-	
-	
+
+
 	//Pre-world packets
 	WORLD_LOGIN_DETAILS(2, -1),
 	LOBBY_LOGIN_DETAILS(2, -1),
