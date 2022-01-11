@@ -18,10 +18,9 @@ package com.rs.lib.net.packets.encoders.social;
 
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.Clan;
-import com.rs.lib.model.ClanMember;
+import com.rs.lib.model.MemberData;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
-import com.rs.lib.util.Utils;
 
 public class ClanSettingsFull extends PacketEncoder {
 	
@@ -56,10 +55,11 @@ public class ClanSettingsFull extends PacketEncoder {
 		stream.writeByte(0); // some rank for something in clan channel
 		stream.writeByte(0); // unknown
 		stream.writeByte(0); // unknown
-		for (ClanMember member : clan.getMembers()) {
+		for (String username : clan.getMembers().keySet()) {
+			MemberData data = clan.getMembers().get(username);
 			// stream.writeLong(
-			stream.writeString(Utils.formatPlayerNameForDisplay(member.getUsername()));
-			stream.writeByte(member.getRank().getIconId());
+			stream.writeString(username);
+			stream.writeByte(data.getRank().getIconId());
 			if (version >= 2)
 				stream.writeInt(0); // unknown
 			if (version >= 5)
