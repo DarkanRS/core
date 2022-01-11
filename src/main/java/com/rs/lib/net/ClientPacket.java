@@ -128,10 +128,10 @@ public enum ClientPacket {
 	//CUSTOM OPCODES FOR LOBBY
 	CC_JOIN(5000, 0),
 	CC_LEAVE(5001, 0),
-	CC_INVITE(5002, 0),
+	CC_ADD_PLAYER(5002, 0),
 	CC_BAN(5003, 0),
 	CC_CHECKNAME(5004, 0),
-	CC_CREATE(5005, -10)
+	CC_CREATE(5005, 0)
 	;
 
 	private int id;
