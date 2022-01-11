@@ -16,8 +16,7 @@
 //
 package com.rs.lib.model;
 
-public class ClanMember {
-	private String username;
+public class MemberData {
 	private ClanRank rank;
 	private int job;
 	private boolean banFromCitadel;
@@ -25,18 +24,13 @@ public class ClanMember {
 	private boolean banFromKeep;
 	private long joinDate;
 	
-	public ClanMember(Account account, ClanRank rank) {
-		this.username = account.getUsername();
+	public MemberData(ClanRank rank) {
 		this.rank = rank;
 		joinDate = System.currentTimeMillis();
 	}
 	
 	public ClanRank getRank() {
 		return rank;
-	}
-
-	public String getUsername() {
-		return username;
 	}
 
 	public int getJob() {

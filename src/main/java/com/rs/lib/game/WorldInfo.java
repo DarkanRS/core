@@ -44,6 +44,10 @@ public class WorldInfo {
 		};
 	}
 	
+	public boolean isLobby() {
+		return number >= 1000;
+	}
+	
 	public String getActivity() {
 		return activity;
 	}

@@ -16,9 +16,11 @@
 //
 package com.rs.lib.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.rs.cache.loaders.EnumDefinitions;
 import com.rs.cache.loaders.ItemDefinitions;
@@ -29,8 +31,8 @@ public class Clan {
 
 	private String clanLeaderUsername;
 	private String name;
-	private List<ClanMember> members;
-	private List<String> bannedUsers;
+	private Map<String, MemberData> members;
+	private Set<String> bannedUsers;
 	private int timeZone;
 	private boolean recruiting;
 	private boolean isClanTime;
@@ -44,51 +46,41 @@ public class Clan {
 	private int mottifTop, mottifBottom;
 	private int[] mottifColors;
 
-	private int minimumRankForKick;
+	private ClanRank minimumRankForKick;
 
-	public Clan(String clanName, Account leader) {
+	public Clan(String name, Account leader) {
+		this.name = name;
 		setDefaults();
-		this.members = new ArrayList<ClanMember>();
-		this.bannedUsers = new ArrayList<String>();
-		setClanLeaderUsername(addMember(leader, ClanRank.OWNER));
+		this.members = new HashMap<>();
+		this.bannedUsers = new HashSet<>();
+		addMember(leader, ClanRank.OWNER);
+		setClanLeaderUsername(leader.getUsername());
 	}
 
 	public void setDefaults() {
 		recruiting = true;
 		guestsInChatCanEnter = true;
 		guestsInChatCanTalk = true;
+		minimumRankForKick = ClanRank.OWNER;
 		worldId = 1;
 		mottifColors = Arrays.copyOf(ItemDefinitions.getDefs(20709).originalModelColors, 4);
 	}
 
-	public ClanMember getMemberByName(String username) {
-		for (ClanMember member : members) {
-			if (member.getUsername().toLowerCase().equals(username.toLowerCase())) {
-				return member;
-			}
-		}
-		return null;
-	}
-
-	public ClanMember addMember(Account account, ClanRank rank) {
-		ClanMember member = new ClanMember(account, rank);
-		members.add(member);
+	public MemberData addMember(Account account, ClanRank rank) {
+		MemberData member = new MemberData(rank);
+		members.put(account.getUsername(), member);
 		return member;
 	}
 
-	public void setClanLeaderUsername(ClanMember member) {
-		clanLeaderUsername = member.getUsername();
+	public void setClanLeaderUsername(String username) {
+		clanLeaderUsername = username;
 	}
 
-	public int getMemberId(ClanMember member) {
-		return members.indexOf(member);
-	}
-
-	public List<ClanMember> getMembers() {
+	public Map<String, MemberData> getMembers() {
 		return members;
 	}
 
-	public List<String> getBannedUsers() {
+	public Set<String> getBannedUsers() {
 		return bannedUsers;
 	}
 
@@ -112,11 +104,11 @@ public class Clan {
 		this.timeZone = gameTime;
 	}
 
-	public int getMinimumRankForKick() {
+	public ClanRank getMinimumRankForKick() {
 		return minimumRankForKick;
 	}
 
-	public void setMinimumRankForKick(int minimumRankForKick) {
+	public void setMinimumRankForKick(ClanRank minimumRankForKick) {
 		this.minimumRankForKick = minimumRankForKick;
 	}
 
