@@ -21,7 +21,6 @@ import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.Account;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
-import com.rs.lib.util.Utils;
 
 public class QuickChatPrivateEcho extends PacketEncoder {
 	
@@ -37,8 +36,8 @@ public class QuickChatPrivateEcho extends PacketEncoder {
 	@Override
 	public void encodeBody(OutputStream stream) {
 		stream.writeDisplayNameChat(account);
-		for (int i = 0; i < 5; i++)
-			stream.writeByte(Utils.random(255));
+		stream.writeShort(0); //unk
+		stream.write24BitInteger(0); //unk
 		stream.writeByte(account.getRights().getCrown());
 		stream.writeShort(message.getFileId());
 		if (message.getData() != null)

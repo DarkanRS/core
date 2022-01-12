@@ -26,6 +26,7 @@ import com.rs.lib.util.Utils;
 @PacketDecoder(ClientPacket.CHAT)
 public class Chat extends Packet {
 	
+	private int type = -1;
 	private int color;
 	private int effect;
 	private String message;
@@ -49,5 +50,14 @@ public class Chat extends Packet {
 
 	public String getMessage() {
 		return message;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public Chat setType(int type) {
+		this.type = type;
+		return this;
 	}
 }
