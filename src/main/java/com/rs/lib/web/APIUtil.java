@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,7 +69,7 @@ public class APIUtil {
 			T response = null;
 			try {
 				response = postSync(returnType, body, url, apiKey);
-			} catch (InterruptedException | ExecutionException e) {
+			} catch (InterruptedException | ExecutionException | IOException e) {
 				Logger.handle(e);
 			}
 			if (cb != null)
@@ -78,11 +77,10 @@ public class APIUtil {
 		}));
 	}
 	
-	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException {
+	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
-		CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-		HttpResponse<String> response = future.get();
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 		if (returnType == null)
 			return null;
 		try {
