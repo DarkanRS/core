@@ -23,18 +23,18 @@ import com.rs.lib.net.packets.PacketEncoder;
 
 public class QuickChatPrivate extends PacketEncoder {
 	
-	private String username;
+	private String displayName;
 	private QuickChatMessage message;
 
-	public QuickChatPrivate(String username, QuickChatMessage message) {
+	public QuickChatPrivate(String displayName, QuickChatMessage message) {
 		super(ServerPacket.MESSAGE_QUICKCHAT_PRIVATE);
-		this.username = username;
+		this.displayName = displayName;
 		this.message = message;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeString(username);
+		stream.writeString(displayName);
 		stream.writeShort(message.getFileId());
 		if (message.getData() != null)
 			stream.writeBytes(message.getData());
