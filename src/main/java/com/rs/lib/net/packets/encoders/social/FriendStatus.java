@@ -48,7 +48,7 @@ public class FriendStatus extends PacketEncoder {
 		stream.writeString(other.getAccount().getPrevDisplayName());
 		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().getNumber() : 0 : 0);
 		stream.writeByte(player.getSocial().getFriendsChat().getRank(other.getAccount().getUsername()).getId());
-		stream.writeByte(0);
+		stream.writeByte(0); // 1 = referrer
 		if (online) {
 			String worldText = "None";
 			if (other.getWorld() != null) {
@@ -58,8 +58,8 @@ public class FriendStatus extends PacketEncoder {
 					worldText = "World " + other.getWorld().getNumber();
 			}
 			stream.writeString(worldText);
-			stream.writeByte(other.getWorld() != null ? other.getWorld().getNumber() : 1100);
-			stream.writeInt(0);
+			stream.writeByte(0); //Platform 0 = RS, 1 = Other (Quickchat related)
+			stream.writeInt(0); //World flags?
 		}
 	}
 }
