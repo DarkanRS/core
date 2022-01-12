@@ -78,9 +78,11 @@ public class APIUtil {
 	}
 	
 	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
+		java.util.logging.Logger.getLogger("Web").info("Sending request: " + url);
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		java.util.logging.Logger.getLogger("Web").info("Request finished: " + response.body());
 		if (returnType == null)
 			return null;
 		try {
