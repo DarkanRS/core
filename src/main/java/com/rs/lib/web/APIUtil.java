@@ -21,16 +21,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import com.google.gson.JsonIOException;
 import com.rs.lib.file.JsonFileManager;
-import com.rs.lib.thread.CatchExceptionRunnable;
-import com.rs.lib.util.Logger;
-
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
@@ -38,8 +34,8 @@ import io.undertow.util.StatusCodes;
 
 public class APIUtil {
 	
-	private static ExecutorService API_REQUEST_POOL = Executors.newFixedThreadPool(10);
-	
+	private static HttpClient CLIENT = HttpClient.newHttpClient();
+		
 	public static void sendResponse(HttpServerExchange exchange, int stateCode, Object responseObject) {
 		exchange.setStatusCode(stateCode);
 		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
@@ -65,23 +61,23 @@ public class APIUtil {
 	}
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
-		API_REQUEST_POOL.submit(new CatchExceptionRunnable(() -> {
-			T response = null;
+		java.util.logging.Logger.getLogger("Web").info("Sending request: " + url);
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
+		CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+		.thenApply(HttpResponse::body)
+		.thenAccept(res -> {
 			try {
-				response = postSync(returnType, body, url, apiKey);
-			} catch (InterruptedException | ExecutionException | IOException e) {
-				Logger.handle(e);
+				cb.accept(JsonFileManager.fromJSONString(res, returnType));
+			} catch (JsonIOException | IOException e) {
+				System.err.println("Exception handling POST " + url + " - " + e.getMessage());
 			}
-			if (cb != null)
-				cb.accept(response);
-		}));
+		});
 	}
 	
 	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
 		java.util.logging.Logger.getLogger("Web").info("Sending request: " + url);
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
+		HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 		java.util.logging.Logger.getLogger("Web").info("Request finished: " + response.body());
 		if (returnType == null)
 			return null;
