@@ -61,7 +61,7 @@ public class APIUtil {
 	}
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
-		java.util.logging.Logger.getLogger("Web").info("Sending request: " + url);
+		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
 		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
 		CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
 		.thenApply(HttpResponse::body)
@@ -75,10 +75,10 @@ public class APIUtil {
 	}
 	
 	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
-		java.util.logging.Logger.getLogger("Web").info("Sending request: " + url);
+		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
 		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
 		HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-		java.util.logging.Logger.getLogger("Web").info("Request finished: " + response.body());
+		java.util.logging.Logger.getLogger("Web").finest("Request finished: " + response.body());
 		if (returnType == null)
 			return null;
 		try {

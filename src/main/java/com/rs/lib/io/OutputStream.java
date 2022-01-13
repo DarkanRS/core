@@ -280,14 +280,14 @@ public final class OutputStream extends Stream {
 				writeByte(id);
 				return this;
 			}
-			writeByte((id >> 8) + 128 + isaac.outKey().getNextValue());
-			writeByte(id + isaac.outKey().getNextValue());
+			writeByte((id >> 8) + 128 + isaac.outKey().nextInt());
+			writeByte(id + isaac.outKey().nextInt());
 		} else {
 			if (isaac == null) {
 				writeByte(id);
 				return this;
 			}
-			writeByte(id + isaac.outKey().getNextValue());
+			writeByte(id + isaac.outKey().nextInt());
 		}
 		return this;
 	}

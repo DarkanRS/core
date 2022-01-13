@@ -37,6 +37,7 @@ import com.rs.lib.util.Utils;
 public final class GameDecoder extends Decoder {
 	
 	private static Map<ClientPacket, Packet> PACKET_DECODERS = new HashMap<>();
+	private ClientPacket currPacket;
 	
 	public GameDecoder(Session session) {
 		super(session);
@@ -72,14 +73,14 @@ public final class GameDecoder extends Decoder {
 	@Override
 	public int decode(InputStream stream) {
 		while (stream.getRemaining() > 0) {
-			int start = stream.getOffset();
-			int opcode = stream.readPacket(session.getIsaac());
-			ClientPacket packet = ClientPacket.forOpcode(opcode);
+			int opcode = currPacket != null ? currPacket.getOpcode() : stream.readPacket(session.getIsaac());
+			ClientPacket packet = currPacket = ClientPacket.forOpcode(opcode);
 			if (packet == null) {
 				if (Globals.DEBUG)
 					System.out.println("Invalid opcode: " + opcode + ".");
 				return -1;
 			}
+			int start = stream.getOffset();
 
 			int length = packet.getSize();
 			if ((length == -1 && stream.getRemaining() < 1) || (length == -2 && stream.getRemaining() < 2))
@@ -90,13 +91,13 @@ public final class GameDecoder extends Decoder {
 			else if (length == -2)
 				length = stream.readUnsignedShort();
 
-			if (stream.getRemaining() < length) {
+			if (stream.getRemaining() < length)
 				return start;
-			}
 
 			byte[] data = new byte[length];
 			stream.readBytes(data);
 			try {
+				currPacket = null;
 				queuePacket(packet, new InputStream(data));
 			} catch (Throwable e) {
 				Logger.handle(e);

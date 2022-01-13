@@ -62,7 +62,7 @@ public class WebAPI extends Thread {
 		server = new APIServer(prefixPath, port, new ExceptionHandler(routes) {
 			@Override
 			public void handleRequest(HttpServerExchange exchange) throws Exception {
-				java.util.logging.Logger.getLogger("Web").info("API Request: " + exchange.getRequestURL());
+				java.util.logging.Logger.getLogger("Web").finest("API Request: " + exchange.getRequestURL());
 				super.handleRequest(exchange);
 			}
 		});
