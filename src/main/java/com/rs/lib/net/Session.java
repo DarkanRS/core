@@ -208,4 +208,9 @@ public class Session {
 	public void setPacketQueue(Queue<Packet> packetQueue) {
 		this.packetQueue = packetQueue;
 	}
+
+	public void incInIsaac() {
+		if (isaac != null)
+			isaac.inKey().nextInt();
+	}
 }

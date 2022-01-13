@@ -47,5 +47,4 @@ public class QuickChatClan extends PacketEncoder {
 		if (message.getData() != null)
 			stream.writeBytes(message.getData());
 	}
-
 }

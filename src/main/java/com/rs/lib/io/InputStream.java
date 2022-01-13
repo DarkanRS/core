@@ -87,18 +87,27 @@ public final class InputStream extends Stream {
 		this.length += length - offset;
 	}
 
+	public int peekPacket(IsaacKeyPair isaac) {
+		return (peekUnsignedByte() - isaac.inKey().peek()) & 0xff;
+	}
+	
 	public int readPacket(IsaacKeyPair isaac) {
-		int id = 0xff & readUnsignedByte() - isaac.inKey().getNextValue();
-		if (id < 128)
-			return id;
-		return (id - 128 << 8) + (readUnsignedByte() - isaac.inKey().getNextValue());
+		return (readUnsignedByte() - isaac.inKey().nextInt()) & 0xff;
 	}
 	
 	public int read24BitUnsignedInteger() {
 		this.offset += 3;
 		return ((buffer[offset - 3] & 0xff) << 16) + (buffer[offset - 1] & 0xff) + ((buffer[offset - 2] & 0xff) << 8);
 	}
+	
+	public int peekUnsignedByte() {
+		return peekByte() & 0xff;
+	}
 
+	public int peekByte() {
+		return getRemaining() > 0 ? buffer[offset] : 0;
+	}
+	
 	public int readByte() {
 		return getRemaining() > 0 ? buffer[offset++] : 0;
 	}
