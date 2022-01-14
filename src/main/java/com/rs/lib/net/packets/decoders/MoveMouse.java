@@ -27,6 +27,7 @@ public class MoveMouse extends Packet {
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
 		MoveMouse packet = new MoveMouse();
+		@SuppressWarnings("unused")
 		int size = stream.readUnsignedByte();
 		
 		return packet;

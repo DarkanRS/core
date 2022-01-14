@@ -22,9 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.rs.lib.game.Rights;
-import com.rs.lib.util.Crypt;
 import com.rs.lib.util.Utils;
-import com.rs.lib.web.dto.CreateAccount;
 
 public class Account {
 	
@@ -48,23 +46,19 @@ public class Account {
 		this.prevDisplayName = "";
 	}
 	
-	public Account(String username, String password, String email) {
+	public Account(String username, byte[] password, String email) {
 		this.username = Utils.formatPlayerNameForProtocol(username);
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.prevDisplayName = "";
 		this.email = email;
 		this.recoveryEmail = email;
 		this.rights = Rights.PLAYER;
-		this.password = Crypt.encrypt(password);
+		this.password = password;
 		this.prevPasswords = new HashSet<>();
 		this.prevPasswords.add(this.password);
 		this.social = new Social();
 	}
-	
-	public Account(CreateAccount request) {
-		this(request.username(), request.password(), request.email());
-	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -199,5 +193,13 @@ public class Account {
 
 	public void setSocial(Social social) {
 		this.social = social;
+	}
+
+	public long getBanExpiry() {
+		return banned;
+	}
+
+	public long getMuteExpiry() {
+		return muted;
 	}
 }

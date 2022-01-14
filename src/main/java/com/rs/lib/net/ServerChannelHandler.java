@@ -18,6 +18,7 @@ package com.rs.lib.net;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
+
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.decoders.GameDecoder;
@@ -25,6 +26,7 @@ import com.rs.lib.util.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
@@ -35,7 +37,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.netty.channel.ChannelHandler.Sharable;
 
 @Sharable
 public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
