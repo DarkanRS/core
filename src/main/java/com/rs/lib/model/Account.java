@@ -203,7 +203,7 @@ public class Account {
 	public long getMuteExpiry() {
 		return muted;
 	}
-
+	
 	public void setEmail(String email) {
 		this.email = email;
 	}
