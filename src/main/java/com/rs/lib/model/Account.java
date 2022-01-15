@@ -44,6 +44,7 @@ public class Account {
 		this.username = username;
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.prevDisplayName = "";
+		this.social = new Social();
 	}
 	
 	public Account(String username, byte[] password, String email) {
@@ -201,5 +202,9 @@ public class Account {
 
 	public long getMuteExpiry() {
 		return muted;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
