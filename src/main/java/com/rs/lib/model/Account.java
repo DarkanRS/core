@@ -81,6 +81,8 @@ public class Account {
 	}
 
 	public void setPassword(byte[] password) {
+		if (this.prevPasswords == null)
+			this.prevPasswords = new HashSet<>();
 		this.prevPasswords.add(this.password);
 		this.password = password;
 	}
