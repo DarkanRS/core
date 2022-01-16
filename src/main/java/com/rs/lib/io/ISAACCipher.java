@@ -17,6 +17,7 @@
 package com.rs.lib.io;
 
 public class ISAACCipher {
+	private int[] seeds;
 	private int count;
     private int c;
     private int b;
@@ -26,6 +27,7 @@ public class ISAACCipher {
     private int[] results = new int[256];
 
     public ISAACCipher(int[] seeds) {
+    	this.seeds = seeds;
         System.arraycopy(seeds, 0, results, 0, seeds.length);
         init();
     }
@@ -193,4 +195,8 @@ public class ISAACCipher {
             results[i_2] = b = memory[(i_4 >> 8 & 0x3fc) >> 2] + i_3;
         }
     }
+
+	public int[] getSeeds() {
+		return seeds;
+	}
 }

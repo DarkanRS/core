@@ -112,4 +112,7 @@ public final class GameDecoder extends Decoder {
 			session.queuePacket(decoder.decodeAndCreateInstance(stream).setOpcode(packet));
 	}
 
+	public static Map<ClientPacket, Packet> getDecoders() {
+		return PACKET_DECODERS;
+	}
 }
