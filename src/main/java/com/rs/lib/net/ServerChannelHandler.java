@@ -112,9 +112,8 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 		ByteBuf buf = (ByteBuf) msg;
 		Session session = ctx.channel().attr(SESSION_KEY).get();
 		if (session != null) {
-			if (session.getDecoder() == null) {
+			if (session.getDecoder() == null)
 				return;
-			}
 			
 			byte[] b = new byte[(session.buffer.length - session.bufferOffset) + buf.readableBytes()];
 			if ((session.buffer.length - session.bufferOffset) > 0)
@@ -127,10 +126,12 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 
 			try {
 				InputStream is = new InputStream(b);
-				session.bufferOffset = session.getDecoder()._decode(is);
-				if (session.bufferOffset < 0) { // drop
-					session.buffer = new byte[0];
-					session.bufferOffset = 0;
+				while(is.getRemaining() > 0) {
+					session.bufferOffset = session.getDecoder()._decode(is);
+					if (session.bufferOffset < 0) { // drop
+						session.buffer = new byte[0];
+						session.bufferOffset = 0;
+					}
 				}
 			} catch (Throwable er) {
 				Logger.handle(er);

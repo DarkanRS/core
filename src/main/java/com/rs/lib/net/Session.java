@@ -29,7 +29,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 
 public class Session {
 
@@ -42,9 +41,9 @@ public class Session {
 	private transient OutputStream queuedStream;
 	private final transient Object streamLock = new Object();
 	private transient Queue<Packet> packetQueue;
-		
-    protected byte[] buffer = new byte[0];
-    protected int bufferOffset = 0;
+	
+	public byte[] buffer = new byte[0];
+	public int bufferOffset = 0;
 
 	public Session(Channel channel, Decoder defaultDecoder) {
 		this.channel = channel;
@@ -73,12 +72,7 @@ public class Session {
 	public final void sendClientPacket(int opcode) {
 		OutputStream stream = new OutputStream(1);
 		stream.writeByte(opcode);
-		ChannelFuture future = write(stream);
-		if (future != null) {
-			future.addListener(ChannelFutureListener.CLOSE);
-		} else {
-			getChannel().close();
-		}
+		write(stream);
 	}
 	
 	public void writeToQueue(PacketEncoder... encoders) {
