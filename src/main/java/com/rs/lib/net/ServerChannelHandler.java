@@ -126,12 +126,10 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 
 			try {
 				InputStream is = new InputStream(b);
-				while(is.getRemaining() > 0) {
-					session.bufferOffset = session.getDecoder()._decode(is);
-					if (session.bufferOffset < 0) { // drop
-						session.buffer = new byte[0];
-						session.bufferOffset = 0;
-					}
+				session.bufferOffset = session.getDecoder()._decode(is);
+				if (session.bufferOffset < 0) { // drop
+					session.buffer = new byte[0];
+					session.bufferOffset = 0;
 				}
 			} catch (Throwable er) {
 				Logger.handle(er);
