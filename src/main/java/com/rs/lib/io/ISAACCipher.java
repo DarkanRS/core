@@ -27,7 +27,8 @@ public class ISAACCipher {
     private int[] results = new int[256];
 
     public ISAACCipher(int[] seeds) {
-    	this.seeds = seeds;
+    	this.seeds = new int[seeds.length];
+    	System.arraycopy(seeds, 0, this.seeds, 0, seeds.length);
         System.arraycopy(seeds, 0, results, 0, seeds.length);
         init();
     }

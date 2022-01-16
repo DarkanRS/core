@@ -35,7 +35,7 @@ public class XTEACreationPacket extends Packet {
 	}
 
 	public InputStream getDecodedBuffer(Session session) {
-		stream.decodeXTEA(session.getIsaac().inKey().getSeeds());
+		stream.decodeXTEA(session.getIsaac().inKey().getSeeds(), stream.getOffset(), stream.getLength());
 		return stream;
 	}
 
