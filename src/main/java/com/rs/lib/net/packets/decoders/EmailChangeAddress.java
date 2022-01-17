@@ -11,31 +11,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright Â© 2021 Trenton Kress
+//  Copyright © 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.net.packets.encoders.interfaces;
+package com.rs.lib.net.packets.decoders;
 
-import com.rs.lib.io.OutputStream;
-import com.rs.lib.net.ServerPacket;
-import com.rs.lib.net.packets.PacketEncoder;
+import com.rs.lib.io.InputStream;
+import com.rs.lib.net.ClientPacket;
+import com.rs.lib.net.packets.Packet;
+import com.rs.lib.net.packets.PacketDecoder;
 
-public class IFCloseSub extends PacketEncoder {
-
-	private int componentId;
+@PacketDecoder(ClientPacket.EMAIL_VALIDATION_CHANGE_ADDRESS)
+public class EmailChangeAddress extends Packet {
 	
-	public IFCloseSub(int componentId) {
-		super(ServerPacket.IF_CLOSESUB);
-		this.componentId = componentId;
-	}
-	
-	public IFCloseSub(int parentId, int parentComponentId) {
-		this(parentId << 16 | parentComponentId);
-	}
+	private String email;
+	private String email2;
 
 	@Override
-	public void encodeBody(OutputStream stream) {
-		stream.writeInt(componentId);
+	public Packet decodeAndCreateInstance(InputStream stream) {
+		EmailChangeAddress p = new EmailChangeAddress();
+		p.email = stream.readString();
+		p.email2 = stream.readString();
+		return p;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getEmail2() {
+		return email2;
 	}
 
 }

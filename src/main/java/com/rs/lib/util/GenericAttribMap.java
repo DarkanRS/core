@@ -129,4 +129,9 @@ public class GenericAttribMap {
 		attribs.remove("I"+name);
 		return i;
 	}
+
+	public void decI(String name) {
+		int newVal = getI(name) - 1;
+		setI(name, newVal);
+	}
 }

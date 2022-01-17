@@ -99,7 +99,7 @@ public enum ClientPacket {
 	REGION_LOADED_CONFIRM(76, 0),
 	NPC_OP4(77, 3),
 	MOVE_MOUSE_2(78, -1),
-	UNK_79(79, 1), //TODO account creation related
+	ACCOUNT_CREATION_STAGE(79, 1),
 	RESUME_NAMEDIALOG(80, -1),
 	IF_OP10(81, 8),
 	UNK_82(82, 4), //writes one identical int sometime during gamestate/region loading. Probably sends when something fails to load or error occurs

@@ -209,4 +209,14 @@ public class Account {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	/**
+	 * NEVER CALL THIS EVER
+	 * @param username
+	 */
+	@Deprecated
+	public void setUsername(String username) {
+		this.username = Utils.formatPlayerNameForProtocol(username);
+		this.displayName = Utils.formatPlayerNameForDisplay(this.username);
+	}
 }
