@@ -110,6 +110,11 @@ public final class GameDecoder extends Decoder {
 		Packet decoder = PACKET_DECODERS.get(packet);
 		if (decoder != null)
 			session.queuePacket(decoder.decodeAndCreateInstance(stream).setOpcode(packet));
+		else
+			System.out.println("Unhandled packet: " + packet);
 	}
 
+	public static Map<ClientPacket, Packet> getDecoders() {
+		return PACKET_DECODERS;
+	}
 }

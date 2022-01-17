@@ -40,7 +40,7 @@ public class CS2Definitions {
 			if (s.name != null)
 				System.out.println(s.name);
 			for (int x = 0;x < s.operations.length;x++) {
-				if (s.operations[x] == CS2Instruction.FRIEND_PLATFORM) {
+				if (s.operations[x] == CS2Instruction.instr6698) {
 					System.out.println(i);
 					System.out.println(Arrays.toString(s.operations));
 					id = i;

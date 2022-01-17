@@ -14,28 +14,29 @@
 //  Copyright © 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.net.packets.encoders.interfaces;
+package com.rs.lib.net.packets.decoders;
 
-import com.rs.lib.io.OutputStream;
-import com.rs.lib.net.ServerPacket;
-import com.rs.lib.net.packets.PacketEncoder;
+import com.rs.lib.io.InputStream;
+import com.rs.lib.net.ClientPacket;
+import com.rs.lib.net.Session;
+import com.rs.lib.net.packets.Packet;
+import com.rs.lib.net.packets.PacketDecoder;
 
-public class IFCloseSub extends PacketEncoder {
-
-	private int componentId;
+@PacketDecoder({ ClientPacket.CHECK_EMAIL_VALIDITY, ClientPacket.SEND_SIGN_UP_FORM })
+public class XTEACreationPacket extends Packet {
 	
-	public IFCloseSub(int componentId) {
-		super(ServerPacket.IF_CLOSESUB);
-		this.componentId = componentId;
-	}
-	
-	public IFCloseSub(int parentId, int parentComponentId) {
-		this(parentId << 16 | parentComponentId);
-	}
+	private InputStream stream;
 
 	@Override
-	public void encodeBody(OutputStream stream) {
-		stream.writeInt(componentId);
+	public Packet decodeAndCreateInstance(InputStream stream) {
+		XTEACreationPacket p = new XTEACreationPacket();
+		p.stream = stream;
+		return p;
+	}
+
+	public InputStream getDecodedBuffer(Session session) {
+		stream.decodeXTEA(session.getIsaac().inKey().getSeeds(), stream.getOffset(), stream.getLength());
+		return stream;
 	}
 
 }

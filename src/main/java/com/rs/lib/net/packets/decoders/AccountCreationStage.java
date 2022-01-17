@@ -14,28 +14,27 @@
 //  Copyright © 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.net.packets.encoders.interfaces;
+package com.rs.lib.net.packets.decoders;
 
-import com.rs.lib.io.OutputStream;
-import com.rs.lib.net.ServerPacket;
-import com.rs.lib.net.packets.PacketEncoder;
+import com.rs.lib.io.InputStream;
+import com.rs.lib.net.ClientPacket;
+import com.rs.lib.net.packets.Packet;
+import com.rs.lib.net.packets.PacketDecoder;
 
-public class IFCloseSub extends PacketEncoder {
+@PacketDecoder(ClientPacket.ACCOUNT_CREATION_STAGE)
+public class AccountCreationStage extends Packet {
 
-	private int componentId;
+	private int stage;
 	
-	public IFCloseSub(int componentId) {
-		super(ServerPacket.IF_CLOSESUB);
-		this.componentId = componentId;
-	}
-	
-	public IFCloseSub(int parentId, int parentComponentId) {
-		this(parentId << 16 | parentComponentId);
-	}
-
 	@Override
-	public void encodeBody(OutputStream stream) {
-		stream.writeInt(componentId);
+	public Packet decodeAndCreateInstance(InputStream stream) {
+		AccountCreationStage p = new AccountCreationStage();
+		p.stage = stream.readUnsignedByte();
+		return p;
+	}
+
+	public int getStage() {
+		return stage;
 	}
 
 }

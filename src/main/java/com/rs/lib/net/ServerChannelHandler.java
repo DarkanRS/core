@@ -112,9 +112,8 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 		ByteBuf buf = (ByteBuf) msg;
 		Session session = ctx.channel().attr(SESSION_KEY).get();
 		if (session != null) {
-			if (session.getDecoder() == null) {
+			if (session.getDecoder() == null)
 				return;
-			}
 			
 			byte[] b = new byte[(session.buffer.length - session.bufferOffset) + buf.readableBytes()];
 			if ((session.buffer.length - session.bufferOffset) > 0)
