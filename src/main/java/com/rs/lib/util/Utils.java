@@ -64,6 +64,7 @@ import com.rs.cache.loaders.cs2.CS2Instruction;
 import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.cache.loaders.sound.Instrument;
 import com.rs.lib.Constants;
+import com.rs.lib.Globals;
 import com.rs.lib.game.Item;
 import com.rs.lib.game.WorldTile;
 
@@ -272,11 +273,12 @@ public final class Utils {
 		rate99 = (int) (percModifier * (double) rate99);
 		double perc = (double) level / 99.0;
 		int chance = clampI((int) ((double) rate1 + (((double) rate99 - (double) rate1) * perc)), 0, 256);
+		if (Globals.DEBUG)
+			System.out.println("Skilling chance: " + chance + "/256 - " + Utils.formatDouble(((double) chance / 256.0) * 100.0) + "%");
 		return random(255) <= chance;
 	}
 
 	public static Rational toRational(double number, int largestRightOfDecimal) {
-
 		long sign = 1;
 		if (number < 0) {
 			number = -number;
