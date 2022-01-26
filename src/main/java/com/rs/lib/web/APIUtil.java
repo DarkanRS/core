@@ -70,8 +70,13 @@ public class APIUtil {
 			try {
 				cb.accept(JsonFileManager.fromJSONString(res, returnType));
 			} catch (JsonIOException | IOException e) {
+				cb.accept(null);
 				System.err.println("Exception handling POST " + url + " - " + e.getMessage());
 			}
+		}).exceptionally(e -> {
+			System.err.println("Exception handling POST " + url + " - " + e.getMessage());
+			cb.accept(null);
+			return null;
 		});
 	}
 	

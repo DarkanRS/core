@@ -84,3 +84,4 @@ fabric.properties
 
 serverConfig.json
 /public/images/items/*.png
+.idea/
