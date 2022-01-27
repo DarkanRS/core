@@ -267,12 +267,16 @@ public final class Utils {
 	public static boolean skillSuccess(int level, int rate1, int rate99) {
 		return skillSuccess(level, 1.0, rate1, rate99);
 	}
-
+	
 	public static boolean skillSuccess(int level, double percModifier, int rate1, int rate99) {
+		return skillSuccess(level, percModifier, rate1, rate99, 256);
+	}
+
+	public static boolean skillSuccess(int level, double percModifier, int rate1, int rate99, int maxSuccess) {
 		rate1 = (int) (percModifier * (double) rate1);
 		rate99 = (int) (percModifier * (double) rate99);
 		double perc = (double) level / 99.0;
-		int chance = clampI((int) ((double) rate1 + (((double) rate99 - (double) rate1) * perc)), 0, 256);
+		int chance = clampI((int) ((double) rate1 + (((double) rate99 - (double) rate1) * perc)), 0, maxSuccess);
 		if (Globals.DEBUG)
 			System.out.println("Skilling chance: " + chance + "/256 - " + Utils.formatDouble(((double) chance / 256.0) * 100.0) + "%");
 		return random(255) <= chance;
