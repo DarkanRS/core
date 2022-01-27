@@ -68,14 +68,17 @@ public class APIUtil {
 		.thenApply(HttpResponse::body)
 		.thenAccept(res -> {
 			try {
-				cb.accept(JsonFileManager.fromJSONString(res, returnType));
+				if (cb != null)
+					cb.accept(JsonFileManager.fromJSONString(res, returnType));
 			} catch (JsonIOException | IOException e) {
-				cb.accept(null);
+				if (cb != null)
+					cb.accept(null);
 				System.err.println("Exception handling POST " + url + " - " + e.getMessage());
 			}
 		}).exceptionally(e -> {
 			System.err.println("Exception handling POST " + url + " - " + e.getMessage());
-			cb.accept(null);
+			if (cb != null)
+				cb.accept(null);
 			return null;
 		});
 	}
