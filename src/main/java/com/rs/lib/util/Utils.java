@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.util;
@@ -67,6 +67,7 @@ import com.rs.lib.Constants;
 import com.rs.lib.Globals;
 import com.rs.lib.game.Item;
 import com.rs.lib.game.WorldTile;
+import io.github.classgraph.*;
 
 public final class Utils {
 
@@ -1469,21 +1470,20 @@ public final class Utils {
 	}
 
 	public static ArrayList<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) throws ClassNotFoundException, IOException {
-		ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
+		"com.rs", PluginEventHandler.class
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		for (ClassPath.ClassInfo info : cp.getTopLevelClassesRecursive(packageName)) {
-			if (!Class.forName(info.getName()).isAnnotationPresent(annotation))
-				continue;
-			classes.add(Class.forName(info.getName()));
+		try (ScanResult scanResult = new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(packageName).scan()) {
+			for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(annotation.getName()))
+				classes.add(classInfo.loadClass());
 		}
 		return classes;
 	}
 
 	public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
-		ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		for (ClassPath.ClassInfo info : cp.getTopLevelClassesRecursive(packageName)) {
-			classes.add(Class.forName(info.getName()));
+		try (ScanResult scanResult = new ClassGraph().enableClassInfo().acceptPackages(packageName).scan()) {
+			for (ClassInfo classInfo : scanResult.getAllClasses())
+				classes.add(classInfo.loadClass());
 		}
 		return classes;
 	}
