@@ -1470,7 +1470,6 @@ public final class Utils {
 	}
 
 	public static ArrayList<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) throws ClassNotFoundException, IOException {
-		"com.rs", PluginEventHandler.class
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		try (ScanResult scanResult = new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(packageName).scan()) {
 			for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(annotation.getName()))
