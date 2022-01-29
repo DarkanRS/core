@@ -1469,8 +1469,8 @@ public final class Utils {
 		return -1;
 	}
 
-	public static ArrayList<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) throws ClassNotFoundException, IOException {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+	public static List<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) throws ClassNotFoundException, IOException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
 		try (ScanResult scanResult = new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(packageName).scan()) {
 			for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(annotation.getName()))
 				classes.add(classInfo.loadClass());
@@ -1478,8 +1478,8 @@ public final class Utils {
 		return classes;
 	}
 
-	public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+	public static List<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
 		try (ScanResult scanResult = new ClassGraph().enableClassInfo().acceptPackages(packageName).scan()) {
 			for (ClassInfo classInfo : scanResult.getAllClasses())
 				classes.add(classInfo.loadClass());

@@ -18,11 +18,7 @@ package com.rs.lib.net.decoders;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
@@ -46,7 +42,7 @@ public final class GameDecoder extends Decoder {
 	public static void loadPacketDecoders() throws InvocationTargetException, NoSuchMethodException {
 		try {
 			Logger.log("WorldPacketsDecoder", "Initializing packet decoders...");
-			ArrayList<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
+			List<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
 			for (Class<?> clazz : classes) {
 				ClientPacket[] packets = clazz.getAnnotation(PacketDecoder.class).value();
 				for (ClientPacket packet : packets) {
