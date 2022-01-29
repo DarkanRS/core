@@ -26,8 +26,7 @@ public class DBThreadFactory implements ThreadFactory {
 	private final String namePrefix;
 
 	public DBThreadFactory() {
-		SecurityManager s = System.getSecurityManager();
-		group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		group = Thread.currentThread().getThreadGroup();
 		namePrefix = "DB Pool-" + poolNumber.getAndIncrement() + "-thread-";
 	}
 
