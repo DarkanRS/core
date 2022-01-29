@@ -11,18 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.decoders;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
@@ -46,7 +42,7 @@ public final class GameDecoder extends Decoder {
 	public static void loadPacketDecoders() throws InvocationTargetException, NoSuchMethodException {
 		try {
 			Logger.log("WorldPacketsDecoder", "Initializing packet decoders...");
-			ArrayList<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
+			List<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
 			for (Class<?> clazz : classes) {
 				ClientPacket[] packets = clazz.getAnnotation(PacketDecoder.class).value();
 				for (ClientPacket packet : packets) {

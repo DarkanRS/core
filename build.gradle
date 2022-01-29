@@ -20,4 +20,5 @@ dependencies {
 	implementation group: 'org.mongodb', name: 'mongodb-driver-core', version: '4.4.0'
 	implementation group: 'io.netty', name: 'netty-all', version: '4.1.72.Final'
 	implementation group: 'io.undertow', name: 'undertow-core', version: '2.2.8.Final'
+	implementation group: 'io.github.classgraph', name: 'classgraph', version: '4.8.98'
 }
