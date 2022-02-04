@@ -19,7 +19,7 @@ repositories {
 	mavenCentral()
 }
 
-group 'darkan'
+group 'rs.darkan'
 version '1.0.0'
 
 dependencies {
