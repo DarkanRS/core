@@ -11,28 +11,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.encoders.social;
 
 import com.rs.cache.Cache;
 import com.rs.lib.io.OutputStream;
+import com.rs.lib.model.Account;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 import com.rs.lib.util.Utils;
 
 public class MessageClan extends PacketEncoder {
 	
-	private String displayName;
-	private int rights;
+	private Account account;
 	private String message;
 	private boolean guest;
 
-	public MessageClan(String displayName, int rights, String message, boolean guest) {
+	public MessageClan(Account account, String message, boolean guest) {
 		super(ServerPacket.MESSAGE_CLANCHANNEL);
-		this.displayName = displayName;
-		this.rights = rights;
+		this.account = account;
 		this.message = message;
 		this.guest = guest;
 	}
@@ -40,10 +39,10 @@ public class MessageClan extends PacketEncoder {
 	@Override
 	public void encodeBody(OutputStream stream) {
 		stream.writeByte(guest ? 0 : 1);
-		stream.writeString(displayName);
+		stream.writeString(account.getDisplayName());
 		for (int i = 0; i < 5; i++)
 			stream.writeByte(Utils.getRandomInclusive(255));
-		stream.writeByte(rights);
+		stream.writeByte(account.getRights().getCrown());
 		Cache.STORE.getHuffman().sendEncryptMessage(stream, message);
 	}
 

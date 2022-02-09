@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.db;
@@ -26,8 +26,7 @@ public class DBThreadFactory implements ThreadFactory {
 	private final String namePrefix;
 
 	public DBThreadFactory() {
-		SecurityManager s = System.getSecurityManager();
-		group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		group = Thread.currentThread().getThreadGroup();
 		namePrefix = "DB Pool-" + poolNumber.getAndIncrement() + "-thread-";
 	}
 

@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.web;
@@ -21,14 +21,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import com.google.gson.JsonIOException;
 import com.rs.lib.file.JsonFileManager;
-import com.rs.lib.thread.CatchExceptionRunnable;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
@@ -37,8 +35,8 @@ import io.undertow.util.StatusCodes;
 
 public class APIUtil {
 	
-	private static ExecutorService API_REQUEST_POOL = Executors.newFixedThreadPool(10);
-	
+	private static HttpClient CLIENT = HttpClient.newHttpClient();
+		
 	public static void sendResponse(HttpServerExchange exchange, int stateCode, Object responseObject) {
 		exchange.setStatusCode(stateCode);
 		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
@@ -64,31 +62,40 @@ public class APIUtil {
 	}
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
-		API_REQUEST_POOL.submit(new CatchExceptionRunnable(() -> {
-			T response = postSync(returnType, body, url, apiKey);
+		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
+		CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+		.thenApply(HttpResponse::body)
+		.thenAccept(res -> {
+			try {
+				if (cb != null)
+					cb.accept(JsonFileManager.fromJSONString(res, returnType));
+			} catch (JsonIOException | IOException e) {
+				if (cb != null)
+					cb.accept(null);
+				System.err.println("Exception handling POST " + url + " - " + e.getMessage());
+			}
+		}).exceptionally(e -> {
+			System.err.println("Exception handling POST " + url + " - " + e.getMessage());
 			if (cb != null)
-				cb.accept(response);
-		}));
+				cb.accept(null);
+			return null;
+		});
 	}
 	
-	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) {
-			try {
-				HttpClient client = HttpClient.newHttpClient();
-				HttpRequest request = HttpRequest.newBuilder(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
-				CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-				HttpResponse<String> response = future.get();
-				if (returnType == null)
-					return null;
-				try {
-					return JsonFileManager.fromJSONString(response.body(), returnType);
-				} catch(Exception e) {
-					System.err.println("Error parsing body into "+returnType+": " + response.body());
-					return null;
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-				return null;
-			}
+	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
+		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
+		HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+		java.util.logging.Logger.getLogger("Web").finest("Request finished: " + response.body());
+		if (returnType == null)
+			return null;
+		try {
+			return JsonFileManager.fromJSONString(response.body(), returnType);
+		} catch (Exception e) {
+			System.err.println("Error parsing body into " + returnType + ": " + response.body());
+			return null;
+		}
 	}
 	
 }

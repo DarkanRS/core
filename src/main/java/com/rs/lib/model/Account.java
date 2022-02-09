@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.model;
@@ -22,9 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.rs.lib.game.Rights;
-import com.rs.lib.util.Crypt;
 import com.rs.lib.util.Utils;
-import com.rs.lib.web.dto.CreateAccount;
 
 public class Account {
 	
@@ -46,25 +44,22 @@ public class Account {
 		this.username = username;
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.prevDisplayName = "";
+		this.social = new Social();
 	}
 	
-	public Account(String username, String password, String email) {
+	public Account(String username, byte[] password, String email) {
 		this.username = Utils.formatPlayerNameForProtocol(username);
 		this.displayName = Utils.formatPlayerNameForDisplay(username);
 		this.prevDisplayName = "";
 		this.email = email;
 		this.recoveryEmail = email;
 		this.rights = Rights.PLAYER;
-		this.password = Crypt.encrypt(password);
+		this.password = password;
 		this.prevPasswords = new HashSet<>();
 		this.prevPasswords.add(this.password);
 		this.social = new Social();
 	}
-	
-	public Account(CreateAccount request) {
-		this(request.username(), request.password(), request.email());
-	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -86,6 +81,8 @@ public class Account {
 	}
 
 	public void setPassword(byte[] password) {
+		if (this.prevPasswords == null)
+			this.prevPasswords = new HashSet<>();
 		this.prevPasswords.add(this.password);
 		this.password = password;
 	}
@@ -150,6 +147,11 @@ public class Account {
 		this.banned = 0;
 	}
 	
+	public void copyPunishments(Account account) {
+		this.banned = account.banned;
+		this.muted = account.muted;
+	}
+	
 	public boolean hasRights(Rights rights) {
 		return this.rights.ordinal() >= rights.ordinal();
 	}
@@ -190,5 +192,31 @@ public class Account {
 
 	public void setRecoveryEmail(String recoveryEmail) {
 		this.recoveryEmail = recoveryEmail;
+	}
+
+	public void setSocial(Social social) {
+		this.social = social;
+	}
+
+	public long getBanExpiry() {
+		return banned;
+	}
+
+	public long getMuteExpiry() {
+		return muted;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * NEVER CALL THIS EVER
+	 * @param username
+	 */
+	@Deprecated
+	public void setUsername(String username) {
+		this.username = Utils.formatPlayerNameForProtocol(username);
+		this.displayName = Utils.formatPlayerNameForDisplay(this.username);
 	}
 }

@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.web;
@@ -62,7 +62,7 @@ public class WebAPI extends Thread {
 		server = new APIServer(prefixPath, port, new ExceptionHandler(routes) {
 			@Override
 			public void handleRequest(HttpServerExchange exchange) throws Exception {
-				System.out.println("Request: <" + exchange.getRequestMethod() + " " + exchange.getRequestURI() + " " + exchange.getProtocol() + "> from " + exchange.getSourceAddress());
+				java.util.logging.Logger.getLogger("Web").finest("API Request: " + exchange.getRequestURL());
 				super.handleRequest(exchange);
 			}
 		});

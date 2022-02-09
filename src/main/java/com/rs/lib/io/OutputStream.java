@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.io;
@@ -280,14 +280,14 @@ public final class OutputStream extends Stream {
 				writeByte(id);
 				return this;
 			}
-			writeByte((id >> 8) + 128 + isaac.outKey().getNextValue());
-			writeByte(id + isaac.outKey().getNextValue());
+			writeByte((id >> 8) + 128 + isaac.outKey().nextInt());
+			writeByte(id + isaac.outKey().nextInt());
 		} else {
 			if (isaac == null) {
 				writeByte(id);
 				return this;
 			}
-			writeByte(id + isaac.outKey().getNextValue());
+			writeByte(id + isaac.outKey().nextInt());
 		}
 		return this;
 	}
@@ -346,12 +346,13 @@ public final class OutputStream extends Stream {
 		}
 	}
 	
-	public void writeDisplayName(Account account) {
-		writeString(account.getDisplayName());
-		if (account.getPrevDisplayName() == null || account.getPrevDisplayName().isEmpty() || account.getPrevDisplayName().equals(account.getDisplayName()))
+	public void writeDisplayNameChat(Account account) {
+		if (account.getPrevDisplayName() == null || account.getPrevDisplayName().isEmpty() || account.getPrevDisplayName().equals(account.getDisplayName())) {
 			writeByte(0);
-		else {
+			writeString(account.getDisplayName());
+		} else {
 			writeByte(1);
+			writeString(account.getDisplayName());
 			writeString(account.getPrevDisplayName());
 		}
 	}

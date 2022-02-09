@@ -11,14 +11,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.encoders.social;
 
+import java.util.List;
+
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.Clan;
-import com.rs.lib.model.ClanMember;
+import com.rs.lib.model.MemberData;
+import com.rs.lib.model.MinimalSocial;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 
@@ -27,14 +30,14 @@ public class ClanChannelFull extends PacketEncoder {
 	private Clan clan;
 	private boolean guest;
 	private int updateNum;
-	private ClanMember[] members;
+	private List<MinimalSocial> chatters;
 
-	public ClanChannelFull(Clan clan, boolean guest, int updateNum, ClanMember... members) {
+	public ClanChannelFull(Clan clan, boolean guest, int updateNum, List<MinimalSocial> chatters) {
 		super(ServerPacket.CLANCHANNEL_FULL);
 		this.clan = clan;
 		this.guest = guest;
 		this.updateNum = updateNum;
-		this.members = members;
+		this.chatters = chatters;
 	}
 
 	@Override
@@ -47,15 +50,16 @@ public class ClanChannelFull extends PacketEncoder {
 		stream.writeLong(updateNum);
 		stream.writeString(clan.getName());
 		stream.writeByte(0); // unused
-		stream.writeByte(clan.getMinimumRankForKick());
+		stream.writeByte(clan.getMinimumRankForKick().getIconId());
 		stream.writeByte(clan.isGuestsInChatCanTalk() ? -1 : 0); // getMinimumRankForChat
 		// maybe
-		stream.writeShort(members.length);
-		for (ClanMember player : members) {
-			// stream.writeLong(
-			stream.writeString(player.getUsername());
-			stream.writeByte(player.getRank().getIconId());
-			stream.writeShort(1); // worldId
+		stream.writeShort(chatters.size());
+		for (MinimalSocial player : chatters) {
+			// stream.writeLong(); //Username as long
+			MemberData data = clan.getMembers().get(player.getUsername());
+			stream.writeString(player.getDisplayName());
+			stream.writeByte(data == null ? -1 : data.getRank().getIconId());
+			stream.writeShort(player.getWorld().getNumber());
 		}
 	}
 

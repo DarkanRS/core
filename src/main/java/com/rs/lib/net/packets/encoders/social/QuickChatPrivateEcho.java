@@ -11,39 +11,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.encoders.social;
 
 import com.rs.lib.game.QuickChatMessage;
 import com.rs.lib.io.OutputStream;
+import com.rs.lib.model.Account;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
-import com.rs.lib.util.Utils;
 
 public class QuickChatPrivateEcho extends PacketEncoder {
 	
-	private String name;
-	private int rights;
+	private Account account;
 	private QuickChatMessage message;
 
-	public QuickChatPrivateEcho(String name, int rights, QuickChatMessage message) {
+	public QuickChatPrivateEcho(Account account, QuickChatMessage message) {
 		super(ServerPacket.MESSAGE_QUICKCHAT_PRIVATE_ECHO);
-		this.name = name;
-		this.rights = rights;
+		this.account = account;
 		this.message = message;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeByte(/*!name.equals(display) ? 1 : 0*/ 0);
-		stream.writeString(name);
-//		if (!name.equals(display))
-//			stream.writeString(display);
-		for (int i = 0; i < 5; i++)
-			stream.writeByte(Utils.random(255));
-		stream.writeByte(rights);
+		stream.writeDisplayNameChat(account);
+		stream.writeShort(0); //unk
+		stream.write24BitInteger(0); //unk
+		stream.writeByte(account.getRights().getCrown());
 		stream.writeShort(message.getFileId());
 		if (message.getData() != null)
 			stream.writeBytes(message.getData());

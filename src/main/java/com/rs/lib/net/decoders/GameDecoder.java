@@ -11,18 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.decoders;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
@@ -37,6 +33,7 @@ import com.rs.lib.util.Utils;
 public final class GameDecoder extends Decoder {
 	
 	private static Map<ClientPacket, Packet> PACKET_DECODERS = new HashMap<>();
+	private ClientPacket currPacket;
 	
 	public GameDecoder(Session session) {
 		super(session);
@@ -45,7 +42,7 @@ public final class GameDecoder extends Decoder {
 	public static void loadPacketDecoders() throws InvocationTargetException, NoSuchMethodException {
 		try {
 			Logger.log("WorldPacketsDecoder", "Initializing packet decoders...");
-			ArrayList<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
+			List<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
 			for (Class<?> clazz : classes) {
 				ClientPacket[] packets = clazz.getAnnotation(PacketDecoder.class).value();
 				for (ClientPacket packet : packets) {
@@ -72,14 +69,14 @@ public final class GameDecoder extends Decoder {
 	@Override
 	public int decode(InputStream stream) {
 		while (stream.getRemaining() > 0) {
-			int start = stream.getOffset();
-			int opcode = stream.readPacket(session.getIsaac());
-			ClientPacket packet = ClientPacket.forOpcode(opcode);
+			int opcode = currPacket != null ? currPacket.getOpcode() : stream.readPacket(session.getIsaac());
+			ClientPacket packet = currPacket = ClientPacket.forOpcode(opcode);
 			if (packet == null) {
 				if (Globals.DEBUG)
 					System.out.println("Invalid opcode: " + opcode + ".");
 				return -1;
 			}
+			int start = stream.getOffset();
 
 			int length = packet.getSize();
 			if ((length == -1 && stream.getRemaining() < 1) || (length == -2 && stream.getRemaining() < 2))
@@ -90,13 +87,13 @@ public final class GameDecoder extends Decoder {
 			else if (length == -2)
 				length = stream.readUnsignedShort();
 
-			if (stream.getRemaining() < length) {
+			if (stream.getRemaining() < length)
 				return start;
-			}
 
 			byte[] data = new byte[length];
 			stream.readBytes(data);
 			try {
+				currPacket = null;
 				queuePacket(packet, new InputStream(data));
 			} catch (Throwable e) {
 				Logger.handle(e);
@@ -109,6 +106,11 @@ public final class GameDecoder extends Decoder {
 		Packet decoder = PACKET_DECODERS.get(packet);
 		if (decoder != null)
 			session.queuePacket(decoder.decodeAndCreateInstance(stream).setOpcode(packet));
+		else
+			System.out.println("Unhandled packet: " + packet);
 	}
 
+	public static Map<ClientPacket, Packet> getDecoders() {
+		return PACKET_DECODERS;
+	}
 }

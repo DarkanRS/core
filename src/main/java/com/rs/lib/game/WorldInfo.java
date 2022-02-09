@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.game;
@@ -42,6 +42,10 @@ public class WorldInfo {
 			case 1 -> "USA";
 			default -> "Murica";
 		};
+	}
+	
+	public boolean isLobby() {
+		return number >= 1000;
 	}
 	
 	public String getActivity() {

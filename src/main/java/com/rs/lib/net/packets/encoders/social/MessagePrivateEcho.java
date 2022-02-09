@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.encoders.social;
@@ -36,9 +36,7 @@ public class MessagePrivateEcho extends PacketEncoder {
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeByte(1); //Displayname true
-		stream.writeString(account.getDisplayName());
-		stream.writeString(account.getUsername());
+		stream.writeDisplayNameChat(account);
 		for (int i = 0; i < 5; i++)
 			stream.writeByte(Utils.getRandomInclusive(255));
 		stream.writeByte(account.getRights().getCrown());

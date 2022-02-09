@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.decoders.chat;
@@ -27,6 +27,7 @@ public class QCPrivate extends Packet {
 	private String toUsername;
 	private int qcId;
 	private byte[] messageData;
+	private byte[] completedData;
 
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
@@ -50,5 +51,13 @@ public class QCPrivate extends Packet {
 
 	public byte[] getMessageData() {
 		return messageData;
+	}
+
+	public byte[] getCompletedData() {
+		return completedData;
+	}
+
+	public void setCompletedData(byte[] completedData) {
+		this.completedData = completedData;
 	}
 }

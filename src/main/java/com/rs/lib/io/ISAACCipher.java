@@ -11,225 +11,193 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.io;
 
-/** * @author Graham Edgecombe */
 public class ISAACCipher {
-	/** * The golden ratio. */
-	public static final int RATIO = 0x9e3779b9;
-	/** * The log of the size of the results and memory arrays. */
-	public static final int SIZE_LOG = 8;
-	/** * The size of the results and memory arrays. */
-	public static final int SIZE = 1 << SIZE_LOG;
-	/** * For pseudorandom lookup. */
-	public static final int MASK = (SIZE - 1) << 2;
-	/** * The count through the results. */
-	@SuppressWarnings("unused")
-	private int count = 0;
-	/** * The results. */
-	private int results[] = new int[SIZE];
-	/** * The internal memory state. */
-	private int memory[] = new int[SIZE];
-	/** * The accumulator. */
-	private int a;
-	/** * The last result. */
-	private int b;
-	/** * The counter. */
-	private int c;
+	private int[] seeds;
+	private int count;
+    private int c;
+    private int b;
+    private int a;
 
-	/** * Creates the ISAAC cipher. * @param seed The generator seed. */
-	public ISAACCipher(int[] seed) {
-		for (int i = 0; i < seed.length; i++) {
-			results[i] = seed[i];
-		}
-		init(true);
-	}
+    private int[] memory = new int[256];
+    private int[] results = new int[256];
 
-	/** * Gets the next value. * @return The next value. */
-	public int getNextValue() {
-		/*
-		 * if (count-- == 0) { isaac(); count = SIZE - 1; } return
-		 * results[count];
-		 */
-		return 0; // DISABLED
-	}
+    public ISAACCipher(int[] seeds) {
+    	this.seeds = new int[seeds.length];
+    	System.arraycopy(seeds, 0, this.seeds, 0, seeds.length);
+        System.arraycopy(seeds, 0, results, 0, seeds.length);
+        init();
+    }
 
-	/** * Generates 256 results. */
-	public void isaac() {
-		int i, j, x, y;
-		b += ++c;
-		for (i = 0, j = SIZE / 2; i < SIZE / 2;) {
-			x = memory[i];
-			a ^= a << 13;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-			x = memory[i];
-			a ^= a >>> 6;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-			x = memory[i];
-			a ^= a << 2;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-			x = memory[i];
-			a ^= a >>> 16;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-		}
-		for (j = 0; j < SIZE / 2;) {
-			x = memory[i];
-			a ^= a << 13;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-			x = memory[i];
-			a ^= a >>> 6;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-			x = memory[i];
-			a ^= a << 2;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-			x = memory[i];
-			a ^= a >>> 16;
-			a += memory[j++];
-			memory[i] = y = memory[(x & MASK) >> 2] + a + b;
-			results[i++] = b = memory[((y >> SIZE_LOG) & MASK) >> 2] + x;
-		}
-	}
+    void init() {
+        int i_2 = -1640531527;
+        int i_3 = -1640531527;
+        int i_4 = -1640531527;
+        int i_5 = -1640531527;
+        int i_6 = -1640531527;
+        int i_7 = -1640531527;
+        int i_8 = -1640531527;
+        int i_9 = -1640531527;
+        int i_10;
+        for (i_10 = 0; i_10 < 4; i_10++) {
+            i_9 ^= i_8 << 11;
+            i_6 += i_9;
+            i_8 += i_7;
+            i_8 ^= i_7 >>> 2;
+            i_5 += i_8;
+            i_7 += i_6;
+            i_7 ^= i_6 << 8;
+            i_4 += i_7;
+            i_6 += i_5;
+            i_6 ^= i_5 >>> 16;
+            i_3 += i_6;
+            i_5 += i_4;
+            i_5 ^= i_4 << 10;
+            i_2 += i_5;
+            i_4 += i_3;
+            i_4 ^= i_3 >>> 4;
+            i_9 += i_4;
+            i_3 += i_2;
+            i_3 ^= i_2 << 8;
+            i_8 += i_3;
+            i_2 += i_9;
+            i_2 ^= i_9 >>> 9;
+            i_7 += i_2;
+            i_9 += i_8;
+        }
+        for (i_10 = 0; i_10 < 256; i_10 += 8) {
+            i_9 += results[i_10];
+            i_8 += results[i_10 + 1];
+            i_7 += results[i_10 + 2];
+            i_6 += results[i_10 + 3];
+            i_5 += results[i_10 + 4];
+            i_4 += results[i_10 + 5];
+            i_3 += results[i_10 + 6];
+            i_2 += results[i_10 + 7];
+            i_9 ^= i_8 << 11;
+            i_6 += i_9;
+            i_8 += i_7;
+            i_8 ^= i_7 >>> 2;
+            i_5 += i_8;
+            i_7 += i_6;
+            i_7 ^= i_6 << 8;
+            i_4 += i_7;
+            i_6 += i_5;
+            i_6 ^= i_5 >>> 16;
+            i_3 += i_6;
+            i_5 += i_4;
+            i_5 ^= i_4 << 10;
+            i_2 += i_5;
+            i_4 += i_3;
+            i_4 ^= i_3 >>> 4;
+            i_9 += i_4;
+            i_3 += i_2;
+            i_3 ^= i_2 << 8;
+            i_8 += i_3;
+            i_2 += i_9;
+            i_2 ^= i_9 >>> 9;
+            i_7 += i_2;
+            i_9 += i_8;
+            memory[i_10] = i_9;
+            memory[i_10 + 1] = i_8;
+            memory[i_10 + 2] = i_7;
+            memory[i_10 + 3] = i_6;
+            memory[i_10 + 4] = i_5;
+            memory[i_10 + 5] = i_4;
+            memory[i_10 + 6] = i_3;
+            memory[i_10 + 7] = i_2;
+        }
+        for (i_10 = 0; i_10 < 256; i_10 += 8) {
+            i_9 += memory[i_10];
+            i_8 += memory[i_10 + 1];
+            i_7 += memory[i_10 + 2];
+            i_6 += memory[i_10 + 3];
+            i_5 += memory[i_10 + 4];
+            i_4 += memory[i_10 + 5];
+            i_3 += memory[i_10 + 6];
+            i_2 += memory[i_10 + 7];
+            i_9 ^= i_8 << 11;
+            i_6 += i_9;
+            i_8 += i_7;
+            i_8 ^= i_7 >>> 2;
+            i_5 += i_8;
+            i_7 += i_6;
+            i_7 ^= i_6 << 8;
+            i_4 += i_7;
+            i_6 += i_5;
+            i_6 ^= i_5 >>> 16;
+            i_3 += i_6;
+            i_5 += i_4;
+            i_5 ^= i_4 << 10;
+            i_2 += i_5;
+            i_4 += i_3;
+            i_4 ^= i_3 >>> 4;
+            i_9 += i_4;
+            i_3 += i_2;
+            i_3 ^= i_2 << 8;
+            i_8 += i_3;
+            i_2 += i_9;
+            i_2 ^= i_9 >>> 9;
+            i_7 += i_2;
+            i_9 += i_8;
+            memory[i_10] = i_9;
+            memory[i_10 + 1] = i_8;
+            memory[i_10 + 2] = i_7;
+            memory[i_10 + 3] = i_6;
+            memory[i_10 + 4] = i_5;
+            memory[i_10 + 5] = i_4;
+            memory[i_10 + 6] = i_3;
+            memory[i_10 + 7] = i_2;
+        }
+        isaac();
+        count = 256;
+    }
 
-	/**
-	 * * Initializes the ISAAC. * * @param flag Indicating if we should perform
-	 * a second pass.
-	 */
-	public void init(boolean flag) {
-		int i;
-		int a, b, c, d, e, f, g, h;
-		a = b = c = d = e = f = g = h = RATIO;
-		for (i = 0; i < 4; ++i) {
-			a ^= b << 11;
-			d += a;
-			b += c;
-			b ^= c >>> 2;
-			e += b;
-			c += d;
-			c ^= d << 8;
-			f += c;
-			d += e;
-			d ^= e >>> 16;
-			g += d;
-			e += f;
-			e ^= f << 10;
-			h += e;
-			f += g;
-			f ^= g >>> 4;
-			a += f;
-			g += h;
-			g ^= h << 8;
-			b += g;
-			h += a;
-			h ^= a >>> 9;
-			c += h;
-			a += b;
-		}
-		for (i = 0; i < SIZE; i += 8) {
-			if (flag) {
-				a += results[i];
-				b += results[i + 1];
-				c += results[i + 2];
-				d += results[i + 3];
-				e += results[i + 4];
-				f += results[i + 5];
-				g += results[i + 6];
-				h += results[i + 7];
-			}
-			a ^= b << 11;
-			d += a;
-			b += c;
-			b ^= c >>> 2;
-			e += b;
-			c += d;
-			c ^= d << 8;
-			f += c;
-			d += e;
-			d ^= e >>> 16;
-			g += d;
-			e += f;
-			e ^= f << 10;
-			h += e;
-			f += g;
-			f ^= g >>> 4;
-			a += f;
-			g += h;
-			g ^= h << 8;
-			b += g;
-			h += a;
-			h ^= a >>> 9;
-			c += h;
-			a += b;
-			memory[i] = a;
-			memory[i + 1] = b;
-			memory[i + 2] = c;
-			memory[i + 3] = d;
-			memory[i + 4] = e;
-			memory[i + 5] = f;
-			memory[i + 6] = g;
-			memory[i + 7] = h;
-		}
-		if (flag) {
-			for (i = 0; i < SIZE; i += 8) {
-				a += memory[i];
-				b += memory[i + 1];
-				c += memory[i + 2];
-				d += memory[i + 3];
-				e += memory[i + 4];
-				f += memory[i + 5];
-				g += memory[i + 6];
-				h += memory[i + 7];
-				a ^= b << 11;
-				d += a;
-				b += c;
-				b ^= c >>> 2;
-				e += b;
-				c += d;
-				c ^= d << 8;
-				f += c;
-				d += e;
-				d ^= e >>> 16;
-				g += d;
-				e += f;
-				e ^= f << 10;
-				h += e;
-				f += g;
-				f ^= g >>> 4;
-				a += f;
-				g += h;
-				g ^= h << 8;
-				b += g;
-				h += a;
-				h ^= a >>> 9;
-				c += h;
-				a += b;
-				memory[i] = a;
-				memory[i + 1] = b;
-				memory[i + 2] = c;
-				memory[i + 3] = d;
-				memory[i + 4] = e;
-				memory[i + 5] = f;
-				memory[i + 6] = g;
-				memory[i + 7] = h;
-			}
-		}
-		isaac();
-		count = SIZE;
+    public int nextInt() {
+        if (count == 0) {
+            isaac();
+            count = 256;
+        }
+        //return 0; //Disables ISAAC
+        return (results[(count -= 1)]);
+    }
+
+    public int peek() {
+        if (count == 0) {
+            isaac();
+            count = 256;
+        }
+        //return 0; //Disables ISAAC
+        return (results[count - 1]);
+    }
+
+    void isaac() {
+        b += ++c;
+        for (int i_2 = 0; i_2 < 256; i_2++) {
+            int i_3 = memory[i_2];
+            if ((i_2 & 0x2) == 0) {
+                if ((i_2 & 0x1) == 0) {
+                    a ^= a << 13;
+                } else {
+                    a ^= a >>> 6;
+                }
+            } else if ((i_2 & 0x1) == 0) {
+                a ^= a << 2;
+            } else {
+                a ^= a >>> 16;
+            }
+            a += memory[128 + i_2 & 0xff];
+            int i_4;
+            memory[i_2] = i_4 = memory[(i_3 & 0x3fc) >> 2] + b + a;
+            results[i_2] = b = memory[(i_4 >> 8 & 0x3fc) >> 2] + i_3;
+        }
+    }
+
+	public int[] getSeeds() {
+		return seeds;
 	}
 }

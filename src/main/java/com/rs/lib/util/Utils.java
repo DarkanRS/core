@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.util;
@@ -64,8 +64,10 @@ import com.rs.cache.loaders.cs2.CS2Instruction;
 import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.cache.loaders.sound.Instrument;
 import com.rs.lib.Constants;
+import com.rs.lib.Globals;
 import com.rs.lib.game.Item;
 import com.rs.lib.game.WorldTile;
+import io.github.classgraph.*;
 
 public final class Utils {
 
@@ -266,17 +268,22 @@ public final class Utils {
 	public static boolean skillSuccess(int level, int rate1, int rate99) {
 		return skillSuccess(level, 1.0, rate1, rate99);
 	}
-
+	
 	public static boolean skillSuccess(int level, double percModifier, int rate1, int rate99) {
+		return skillSuccess(level, percModifier, rate1, rate99, 256);
+	}
+
+	public static boolean skillSuccess(int level, double percModifier, int rate1, int rate99, int maxSuccess) {
 		rate1 = (int) (percModifier * (double) rate1);
 		rate99 = (int) (percModifier * (double) rate99);
 		double perc = (double) level / 99.0;
-		int chance = clampI((int) ((double) rate1 + (((double) rate99 - (double) rate1) * perc)), 0, 256);
+		int chance = clampI((int) ((double) rate1 + (((double) rate99 - (double) rate1) * perc)), 0, maxSuccess);
+		if (Globals.DEBUG)
+			System.out.println("Skilling chance: " + chance + "/256 - " + Utils.formatDouble(((double) chance / 256.0) * 100.0) + "%");
 		return random(255) <= chance;
 	}
 
 	public static Rational toRational(double number, int largestRightOfDecimal) {
-
 		long sign = 1;
 		if (number < 0) {
 			number = -number;
@@ -903,30 +910,6 @@ public final class Utils {
 		return Cache.STORE.getIndex(IndexType.QC_MESSAGES).fileExists(1, id);
 	}
 
-	public static final int[][] getCoordOffsetsNear(int size) {
-		int[] xs = new int[4 + (4 * size)];
-		int[] xy = new int[xs.length];
-		xs[0] = -size;
-		xy[0] = 1;
-		xs[1] = 1;
-		xy[1] = 1;
-		xs[2] = -size;
-		xy[2] = -size;
-		xs[3] = 1;
-		xy[2] = -size;
-		for (int fakeSize = size; fakeSize > 0; fakeSize--) {
-			xs[(4 + ((size - fakeSize) * 4))] = -fakeSize + 1;
-			xy[(4 + ((size - fakeSize) * 4))] = 1;
-			xs[(4 + ((size - fakeSize) * 4)) + 1] = -size;
-			xy[(4 + ((size - fakeSize) * 4)) + 1] = -fakeSize + 1;
-			xs[(4 + ((size - fakeSize) * 4)) + 2] = 1;
-			xy[(4 + ((size - fakeSize) * 4)) + 2] = -fakeSize + 1;
-			xs[(4 + ((size - fakeSize) * 4)) + 3] = -fakeSize + 1;
-			xy[(4 + ((size - fakeSize) * 4)) + 3] = -size;
-		}
-		return new int[][] { xs, xy };
-	}
-
 	public static final int getAngleTo(WorldTile fromTile, WorldTile toTile) {
 		return getAngleTo(toTile.getX() - fromTile.getX(), toTile.getY() - fromTile.getY());
 	}
@@ -1486,22 +1469,20 @@ public final class Utils {
 		return -1;
 	}
 
-	public static ArrayList<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) throws ClassNotFoundException, IOException {
-		ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		for (ClassPath.ClassInfo info : cp.getTopLevelClassesRecursive(packageName)) {
-			if (!Class.forName(info.getName()).isAnnotationPresent(annotation))
-				continue;
-			classes.add(Class.forName(info.getName()));
+	public static List<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) throws ClassNotFoundException, IOException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		try (ScanResult scanResult = new ClassGraph().enableClassInfo().enableAnnotationInfo().acceptPackages(packageName).scan()) {
+			for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(annotation.getName()))
+				classes.add(classInfo.loadClass());
 		}
 		return classes;
 	}
 
-	public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
-		ClassPath cp = ClassPath.from(Thread.currentThread().getContextClassLoader());
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		for (ClassPath.ClassInfo info : cp.getTopLevelClassesRecursive(packageName)) {
-			classes.add(Class.forName(info.getName()));
+	public static List<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		try (ScanResult scanResult = new ClassGraph().enableClassInfo().acceptPackages(packageName).scan()) {
+			for (ClassInfo classInfo : scanResult.getAllClasses())
+				classes.add(classInfo.loadClass());
 		}
 		return classes;
 	}
@@ -1693,7 +1674,7 @@ public final class Utils {
 		return i_3;
 	}
 
-	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", Pattern.CASE_INSENSITIVE);
 
 	public static boolean validEmail(String emailStr) {
 		Matcher matcher = Utils.VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);

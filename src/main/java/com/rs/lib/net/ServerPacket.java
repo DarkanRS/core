@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net;
@@ -179,8 +179,8 @@ public enum ServerPacket {
 	REQUEST_FPS(159, 8),
 	GAME_MESSAGE(160, -1),
 	DISCORD_RICH_PRESENCE_UPDATE(161, -1),
-	
-	
+
+
 	//Pre-world packets
 	WORLD_LOGIN_DETAILS(2, -1),
 	LOBBY_LOGIN_DETAILS(2, -1),

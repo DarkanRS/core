@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.encoders.social;
@@ -23,18 +23,18 @@ import com.rs.lib.net.packets.PacketEncoder;
 
 public class QuickChatPrivate extends PacketEncoder {
 	
-	private String username;
+	private String displayName;
 	private QuickChatMessage message;
 
-	public QuickChatPrivate(String username, QuickChatMessage message) {
+	public QuickChatPrivate(String displayName, QuickChatMessage message) {
 		super(ServerPacket.MESSAGE_QUICKCHAT_PRIVATE);
-		this.username = username;
+		this.displayName = displayName;
 		this.message = message;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeString(username);
+		stream.writeString(displayName);
 		stream.writeShort(message.getFileId());
 		if (message.getData() != null)
 			stream.writeBytes(message.getData());

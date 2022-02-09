@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net.packets.decoders.chat;
@@ -26,6 +26,7 @@ import com.rs.lib.util.Utils;
 @PacketDecoder(ClientPacket.CHAT)
 public class Chat extends Packet {
 	
+	private int type = -1;
 	private int color;
 	private int effect;
 	private String message;
@@ -49,5 +50,14 @@ public class Chat extends Packet {
 
 	public String getMessage() {
 		return message;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public Chat setType(int type) {
+		this.type = type;
+		return this;
 	}
 }

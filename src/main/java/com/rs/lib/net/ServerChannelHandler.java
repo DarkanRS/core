@@ -11,13 +11,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
+
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.decoders.GameDecoder;
@@ -25,6 +26,7 @@ import com.rs.lib.util.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
@@ -35,7 +37,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.netty.channel.ChannelHandler.Sharable;
 
 @Sharable
 public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
@@ -111,14 +112,14 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 		ByteBuf buf = (ByteBuf) msg;
 		Session session = ctx.channel().attr(SESSION_KEY).get();
 		if (session != null) {
-			if (session.getDecoder() == null) {
+			if (session.getDecoder() == null)
 				return;
-			}
 			
 			byte[] b = new byte[(session.buffer.length - session.bufferOffset) + buf.readableBytes()];
 			if ((session.buffer.length - session.bufferOffset) > 0)
 				System.arraycopy(session.buffer, session.bufferOffset, b, 0, session.buffer.length - session.bufferOffset);
 			buf.readBytes(b, session.buffer.length - session.bufferOffset, b.length - (session.buffer.length - session.bufferOffset));
+			buf.release();
 
 			session.buffer = b;
 			session.bufferOffset = 0;

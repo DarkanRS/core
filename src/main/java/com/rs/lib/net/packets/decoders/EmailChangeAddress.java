@@ -11,11 +11,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.net.encoders;
+package com.rs.lib.net.packets.decoders;
 
-public class GameEncoder {
+import com.rs.lib.io.InputStream;
+import com.rs.lib.net.ClientPacket;
+import com.rs.lib.net.packets.Packet;
+import com.rs.lib.net.packets.PacketDecoder;
+
+@PacketDecoder(ClientPacket.EMAIL_VALIDATION_CHANGE_ADDRESS)
+public class EmailChangeAddress extends Packet {
+	
+	private String email;
+	private String email2;
+
+	@Override
+	public Packet decodeAndCreateInstance(InputStream stream) {
+		EmailChangeAddress p = new EmailChangeAddress();
+		p.email = stream.readString();
+		p.email2 = stream.readString();
+		return p;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getEmail2() {
+		return email2;
+	}
 
 }

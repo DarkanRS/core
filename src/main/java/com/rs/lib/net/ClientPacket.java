@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.lib.net;
@@ -99,7 +99,7 @@ public enum ClientPacket {
 	REGION_LOADED_CONFIRM(76, 0),
 	NPC_OP4(77, 3),
 	MOVE_MOUSE_2(78, -1),
-	UNK_79(79, 1), //TODO account creation related
+	ACCOUNT_CREATION_STAGE(79, 1),
 	RESUME_NAMEDIALOG(80, -1),
 	IF_OP10(81, 8),
 	UNK_82(82, 4), //writes one identical int sometime during gamestate/region loading. Probably sends when something fails to load or error occurs
@@ -123,7 +123,16 @@ public enum ClientPacket {
 	REPORT_ABUSE(100, -1),
 	SEND_SIGN_UP_FORM(101, -2),
 	CHECK_EMAIL_VALIDITY(102, -2),
-	PLAYER_OP5(103, 3);
+	PLAYER_OP5(103, 3),
+	
+	//CUSTOM OPCODES FOR LOBBY
+	CC_JOIN(5000, 0),
+	CC_LEAVE(5001, 0),
+	CC_ADD_PLAYER(5002, 0),
+	CC_BAN(5003, 0),
+	CC_CHECKNAME(5004, 0),
+	CC_CREATE(5005, 0)
+	;
 
 	private int id;
 	private int size;

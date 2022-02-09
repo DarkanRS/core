@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//  Copyright © 2021 Trenton Kress
+//  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
 package com.rs.cache.loaders.cs2;
@@ -40,7 +40,7 @@ public class CS2Definitions {
 			if (s.name != null)
 				System.out.println(s.name);
 			for (int x = 0;x < s.operations.length;x++) {
-				if (s.operations[x] == CS2Instruction.instr6739) {
+				if (s.operations[x] == CS2Instruction.instr6698) {
 					System.out.println(i);
 					System.out.println(Arrays.toString(s.operations));
 					id = i;
