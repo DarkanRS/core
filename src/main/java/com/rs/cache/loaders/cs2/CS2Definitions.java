@@ -16,15 +16,15 @@
 //
 package com.rs.cache.loaders.cs2;
 
+import com.rs.cache.Cache;
+import com.rs.cache.IndexType;
+import com.rs.lib.io.InputStream;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.rs.cache.Cache;
-import com.rs.cache.IndexType;
-import com.rs.lib.io.InputStream;
 
 public class CS2Definitions {
 	
@@ -32,24 +32,24 @@ public class CS2Definitions {
 	
 	public static void main(String[] args) throws IOException {
 		Cache.init("../darkan-cache/");
-		int id = 0;
-		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
-			CS2Script s = getScript(i);
-			if (s == null)
-				continue;
-			if (s.name != null)
-				System.out.println(s.name);
-			for (int x = 0;x < s.operations.length;x++) {
-				if (s.operations[x] == CS2Instruction.instr6698) {
-					System.out.println(i);
-					System.out.println(Arrays.toString(s.operations));
-					id = i;
-					break;
-				}
-			}
-		}
-		if (id == 0)
-			return;
+		int id = 3239;
+//		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
+//			CS2Script s = getScript(i);
+//			if (s == null)
+//				continue;
+//			if (s.name != null)
+//				System.out.println(s.name);
+//			for (int x = 0;x < s.operations.length;x++) {
+//				if (s.operations[x] == CS2Instruction.instr6698) {
+//					System.out.println(i);
+//					System.out.println(Arrays.toString(s.operations));
+//					id = i;
+//					break;
+//				}
+//			}
+//		}
+//		if (id == 0)
+//			return;
 		
 		CS2Script script = getScript(id);
 		System.out.println(script);
