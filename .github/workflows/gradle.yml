@@ -27,4 +27,4 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: publishToMavenLocal --no-daemon
+        arguments: build --no-daemon
