@@ -27,8 +27,10 @@ public class Projectile {
 	protected int toSizeX, toSizeY;
 	private int basFrameHeightAdjust = -1;
 	
-	public Projectile(WorldTile from, WorldTile to, int spotAnimId, int startHeight, int endHeight, int startTime, int endTime, int slope, int angle) {
+	public Projectile(WorldTile from, int sourceId, WorldTile to, int lockOnId, int spotAnimId, int startHeight, int endHeight, int startTime, int endTime, int slope, int angle) {
+		this.sourceId = sourceId;
 		this.from = from;
+		this.lockOnId = lockOnId;
 		this.to = to;
 		this.spotAnimId = spotAnimId;
 		this.startHeight = startHeight;
@@ -37,6 +39,18 @@ public class Projectile {
 		this.endTime = endTime;
 		this.slope = slope;
 		this.angle = angle;
+	}
+
+	public Projectile(WorldTile from, int sourceId, WorldTile to, int spotAnimId, int startHeight, int endHeight, int startTime, int endTime, int slope, int angle) {
+		this(from, sourceId, to, -1, spotAnimId, startHeight, endHeight, startTime, endTime, slope, angle);
+	}
+
+	public Projectile(WorldTile from, WorldTile to, int lockOnId, int spotAnimId, int startHeight, int endHeight, int startTime, int endTime, int slope, int angle) {
+		this(from, -1, to, lockOnId, spotAnimId, startHeight, endHeight, startTime, endTime, slope, angle);
+	}
+
+	public Projectile(WorldTile from, WorldTile to, int spotAnimId, int startHeight, int endHeight, int startTime, int endTime, int slope, int angle) {
+		this(from, -1, to, -1, spotAnimId, startHeight, endHeight, startTime, endTime, slope, angle);
 	}
 	
 	public Projectile setBASFrameHeightAdjust(int frameIndex) {
