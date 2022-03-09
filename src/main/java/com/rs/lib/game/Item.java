@@ -16,11 +16,11 @@
 //
 package com.rs.lib.game;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.lib.util.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Item {
 
@@ -109,11 +109,31 @@ public class Item {
 	public Map<String, Object> getMetaData() {
 		return metaData;
 	}
-	
+
 	public Object getMetaData(String key) {
 		if (metaData != null)
 			return metaData.get(key);
 		return null;
+	}
+
+	public <T> T setMetaDataO(String name, Object value) {
+		if (metaData == null)
+			metaData = new HashMap<>();
+		if (value == null) {
+			Object old = metaData.remove(name);
+			return old == null ? null : (T) old;
+		}
+		Object old = metaData.put(name, value);
+		return old == null ? null : (T) old;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getMetaDataO(String name) {
+		if (metaData == null)
+			return null;
+		if (metaData.get(name) == null)
+			return null;
+		return (T) metaData.get(name);
 	}
 	
 	public int incMetaDataI(String key) {
