@@ -28,7 +28,7 @@ public class GenericAttribMap {
 	@SuppressWarnings("unchecked")
 	public <T> T setO(String name, Object value) {
 		if (value == null) {
-			Object old = attribs.remove(name);
+			Object old = attribs.remove("O"+name);
 			return old == null ? null : (T) old;
 		}
 		Object old = attribs.put("O"+name, value);
