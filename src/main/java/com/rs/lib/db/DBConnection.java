@@ -30,10 +30,12 @@ public class DBConnection {
 	private MongoClient client;
 	private MongoDatabase database;
 	private String mongoUrl;
+	private String dbName;
 	private Set<DBItemManager> collections = new HashSet<>();
 	
-	public DBConnection(String mongoUrl) {
+	public DBConnection(String mongoUrl, String dbName) {
 		this.mongoUrl = mongoUrl;
+		this.dbName = dbName;
 	}
 
 	public void init() {
@@ -42,7 +44,7 @@ public class DBConnection {
 			logger.setLevel(Level.OFF);
 			Logger.getLogger("log").setLevel(Level.OFF);
 			client = MongoClients.create(mongoUrl);
-			database = client.getDatabase("darkan-server");
+			database = client.getDatabase(dbName);
 			for (DBItemManager coll : collections)
 				coll.init(this);
 		} catch (Exception e) {
