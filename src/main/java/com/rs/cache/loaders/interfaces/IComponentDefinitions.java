@@ -19,7 +19,9 @@ package com.rs.cache.loaders.interfaces;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
@@ -183,24 +185,30 @@ public class IComponentDefinitions {
 	}
 
 	public static void main(String[] args) throws IOException {
-		//Cache.init();
+		Cache.init("../darkan-cache/");
 		COMPONENT_DEFINITIONS = new IComponentDefinitions[Utils.getInterfaceDefinitionsSize()][];
 
-		int scriptId = 5513;
+//		int scriptId = 5513;
+//		
+//		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
+//			IComponentDefinitions[] defs = getInterface(id);
+//			for (int comp = 0;comp < defs.length;comp++) {
+//				if (defs[comp].usesScript(scriptId))
+//					System.out.println("Interface: " + id + ", " + comp);
+//			}
+//		}
+		IComponentDefinitions[] defs = getInterface(746);
 		
-		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
-			IComponentDefinitions[] defs = getInterface(id);
-			for (int comp = 0;comp < defs.length;comp++) {
-				if (defs[comp].usesScript(scriptId))
-					System.out.println("Interface: " + id + ", " + comp);
-			}
+		Set<Integer> hasChildrenExisting = new HashSet<>();
+		
+		for (IComponentDefinitions def : defs) {
+			if (def.parent != -1)
+				hasChildrenExisting.add(Utils.componentIdFromHash(def.parent));
 		}
-//		IComponentDefinitions[] defs = getInterface(499);
-//		for (IComponentDefinitions def : defs) {
-//			//if (def.baseWidth != 0)
-//			//	System.out.println(def.uid + " - " + def.baseWidth);
-//				System.out.println(def);
-//		}	
+		for (IComponentDefinitions def : defs) {
+			if (def.type == ComponentType.CONTAINER && !hasChildrenExisting.contains(def.componentId))
+				System.out.println(def.componentId + " - " + def.type + " - [" + Utils.interfaceIdFromHash(def.parent) + ", " + Utils.componentIdFromHash(def.parent) + "]");
+		}
 	}
 
 	@Override
