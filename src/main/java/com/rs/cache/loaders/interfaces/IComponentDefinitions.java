@@ -19,8 +19,12 @@ package com.rs.cache.loaders.interfaces;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.rs.cache.Cache;
@@ -159,6 +163,7 @@ public class IComponentDefinitions {
 	public int anInt1335 = 2;
 	public int interfaceId = -1;
 	public int componentId = -1;
+	public List<IComponentDefinitions> children = new ArrayList<>();
 	
 	public static boolean checkForScripts(int scriptId, Object[]... arrs) {
 		for (Object[] arr : arrs) {
@@ -185,7 +190,7 @@ public class IComponentDefinitions {
 	}
 
 	public static void main(String[] args) throws IOException {
-		Cache.init("../darkan-cache/");
+		Cache.init("../cache/");
 		COMPONENT_DEFINITIONS = new IComponentDefinitions[Utils.getInterfaceDefinitionsSize()][];
 
 //		int scriptId = 5513;
@@ -199,16 +204,17 @@ public class IComponentDefinitions {
 //		}
 		IComponentDefinitions[] defs = getInterface(746);
 		
-		Set<Integer> hasChildrenExisting = new HashSet<>();
-		
-		for (IComponentDefinitions def : defs) {
-			if (def.parent != -1)
-				hasChildrenExisting.add(Utils.componentIdFromHash(def.parent));
-		}
-		for (IComponentDefinitions def : defs) {
-			if (def.type == ComponentType.CONTAINER && !hasChildrenExisting.contains(def.componentId))
-				System.out.println(def.componentId + " - " + def.type + " - [" + Utils.interfaceIdFromHash(def.parent) + ", " + Utils.componentIdFromHash(def.parent) + "]");
-		}
+		System.out.println(defs[1]);
+//		Set<Integer> hasChildrenExisting = new HashSet<>();
+//		
+//		for (IComponentDefinitions def : defs) {
+//			if (def.parent != -1)
+//				hasChildrenExisting.add(Utils.componentIdFromHash(def.parent));
+//		}
+//		for (IComponentDefinitions def : defs) {
+//			if (def.type == ComponentType.CONTAINER && !hasChildrenExisting.contains(def.componentId))
+//				System.out.println(def.componentId + " - " + def.type + " - [" + Utils.interfaceIdFromHash(def.parent) + ", " + Utils.componentIdFromHash(def.parent) + "]");
+//		}
 	}
 
 	@Override
@@ -258,6 +264,7 @@ public class IComponentDefinitions {
 			return null;
 		if (COMPONENT_DEFINITIONS[id] == null) {
 			COMPONENT_DEFINITIONS[id] = new IComponentDefinitions[Utils.getInterfaceDefinitionsComponentsSize(id)];
+			Map<Integer, IComponentDefinitions> uidMap = new HashMap<>();
 			for (int i = 0; i < COMPONENT_DEFINITIONS[id].length; i++) {
 				byte[] data = Cache.STORE.getIndex(IndexType.INTERFACES).getFile(id, i);
 				if (data != null) {
@@ -265,11 +272,17 @@ public class IComponentDefinitions {
 					defs.uid = i + (id << 16);
 					defs.interfaceId = id;
 					defs.componentId = i;
+					uidMap.put(defs.uid, defs);
 					if (data[0] != -1) {
 						throw new IllegalStateException("if1");
 					}
 					defs.decode(new InputStream(data));
 				}
+			}
+			for (int i = 0; i < COMPONENT_DEFINITIONS[id].length; i++) {
+				IComponentDefinitions defs = COMPONENT_DEFINITIONS[id][i];
+				if (defs.parent != -1)
+					uidMap.get(defs.parent).children.add(defs);
 			}
 		}
 		return COMPONENT_DEFINITIONS[id];
