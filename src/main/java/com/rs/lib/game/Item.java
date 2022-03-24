@@ -16,11 +16,11 @@
 //
 package com.rs.lib.game;
 
-import com.rs.cache.loaders.ItemDefinitions;
-import com.rs.lib.util.Utils;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.rs.cache.loaders.ItemDefinitions;
+import com.rs.lib.util.Utils;
 
 public class Item {
 
@@ -116,6 +116,7 @@ public class Item {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T setMetaDataO(String name, Object value) {
 		if (metaData == null)
 			metaData = new HashMap<>();

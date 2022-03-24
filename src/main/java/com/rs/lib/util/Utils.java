@@ -45,10 +45,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.reflect.ClassPath;
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
@@ -67,7 +67,10 @@ import com.rs.lib.Constants;
 import com.rs.lib.Globals;
 import com.rs.lib.game.Item;
 import com.rs.lib.game.WorldTile;
-import io.github.classgraph.*;
+
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 public final class Utils {
 
@@ -799,6 +802,7 @@ public final class Utils {
 
 	public static int getTodayDate() {
 		Calendar cal = new GregorianCalendar();
+		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		int day = cal.get(Calendar.DAY_OF_MONTH);
 		int month = cal.get(Calendar.MONTH);
 		return (month * 100 + day);

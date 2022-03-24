@@ -21,11 +21,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
@@ -202,9 +200,11 @@ public class IComponentDefinitions {
 //					System.out.println("Interface: " + id + ", " + comp);
 //			}
 //		}
-		IComponentDefinitions[] defs = getInterface(746);
+		IComponentDefinitions[] defs = getInterface(316);
+		for (IComponentDefinitions def : defs)
+			System.out.println(def);
 		
-		System.out.println(defs[1]);
+//		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
 //		
 //		for (IComponentDefinitions def : defs) {

@@ -18,7 +18,11 @@ package com.rs.lib.net.decoders;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
