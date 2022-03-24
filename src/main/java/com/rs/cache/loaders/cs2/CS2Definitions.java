@@ -16,15 +16,15 @@
 //
 package com.rs.cache.loaders.cs2;
 
-import com.rs.cache.Cache;
-import com.rs.cache.IndexType;
-import com.rs.lib.io.InputStream;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.rs.cache.Cache;
+import com.rs.cache.IndexType;
+import com.rs.lib.io.InputStream;
 
 public class CS2Definitions {
 	
