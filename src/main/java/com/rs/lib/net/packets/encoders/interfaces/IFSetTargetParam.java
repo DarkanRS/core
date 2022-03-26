@@ -16,26 +16,31 @@
 //
 package com.rs.lib.net.packets.encoders.interfaces;
 
-import com.rs.cache.loaders.interfaces.IFTargetParams;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 
 public class IFSetTargetParam extends PacketEncoder {
 	
-	private IFTargetParams params;
+	private int interfaceHash;
+	private int fromSlot;
+	private int toSlot;
+	private int targetParam;
 
-	public IFSetTargetParam(IFTargetParams params) {
+	public IFSetTargetParam(int interfaceId, int componentId, int fromSlot, int toSlot, int targetParam) {
 		super(ServerPacket.IF_SETTARGETPARAM);
-		this.params = params;
+		this.interfaceHash = interfaceId << 16 | componentId;
+		this.fromSlot = fromSlot;
+		this.toSlot = toSlot;
+		this.targetParam = targetParam;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeShortLE128(params.getToSlot());
-		stream.writeIntV2(params.getInterfaceId() << 16 | params.getComponentId());
-		stream.writeShort(params.getFromSlot());
-		stream.writeIntLE(params.getSettings());
+		stream.writeIntV1(interfaceHash);
+		stream.writeShortLE128(targetParam);
+		stream.writeShort(toSlot);
+		stream.writeShort128(fromSlot);
 	}
 
 }
