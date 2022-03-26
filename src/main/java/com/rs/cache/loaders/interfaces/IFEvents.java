@@ -18,7 +18,7 @@ package com.rs.cache.loaders.interfaces;
 
 import java.util.Arrays;
 
-public class IFTargetParams {
+public class IFEvents {
 	
 	public enum UseFlag {
 		GROUND_ITEM(0x1),
@@ -46,7 +46,7 @@ public class IFTargetParams {
 	private int toSlot;
 	private int settings;
 	
-	public IFTargetParams(int interfaceId, int componentId, int fromSlot, int toSlot, int settings) {
+	public IFEvents(int interfaceId, int componentId, int fromSlot, int toSlot, int settings) {
 		this.interfaceId = interfaceId;
 		this.componentId = componentId;
 		this.fromSlot = fromSlot;
@@ -54,12 +54,12 @@ public class IFTargetParams {
 		this.settings =  settings;
 	}
 	
-	public IFTargetParams(int settings, int id) {
+	public IFEvents(int settings, int interfaceId) {
 		this.settings = settings;
-		this.interfaceId = id;
+		this.interfaceId = interfaceId;
 	}
 	
-	public IFTargetParams(int interfaceId, int componentId, int fromSlot, int toSlot) {
+	public IFEvents(int interfaceId, int componentId, int fromSlot, int toSlot) {
 		this(interfaceId, componentId, fromSlot, toSlot, 0);
 	}
 
@@ -67,12 +67,12 @@ public class IFTargetParams {
 		return 0 != (settings >> 1 + i & 0x1);
 	}
 	
-	public IFTargetParams enableRightClickOptions(int... ids) {
+	public IFEvents enableRightClickOptions(int... ids) {
 		Arrays.stream(ids).forEach((id) -> enableRightClickOption(id));
 		return this;
 	}
 
-	public IFTargetParams enableRightClickOption(int id) {
+	public IFEvents enableRightClickOption(int id) {
 		if (id < 0 || id > 9)
 			return null;
 		settings &= ~(0x1 << (id + 1));
@@ -84,13 +84,13 @@ public class IFTargetParams {
 		return ((settings >> 11 & 0x7F) & flag.getFlag()) != 0;
 	}
 	
-	public IFTargetParams enableUseOptions(UseFlag... flags) {
+	public IFEvents enableUseOptions(UseFlag... flags) {
 		Arrays.stream(flags).forEach(this::enableUseOption);
 		return this;
 	}
 	
 	public final int getUseOptionFlags() {
-		return IFTargetParams.getUseOptionFlags(this.settings);
+		return IFEvents.getUseOptionFlags(this.settings);
 	}
 	
 	static final int getUseOptionFlags(int settings) {
@@ -98,7 +98,7 @@ public class IFTargetParams {
 	}
 
 	
-	public IFTargetParams enableUseOption(UseFlag flag) {
+	public IFEvents enableUseOption(UseFlag flag) {
 		int useOptions = settings >> 11 & 0x7F;
 		useOptions |= flag.flag;
 		settings &= ~(useOptions << 11);
@@ -110,7 +110,7 @@ public class IFTargetParams {
 		return (settings >> 21 & 0x1) != 0;
 	}
 	
-	public IFTargetParams enableDrag() {
+	public IFEvents enableDrag() {
 		settings &= ~(1 << 21);
 		settings |= (1 << 21);
 		return this;
@@ -120,26 +120,26 @@ public class IFTargetParams {
 		return (settings & 0x1) != 0;
 	}
 	
-	public IFTargetParams enableContinueButton() {
+	public IFEvents enableContinueButton() {
 		settings |= 0x1;
 		return this;
 	}
 
-	public boolean bit23Enabled() {
+	public boolean ignoresDepthFlags() {
 		return 0 != (settings >> 23 & 0x1);
 	}
 	
-	public IFTargetParams enableBit23() {
+	public IFEvents enableDepthFlagIgnoring() {
 		settings &= ~(1 << 23);
 		settings |= (1 << 23);
 		return this;
 	}
 
-	public boolean bit22Enabled() {
+	public boolean isTargetableByUse() {
 		return 0 != (settings >> 22 & 0x1);
 	}
 	
-	public IFTargetParams enableBit22() {
+	public IFEvents enableUseTargetability() {
 		settings &= ~(1 << 22);
 		settings |= (1 << 22);
 		return this;
@@ -149,7 +149,7 @@ public class IFTargetParams {
 		return settings >> 18 & 0x7;
 	}
 	
-	public IFTargetParams setDepth(int depth) {
+	public IFEvents setDepth(int depth) {
 		if (depth < 0 || depth > 7)
 			return null;
 		settings &= ~(0x7 << 18);
@@ -179,14 +179,14 @@ public class IFTargetParams {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof IFTargetParams)
-			return ((IFTargetParams) other).settings == settings;
+		if (other instanceof IFEvents)
+			return ((IFEvents) other).settings == settings;
 		return false;
 	}
 	
 	@Override
 	public String toString() {
-		String s = "player.getPackets().sendIComponentSettings(new IComponentSettings(" + interfaceId + ", " + componentId + ", " + fromSlot + ", " + toSlot + ")";
+		String s = "player.getPackets().setIFEvents(new IFEvents(" + interfaceId + ", " + componentId + ", " + fromSlot + ", " + toSlot + ")";
 		String useFlags = "";
 		for (int i = 0;i < UseFlag.values().length;i++) {
 			useFlags += useOptionEnabled(UseFlag.values()[i]) ? "UseFlag." + UseFlag.values()[i].name() + "," : "";
@@ -211,11 +211,11 @@ public class IFTargetParams {
 		if (dragEnabled()) {
 			s += ".enableDrag()";
 		}
-		if (bit23Enabled()) {
-			s += ".enableBit23()";
+		if (ignoresDepthFlags()) {
+			s += ".enableDepthFlagIgnoring()";
 		}
-		if (bit22Enabled()) {
-			s += ".enableBit22()";
+		if (isTargetableByUse()) {
+			s += ".enableUseTargetability()";
 		}
 		s += "); //" + settings;
 		return s;

@@ -33,7 +33,7 @@ import com.rs.lib.util.Utils;
 public class IComponentDefinitions {
 
 	private static IComponentDefinitions[][] COMPONENT_DEFINITIONS;
-	private static IFTargetParams GLOBAL_SETTINGS = new IFTargetParams(0, -1);
+	private static IFEvents DEFAULT_EVENTS = new IFEvents(0, -1);
 
 	@SuppressWarnings("rawtypes")
 	public Hashtable aHashTable4823;
@@ -103,7 +103,7 @@ public class IComponentDefinitions {
 	public int animation = -1;
 	public int targetOverCursor = -1;
 	public int mouseOverCursor = -1;
-	public IFTargetParams targetParams = GLOBAL_SETTINGS;
+	public IFEvents events = DEFAULT_EVENTS;
 	public int aspectWidth = 0;
 	public int targetLeaveCursor = -1;
 	public Object[] onLoadScript;
@@ -191,18 +191,21 @@ public class IComponentDefinitions {
 		Cache.init("../cache/");
 		COMPONENT_DEFINITIONS = new IComponentDefinitions[Utils.getInterfaceDefinitionsSize()][];
 
-//		int scriptId = 5513;
-//		
-//		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
-//			IComponentDefinitions[] defs = getInterface(id);
-//			for (int comp = 0;comp < defs.length;comp++) {
-//				if (defs[comp].usesScript(scriptId))
-//					System.out.println("Interface: " + id + ", " + comp);
-//			}
-//		}
-		IComponentDefinitions[] defs = getInterface(316);
-		for (IComponentDefinitions def : defs)
-			System.out.println(def);
+		int scriptId = 4102;
+		
+		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
+			IComponentDefinitions[] defs = getInterface(id);
+			for (int comp = 0;comp < defs.length;comp++) {
+				if (defs[comp].usesScript(scriptId))
+					System.out.println("Interface: " + id + ", " + comp);
+			}
+		}
+		System.out.println(Utils.toInterfaceHash(747, 9));
+		System.out.println(Utils.interfaceIdFromHash(48890055) + " - " + Utils.componentIdFromHash(48890055));
+		
+//		IComponentDefinitions[] defs = getInterface(747);
+//		for (IComponentDefinitions def : defs)
+//			System.out.println(def);
 		
 //		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
@@ -463,7 +466,7 @@ public class IComponentDefinitions {
 		this.anInt1382 = stream.readUnsignedByte();
 		this.useOptionString = stream.readString();
 		i_10 = -1;
-		if (IFTargetParams.getUseOptionFlags(optionMask) != 0) {
+		if (IFEvents.getUseOptionFlags(optionMask) != 0) {
 			i_10 = stream.readUnsignedShort();
 			if (i_10 == 65535) {
 				i_10 = -1;
@@ -483,7 +486,7 @@ public class IComponentDefinitions {
 				this.mouseOverCursor = -1;
 			}
 		}
-		this.targetParams = new IFTargetParams(optionMask, i_10);
+		this.events = new IFEvents(optionMask, i_10);
 		if (i_3 >= 0) {
 			if (this.aHashTable4823 == null)
 				this.aHashTable4823 = new Hashtable();

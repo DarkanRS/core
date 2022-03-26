@@ -34,11 +34,11 @@ public final class VarBitDefinitions {
 	public int endBit;
 
 	public static final void main(String[] args) throws IOException {
-		//Cache.init();
+		Cache.init("../cache/");
 		//System.out.println(getDefs(8065).baseVar);
 		for (int i = 0; i < Cache.STORE.getIndex(IndexType.VARBITS).getLastArchiveId() * 0x3ff; i++) {
 			VarBitDefinitions cd = getDefs(i);
-			if (cd.baseVar == 1966)
+			if (cd.baseVar == 448)
 				System.out.println(cd.id + ": " + cd.startBit + "->" + cd.endBit + " on varp " + cd.baseVar);
 		}
 	}
