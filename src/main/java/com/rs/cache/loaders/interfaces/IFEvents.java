@@ -18,7 +18,7 @@ package com.rs.cache.loaders.interfaces;
 
 import java.util.Arrays;
 
-public class IFTargetParams {
+public class IFEvents {
 	
 	public enum UseFlag {
 		GROUND_ITEM(0x1),
@@ -44,53 +44,53 @@ public class IFTargetParams {
 	private int componentId;
 	private int fromSlot;
 	private int toSlot;
-	private int settings;
+	private int eventsHash;
 	
-	public IFTargetParams(int interfaceId, int componentId, int fromSlot, int toSlot, int settings) {
+	public IFEvents(int interfaceId, int componentId, int fromSlot, int toSlot, int eventsHash) {
 		this.interfaceId = interfaceId;
 		this.componentId = componentId;
 		this.fromSlot = fromSlot;
 		this.toSlot = toSlot;
-		this.settings =  settings;
+		this.eventsHash =  eventsHash;
 	}
 	
-	public IFTargetParams(int settings, int id) {
-		this.settings = settings;
-		this.interfaceId = id;
+	public IFEvents(int settings, int interfaceId) {
+		this.eventsHash = settings;
+		this.interfaceId = interfaceId;
 	}
 	
-	public IFTargetParams(int interfaceId, int componentId, int fromSlot, int toSlot) {
+	public IFEvents(int interfaceId, int componentId, int fromSlot, int toSlot) {
 		this(interfaceId, componentId, fromSlot, toSlot, 0);
 	}
 
 	public boolean clickOptionEnabled(int i) {
-		return 0 != (settings >> 1 + i & 0x1);
+		return 0 != (eventsHash >> 1 + i & 0x1);
 	}
 	
-	public IFTargetParams enableRightClickOptions(int... ids) {
+	public IFEvents enableRightClickOptions(int... ids) {
 		Arrays.stream(ids).forEach((id) -> enableRightClickOption(id));
 		return this;
 	}
 
-	public IFTargetParams enableRightClickOption(int id) {
+	public IFEvents enableRightClickOption(int id) {
 		if (id < 0 || id > 9)
 			return null;
-		settings &= ~(0x1 << (id + 1));
-		settings |= (0x1 << (id + 1));
+		eventsHash &= ~(0x1 << (id + 1));
+		eventsHash |= (0x1 << (id + 1));
 		return this;
 	}
 
 	public final boolean useOptionEnabled(UseFlag flag) {
-		return ((settings >> 11 & 0x7F) & flag.getFlag()) != 0;
+		return ((eventsHash >> 11 & 0x7F) & flag.getFlag()) != 0;
 	}
 	
-	public IFTargetParams enableUseOptions(UseFlag... flags) {
+	public IFEvents enableUseOptions(UseFlag... flags) {
 		Arrays.stream(flags).forEach(this::enableUseOption);
 		return this;
 	}
 	
 	public final int getUseOptionFlags() {
-		return IFTargetParams.getUseOptionFlags(this.settings);
+		return IFEvents.getUseOptionFlags(this.eventsHash);
 	}
 	
 	static final int getUseOptionFlags(int settings) {
@@ -98,62 +98,62 @@ public class IFTargetParams {
 	}
 
 	
-	public IFTargetParams enableUseOption(UseFlag flag) {
-		int useOptions = settings >> 11 & 0x7F;
+	public IFEvents enableUseOption(UseFlag flag) {
+		int useOptions = eventsHash >> 11 & 0x7F;
 		useOptions |= flag.flag;
-		settings &= ~(useOptions << 11);
-		settings |= (useOptions << 11);
+		eventsHash &= ~(useOptions << 11);
+		eventsHash |= (useOptions << 11);
 		return this;
 	}
 
 	public boolean dragEnabled() {
-		return (settings >> 21 & 0x1) != 0;
+		return (eventsHash >> 21 & 0x1) != 0;
 	}
 	
-	public IFTargetParams enableDrag() {
-		settings &= ~(1 << 21);
-		settings |= (1 << 21);
+	public IFEvents enableDrag() {
+		eventsHash &= ~(1 << 21);
+		eventsHash |= (1 << 21);
 		return this;
 	}
 
 	public boolean continueOptionEnabled() {
-		return (settings & 0x1) != 0;
+		return (eventsHash & 0x1) != 0;
 	}
 	
-	public IFTargetParams enableContinueButton() {
-		settings |= 0x1;
+	public IFEvents enableContinueButton() {
+		eventsHash |= 0x1;
 		return this;
 	}
 
-	public boolean bit23Enabled() {
-		return 0 != (settings >> 23 & 0x1);
+	public boolean ignoresDepthFlags() {
+		return 0 != (eventsHash >> 23 & 0x1);
 	}
 	
-	public IFTargetParams enableBit23() {
-		settings &= ~(1 << 23);
-		settings |= (1 << 23);
+	public IFEvents enableDepthFlagIgnoring() {
+		eventsHash &= ~(1 << 23);
+		eventsHash |= (1 << 23);
 		return this;
 	}
 
-	public boolean bit22Enabled() {
-		return 0 != (settings >> 22 & 0x1);
+	public boolean isTargetableByUse() {
+		return 0 != (eventsHash >> 22 & 0x1);
 	}
 	
-	public IFTargetParams enableBit22() {
-		settings &= ~(1 << 22);
-		settings |= (1 << 22);
+	public IFEvents enableUseTargetability() {
+		eventsHash &= ~(1 << 22);
+		eventsHash |= (1 << 22);
 		return this;
 	}
 	
 	public int getDepth() {
-		return settings >> 18 & 0x7;
+		return eventsHash >> 18 & 0x7;
 	}
 	
-	public IFTargetParams setDepth(int depth) {
+	public IFEvents setDepth(int depth) {
 		if (depth < 0 || depth > 7)
 			return null;
-		settings &= ~(0x7 << 18);
-		settings |= (depth << 18);
+		eventsHash &= ~(0x7 << 18);
+		eventsHash |= (depth << 18);
 		return this;
 	}
 	
@@ -174,19 +174,19 @@ public class IFTargetParams {
 	}
 
 	public int getSettings() {
-		return settings;
+		return eventsHash;
 	}
 	
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof IFTargetParams)
-			return ((IFTargetParams) other).settings == settings;
+		if (other instanceof IFEvents)
+			return ((IFEvents) other).eventsHash == eventsHash;
 		return false;
 	}
 	
 	@Override
 	public String toString() {
-		String s = "player.getPackets().sendIComponentSettings(new IComponentSettings(" + interfaceId + ", " + componentId + ", " + fromSlot + ", " + toSlot + ")";
+		String s = "player.getPackets().setIFEvents(new IFEvents(" + interfaceId + ", " + componentId + ", " + fromSlot + ", " + toSlot + ")";
 		String useFlags = "";
 		for (int i = 0;i < UseFlag.values().length;i++) {
 			useFlags += useOptionEnabled(UseFlag.values()[i]) ? "UseFlag." + UseFlag.values()[i].name() + "," : "";
@@ -211,13 +211,13 @@ public class IFTargetParams {
 		if (dragEnabled()) {
 			s += ".enableDrag()";
 		}
-		if (bit23Enabled()) {
-			s += ".enableBit23()";
+		if (ignoresDepthFlags()) {
+			s += ".enableDepthFlagIgnoring()";
 		}
-		if (bit22Enabled()) {
-			s += ".enableBit22()";
+		if (isTargetableByUse()) {
+			s += ".enableUseTargetability()";
 		}
-		s += "); //" + settings;
+		s += "); //" + eventsHash;
 		return s;
 	}
 }
