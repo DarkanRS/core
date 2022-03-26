@@ -44,18 +44,18 @@ public class IFEvents {
 	private int componentId;
 	private int fromSlot;
 	private int toSlot;
-	private int settings;
+	private int eventsHash;
 	
-	public IFEvents(int interfaceId, int componentId, int fromSlot, int toSlot, int settings) {
+	public IFEvents(int interfaceId, int componentId, int fromSlot, int toSlot, int eventsHash) {
 		this.interfaceId = interfaceId;
 		this.componentId = componentId;
 		this.fromSlot = fromSlot;
 		this.toSlot = toSlot;
-		this.settings =  settings;
+		this.eventsHash =  eventsHash;
 	}
 	
 	public IFEvents(int settings, int interfaceId) {
-		this.settings = settings;
+		this.eventsHash = settings;
 		this.interfaceId = interfaceId;
 	}
 	
@@ -64,7 +64,7 @@ public class IFEvents {
 	}
 
 	public boolean clickOptionEnabled(int i) {
-		return 0 != (settings >> 1 + i & 0x1);
+		return 0 != (eventsHash >> 1 + i & 0x1);
 	}
 	
 	public IFEvents enableRightClickOptions(int... ids) {
@@ -75,13 +75,13 @@ public class IFEvents {
 	public IFEvents enableRightClickOption(int id) {
 		if (id < 0 || id > 9)
 			return null;
-		settings &= ~(0x1 << (id + 1));
-		settings |= (0x1 << (id + 1));
+		eventsHash &= ~(0x1 << (id + 1));
+		eventsHash |= (0x1 << (id + 1));
 		return this;
 	}
 
 	public final boolean useOptionEnabled(UseFlag flag) {
-		return ((settings >> 11 & 0x7F) & flag.getFlag()) != 0;
+		return ((eventsHash >> 11 & 0x7F) & flag.getFlag()) != 0;
 	}
 	
 	public IFEvents enableUseOptions(UseFlag... flags) {
@@ -90,7 +90,7 @@ public class IFEvents {
 	}
 	
 	public final int getUseOptionFlags() {
-		return IFEvents.getUseOptionFlags(this.settings);
+		return IFEvents.getUseOptionFlags(this.eventsHash);
 	}
 	
 	static final int getUseOptionFlags(int settings) {
@@ -99,61 +99,61 @@ public class IFEvents {
 
 	
 	public IFEvents enableUseOption(UseFlag flag) {
-		int useOptions = settings >> 11 & 0x7F;
+		int useOptions = eventsHash >> 11 & 0x7F;
 		useOptions |= flag.flag;
-		settings &= ~(useOptions << 11);
-		settings |= (useOptions << 11);
+		eventsHash &= ~(useOptions << 11);
+		eventsHash |= (useOptions << 11);
 		return this;
 	}
 
 	public boolean dragEnabled() {
-		return (settings >> 21 & 0x1) != 0;
+		return (eventsHash >> 21 & 0x1) != 0;
 	}
 	
 	public IFEvents enableDrag() {
-		settings &= ~(1 << 21);
-		settings |= (1 << 21);
+		eventsHash &= ~(1 << 21);
+		eventsHash |= (1 << 21);
 		return this;
 	}
 
 	public boolean continueOptionEnabled() {
-		return (settings & 0x1) != 0;
+		return (eventsHash & 0x1) != 0;
 	}
 	
 	public IFEvents enableContinueButton() {
-		settings |= 0x1;
+		eventsHash |= 0x1;
 		return this;
 	}
 
 	public boolean ignoresDepthFlags() {
-		return 0 != (settings >> 23 & 0x1);
+		return 0 != (eventsHash >> 23 & 0x1);
 	}
 	
 	public IFEvents enableDepthFlagIgnoring() {
-		settings &= ~(1 << 23);
-		settings |= (1 << 23);
+		eventsHash &= ~(1 << 23);
+		eventsHash |= (1 << 23);
 		return this;
 	}
 
 	public boolean isTargetableByUse() {
-		return 0 != (settings >> 22 & 0x1);
+		return 0 != (eventsHash >> 22 & 0x1);
 	}
 	
 	public IFEvents enableUseTargetability() {
-		settings &= ~(1 << 22);
-		settings |= (1 << 22);
+		eventsHash &= ~(1 << 22);
+		eventsHash |= (1 << 22);
 		return this;
 	}
 	
 	public int getDepth() {
-		return settings >> 18 & 0x7;
+		return eventsHash >> 18 & 0x7;
 	}
 	
 	public IFEvents setDepth(int depth) {
 		if (depth < 0 || depth > 7)
 			return null;
-		settings &= ~(0x7 << 18);
-		settings |= (depth << 18);
+		eventsHash &= ~(0x7 << 18);
+		eventsHash |= (depth << 18);
 		return this;
 	}
 	
@@ -174,13 +174,13 @@ public class IFEvents {
 	}
 
 	public int getSettings() {
-		return settings;
+		return eventsHash;
 	}
 	
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof IFEvents)
-			return ((IFEvents) other).settings == settings;
+			return ((IFEvents) other).eventsHash == eventsHash;
 		return false;
 	}
 	
@@ -217,7 +217,7 @@ public class IFEvents {
 		if (isTargetableByUse()) {
 			s += ".enableUseTargetability()";
 		}
-		s += "); //" + settings;
+		s += "); //" + eventsHash;
 		return s;
 	}
 }
