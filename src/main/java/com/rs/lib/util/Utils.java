@@ -1700,6 +1700,8 @@ public final class Utils {
 	}
 
 	public static String addArticle(String name) {
+		if (name == null || name.isEmpty())
+			return "";
 		String s = "";
 		switch (name.toCharArray()[0]) {
 		case 'a':
