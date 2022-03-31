@@ -113,7 +113,7 @@ public final class ItemDefinitions {
 	public boolean lended;
 
 	private HashMap<Integer, Object> clientScriptData;
-	private HashMap<Integer, Integer> itemRequiriments;
+	private HashMap<Integer, Integer> wieldRequirements;
 
 	/**
 	 * 1 = thrown weapons? and cannonballs 2 = arrows 3 = bolts 4 = construction
@@ -522,7 +522,12 @@ public final class ItemDefinitions {
 	}
 
 	public int getWieldQuestReq() {
-		return getCS2Var(-1, 743);
+		switch(id) {
+			case 19784:
+				return 174;
+			default:
+				return getCS2Var(-1, 743);
+		}
 	}
 	
 	public int getParamVal(int id) {
@@ -542,7 +547,7 @@ public final class ItemDefinitions {
 	public HashMap<Integer, Integer> getWearingSkillRequiriments() {
 		if (clientScriptData == null)
 			return null;
-		if (itemRequiriments == null) {
+		if (wieldRequirements == null) {
 			HashMap<Integer, Integer> skills = new HashMap<Integer, Integer>();
 			for (int i = 0; i < 10; i++) {
 				Integer skill = (Integer) clientScriptData.get(749 + (i * 2));
@@ -555,63 +560,71 @@ public final class ItemDefinitions {
 			Integer maxedSkill = (Integer) clientScriptData.get(277);
 			if (maxedSkill != null)
 				skills.put(maxedSkill, getId() == 19709 ? 120 : 99);
-			itemRequiriments = skills;
+			wieldRequirements = skills;
 			switch(getId()) {
 			case 8846:
-				itemRequiriments.put(Constants.ATTACK, 5);
-				itemRequiriments.put(Constants.DEFENSE, 5);
+				wieldRequirements.put(Constants.ATTACK, 5);
+				wieldRequirements.put(Constants.DEFENSE, 5);
 				break;
 			case 8847:
-				itemRequiriments.put(Constants.ATTACK, 10);
-				itemRequiriments.put(Constants.DEFENSE, 10);
+				wieldRequirements.put(Constants.ATTACK, 10);
+				wieldRequirements.put(Constants.DEFENSE, 10);
 				break;
 			case 8848:
-				itemRequiriments.put(Constants.ATTACK, 20);
-				itemRequiriments.put(Constants.DEFENSE, 20);
+				wieldRequirements.put(Constants.ATTACK, 20);
+				wieldRequirements.put(Constants.DEFENSE, 20);
 				break;
 			case 8849:
-				itemRequiriments.put(Constants.ATTACK, 30);
-				itemRequiriments.put(Constants.DEFENSE, 30);
+				wieldRequirements.put(Constants.ATTACK, 30);
+				wieldRequirements.put(Constants.DEFENSE, 30);
 				break;
 			case 8850:
-				itemRequiriments.put(Constants.ATTACK, 40);
-				itemRequiriments.put(Constants.DEFENSE, 40);
+				wieldRequirements.put(Constants.ATTACK, 40);
+				wieldRequirements.put(Constants.DEFENSE, 40);
 				break;
 			case 20072:
-				itemRequiriments.put(Constants.ATTACK, 60);
-				itemRequiriments.put(Constants.DEFENSE, 60);
+				wieldRequirements.put(Constants.ATTACK, 60);
+				wieldRequirements.put(Constants.DEFENSE, 60);
 				break;
 			case 10498:
-				itemRequiriments.put(Constants.RANGE, 30);
+				wieldRequirements.put(Constants.RANGE, 30);
 				break;
 			case 10499:
-				itemRequiriments.put(Constants.RANGE, 50);
+				wieldRequirements.put(Constants.RANGE, 50);
 				break;
 			case 20068:
-				itemRequiriments.put(Constants.RANGE, 50);
+				wieldRequirements.put(Constants.RANGE, 50);
 				break;
 			case 22358:
 			case 22359:
 			case 22360:
 			case 22361:
-				itemRequiriments.put(Constants.ATTACK, 80);
+				wieldRequirements.put(Constants.ATTACK, 80);
 				break;
 			case 22362:
 			case 22363:
 			case 22364:
 			case 22365:
-				itemRequiriments.put(Constants.RANGE, 80);
+				wieldRequirements.put(Constants.RANGE, 80);
 				break;
 			case 22366:
 			case 22367:
 			case 22368:
 			case 22369:
-				itemRequiriments.put(Constants.MAGIC, 80);
+				wieldRequirements.put(Constants.MAGIC, 80);
+				break;
+			case 21371:
+			case 21372:
+			case 21373:
+			case 21374:
+			case 21375:
+				wieldRequirements.put(Constants.ATTACK, 85);
+				wieldRequirements.put(Constants.SLAYER, 80);
 				break;
 			}
 		}
 
-		return itemRequiriments;
+		return wieldRequirements;
 	}
 
 	private void setDefaultOptions() {
