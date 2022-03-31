@@ -112,7 +112,7 @@ public final class ItemDefinitions {
 	public boolean noted;
 	public boolean lended;
 
-	private HashMap<Integer, Object> clientScriptData;
+	private HashMap<Integer, Object> params;
 	private HashMap<Integer, Integer> wieldRequirements;
 
 	/**
@@ -130,18 +130,18 @@ public final class ItemDefinitions {
 	 * produce
 	 */
 	public int getItemCategory() {
-		if (clientScriptData == null)
+		if (params == null)
 			return -1;
-		Object protectedOnDeath = clientScriptData.get(2195);
+		Object protectedOnDeath = params.get(2195);
 		if (protectedOnDeath != null && protectedOnDeath instanceof Integer)
 			return (Integer) protectedOnDeath;
 		return -1;
 	}
 
 	public int getIdk() {
-		if (clientScriptData == null)
+		if (params == null)
 			return -1;
-		Object protectedOnDeath = clientScriptData.get(1397);
+		Object protectedOnDeath = params.get(1397);
 		if (protectedOnDeath != null && protectedOnDeath instanceof Integer)
 			return (Integer) protectedOnDeath;
 		return -1;
@@ -319,41 +319,41 @@ public final class ItemDefinitions {
 
 	public void setBonuses(int[] bonuses2) {
 		if (bonuses2[STAB_ATTACK] != 0 || bonuses[STAB_ATTACK] != bonuses2[STAB_ATTACK])
-			clientScriptData.put(0, bonuses2[STAB_ATTACK]);
+			params.put(0, bonuses2[STAB_ATTACK]);
 		if (bonuses2[SLASH_ATTACK] != 0 || bonuses[SLASH_ATTACK] != bonuses2[SLASH_ATTACK])
-			clientScriptData.put(1, bonuses2[SLASH_ATTACK]);
+			params.put(1, bonuses2[SLASH_ATTACK]);
 		if (bonuses2[CRUSH_ATTACK] != 0 || bonuses[CRUSH_ATTACK] != bonuses2[CRUSH_ATTACK])
-			clientScriptData.put(2, bonuses2[CRUSH_ATTACK]);
+			params.put(2, bonuses2[CRUSH_ATTACK]);
 		if (bonuses2[MAGIC_ATTACK] != 0 || bonuses[MAGIC_ATTACK] != bonuses2[MAGIC_ATTACK])
-			clientScriptData.put(3, bonuses2[MAGIC_ATTACK]);
+			params.put(3, bonuses2[MAGIC_ATTACK]);
 		if (bonuses2[RANGE_ATTACK] != 0 || bonuses[RANGE_ATTACK] != bonuses2[RANGE_ATTACK])
-			clientScriptData.put(4, bonuses2[RANGE_ATTACK]);
+			params.put(4, bonuses2[RANGE_ATTACK]);
 		if (bonuses2[STAB_DEF] != 0 || bonuses[STAB_DEF] != bonuses2[STAB_DEF])
-			clientScriptData.put(5, bonuses2[STAB_DEF]);
+			params.put(5, bonuses2[STAB_DEF]);
 		if (bonuses2[SLASH_DEF] != 0 || bonuses[SLASH_DEF] != bonuses2[SLASH_DEF])
-			clientScriptData.put(6, bonuses2[SLASH_DEF]);
+			params.put(6, bonuses2[SLASH_DEF]);
 		if (bonuses2[CRUSH_DEF] != 0 || bonuses[CRUSH_DEF] != bonuses2[CRUSH_DEF])
-			clientScriptData.put(7, bonuses2[CRUSH_DEF]);
+			params.put(7, bonuses2[CRUSH_DEF]);
 		if (bonuses2[MAGIC_DEF] != 0 || bonuses[MAGIC_DEF] != bonuses2[MAGIC_DEF])
-			clientScriptData.put(8, bonuses2[MAGIC_DEF]);
+			params.put(8, bonuses2[MAGIC_DEF]);
 		if (bonuses2[RANGE_DEF] != 0 || bonuses[RANGE_DEF] != bonuses2[RANGE_DEF])
-			clientScriptData.put(9, bonuses2[RANGE_DEF]);
+			params.put(9, bonuses2[RANGE_DEF]);
 		if (bonuses2[SUMMONING_DEF] != 0 || bonuses[SUMMONING_DEF] != bonuses2[SUMMONING_DEF])
-			clientScriptData.put(417, bonuses2[SUMMONING_DEF]);
+			params.put(417, bonuses2[SUMMONING_DEF]);
 		if (bonuses2[PRAYER_BONUS] != 0 || bonuses[PRAYER_BONUS] != bonuses2[PRAYER_BONUS])
-			clientScriptData.put(11, bonuses2[PRAYER_BONUS]);
+			params.put(11, bonuses2[PRAYER_BONUS]);
 		if (bonuses2[ABSORVE_MELEE_BONUS] != 0 || bonuses[ABSORVE_MELEE_BONUS] != bonuses2[ABSORVE_MELEE_BONUS])
-			clientScriptData.put(967, bonuses2[ABSORVE_MELEE_BONUS]);
+			params.put(967, bonuses2[ABSORVE_MELEE_BONUS]);
 		if (bonuses2[ABSORVE_RANGE_BONUS] != 0 || bonuses[ABSORVE_RANGE_BONUS] != bonuses2[ABSORVE_RANGE_BONUS])
-			clientScriptData.put(968, bonuses2[ABSORVE_RANGE_BONUS]);
+			params.put(968, bonuses2[ABSORVE_RANGE_BONUS]);
 		if (bonuses2[ABSORVE_MAGE_BONUS] != 0 || bonuses[ABSORVE_MAGE_BONUS] != bonuses2[ABSORVE_MAGE_BONUS])
-			clientScriptData.put(969, bonuses2[ABSORVE_MAGE_BONUS]);
+			params.put(969, bonuses2[ABSORVE_MAGE_BONUS]);
 		if (bonuses2[STRENGTH_BONUS] != 0 || bonuses[STRENGTH_BONUS] != bonuses2[STRENGTH_BONUS])
-			clientScriptData.put(641, bonuses2[STRENGTH_BONUS] * 10);
+			params.put(641, bonuses2[STRENGTH_BONUS] * 10);
 		if (bonuses2[RANGED_STR_BONUS] != 0 || bonuses[RANGED_STR_BONUS] != bonuses2[RANGED_STR_BONUS])
-			clientScriptData.put(643, bonuses2[RANGED_STR_BONUS] * 10);
+			params.put(643, bonuses2[RANGED_STR_BONUS] * 10);
 		if (bonuses2[MAGIC_DAMAGE] != 0 || bonuses[MAGIC_DAMAGE] != bonuses2[MAGIC_DAMAGE])
-			clientScriptData.put(685, bonuses2[MAGIC_DAMAGE]);
+			params.put(685, bonuses2[MAGIC_DAMAGE]);
 	}
 
 	private void toNote() {
@@ -386,7 +386,7 @@ public final class ItemDefinitions {
 		maleEquip2 = realItem.maleEquip2;
 		femaleEquip1 = realItem.femaleEquip1;
 		femaleEquip2 = realItem.femaleEquip2;
-		clientScriptData = realItem.clientScriptData;
+		params = realItem.params;
 		wearPos = realItem.wearPos;
 		wearPos2 = realItem.wearPos2;
 	}
@@ -411,7 +411,7 @@ public final class ItemDefinitions {
 		maleEquip2 = realItem.maleEquip2;
 		femaleEquip1 = realItem.femaleEquip1;
 		femaleEquip2 = realItem.femaleEquip2;
-		clientScriptData = realItem.clientScriptData;
+		params = realItem.params;
 		wearPos = realItem.wearPos;
 		wearPos2 = realItem.wearPos2;
 		lended = true;
@@ -436,9 +436,9 @@ public final class ItemDefinitions {
 	}
 
 	public int getStageOnDeath() {
-		if (clientScriptData == null)
+		if (params == null)
 			return 0;
-		Object protectedOnDeath = clientScriptData.get(1397);
+		Object protectedOnDeath = params.get(1397);
 		if (protectedOnDeath != null && protectedOnDeath instanceof Integer)
 			return (Integer) protectedOnDeath;
 		return 0;
@@ -474,27 +474,27 @@ public final class ItemDefinitions {
 	}
 
 	public boolean hasSpecialBar() {
-		if (clientScriptData == null)
+		if (params == null)
 			return false;
-		Object specialBar = clientScriptData.get(686);
+		Object specialBar = params.get(686);
 		if (specialBar != null && specialBar instanceof Integer)
 			return (Integer) specialBar == 1;
 		return false;
 	}
 
 	public int getRenderAnimId() {
-		if (clientScriptData == null)
+		if (params == null)
 			return 1426;
-		Object animId = clientScriptData.get(644);
+		Object animId = params.get(644);
 		if (animId != null && animId instanceof Integer)
 			return (Integer) animId;
 		return 1426;
 	}
 
 	public double getDungShopValueMultiplier() {
-		if (clientScriptData == null)
+		if (params == null)
 			return 1;
-		Object value = clientScriptData.get(1046);
+		Object value = params.get(1046);
 		if (value != null && value instanceof Integer)
 			return ((Integer) value).doubleValue() / 100;
 		return 1;
@@ -513,9 +513,9 @@ public final class ItemDefinitions {
 	}
 
 	public int getQuestId() {
-		if (clientScriptData == null)
+		if (params == null)
 			return -1;
-		Object questId = clientScriptData.get(861);
+		Object questId = params.get(861);
 		if (questId != null && questId instanceof Integer)
 			return (Integer) questId;
 		return -1;
@@ -525,39 +525,41 @@ public final class ItemDefinitions {
 		switch(id) {
 			case 19784:
 				return 174;
+			case 10887:
+				return 120;
 			default:
-				return getCS2Var(-1, 743);
+				return getParam(-1, 743);
 		}
 	}
 	
 	public int getParamVal(int id) {
-		return getCS2Var(0, id);
+		return getParam(0, id);
 	}
 	
-	public int getCS2Var(int defaultVal, int id) {
-		if (clientScriptData == null || clientScriptData.get(id) == null)
+	public int getParam(int defaultVal, int id) {
+		if (params == null || params.get(id) == null)
 			return defaultVal;
-		return (int) clientScriptData.get(id);
+		return (int) params.get(id);
 	}
 
 	public HashMap<Integer, Object> getClientScriptData() {
-		return clientScriptData;
+		return params;
 	}
 
 	public HashMap<Integer, Integer> getWearingSkillRequiriments() {
-		if (clientScriptData == null)
+		if (params == null)
 			return null;
 		if (wieldRequirements == null) {
 			HashMap<Integer, Integer> skills = new HashMap<Integer, Integer>();
 			for (int i = 0; i < 10; i++) {
-				Integer skill = (Integer) clientScriptData.get(749 + (i * 2));
+				Integer skill = (Integer) params.get(749 + (i * 2));
 				if (skill != null) {
-					Integer level = (Integer) clientScriptData.get(750 + (i * 2));
+					Integer level = (Integer) params.get(750 + (i * 2));
 					if (level != null)
 						skills.put(skill, level);
 				}
 			}
-			Integer maxedSkill = (Integer) clientScriptData.get(277);
+			Integer maxedSkill = (Integer) params.get(277);
 			if (maxedSkill != null)
 				skills.put(maxedSkill, getId() == 19709 ? 120 : 99);
 			wieldRequirements = skills;
@@ -620,6 +622,32 @@ public final class ItemDefinitions {
 			case 21375:
 				wieldRequirements.put(Constants.ATTACK, 85);
 				wieldRequirements.put(Constants.SLAYER, 80);
+				break;
+			case 10887:
+				wieldRequirements.put(Constants.ATTACK, 60);
+				wieldRequirements.put(Constants.STRENGTH, 40);
+				break;
+			case 7459:
+				wieldRequirements.put(Constants.DEFENSE, 13);
+				break;
+			case 7460:
+				wieldRequirements.put(Constants.DEFENSE, 34);
+				break;
+			case 7461:
+				wieldRequirements.put(Constants.DEFENSE, 41);
+				break;
+			case 7462:
+				wieldRequirements.put(Constants.DEFENSE, 41);
+				wieldRequirements.put(Constants.COOKING, 64);
+				wieldRequirements.put(Constants.AGILITY, 48);
+				wieldRequirements.put(Constants.MINING, 44);
+				wieldRequirements.put(Constants.FISHING, 47);
+				wieldRequirements.put(Constants.THIEVING, 53);
+				wieldRequirements.put(Constants.HERBLORE, 19);
+				wieldRequirements.put(Constants.MAGIC, 50);
+				wieldRequirements.put(Constants.SMITHING, 34);
+				wieldRequirements.put(Constants.FIREMAKING, 50);
+				wieldRequirements.put(Constants.RANGE, 40);
 				break;
 			}
 		}
@@ -941,11 +969,11 @@ public final class ItemDefinitions {
 			stream.writeShort(bindTemplateId);
 		}
 		
-		if (clientScriptData != null) {
+		if (params != null) {
 			stream.writeByte(249);
-			stream.writeByte(clientScriptData.size());
-			for (int key : clientScriptData.keySet()) {
-				Object value = clientScriptData.get(key);
+			stream.writeByte(params.size());
+			for (int key : params.keySet()) {
+				Object value = params.get(key);
 				stream.writeByte(value instanceof String ? 1 : 0);
 				stream.write24BitInt(key);
 				if (value instanceof String) {
@@ -1167,13 +1195,13 @@ public final class ItemDefinitions {
 			stackable = 2;
 		} else if (opcode == 249) {
 			int length = stream.readUnsignedByte();
-			if (clientScriptData == null)
-				clientScriptData = new HashMap<Integer, Object>(length);
+			if (params == null)
+				params = new HashMap<Integer, Object>(length);
 			for (int index = 0; index < length; index++) {
 				boolean stringInstance = stream.readUnsignedByte() == 1;
 				int key = stream.read24BitInt();
 				Object value = stringInstance ? stream.readString() : stream.readInt();
-				clientScriptData.put(key, value);
+				params.put(key, value);
 			}
 		} else {
 			System.err.println("MISSING OPCODE " + opcode + " FOR ITEM " + getId());
@@ -1191,18 +1219,18 @@ public final class ItemDefinitions {
 	}
 
 	public boolean containsEquipmentOption(int optionId, String option) {
-		if (clientScriptData == null)
+		if (params == null)
 			return false;
-		Object wearingOption = clientScriptData.get(528 + optionId);
+		Object wearingOption = params.get(528 + optionId);
 		if (wearingOption != null && wearingOption instanceof String)
 			return wearingOption.equals(option);
 		return false;
 	}
 
 	public String getEquipmentOption(int optionId) {
-		if (clientScriptData == null)
+		if (params == null)
 			return "null";
-		Object wearingOption = clientScriptData.get(optionId == 4 ? 1211 : (528 + optionId));
+		Object wearingOption = params.get(optionId == 4 ? 1211 : (528 + optionId));
 		if (wearingOption != null && wearingOption instanceof String)
 			return (String) wearingOption;
 		return "null";
@@ -1313,14 +1341,14 @@ public final class ItemDefinitions {
 	}
 
 	public List<Item> getCreateItemRequirements(boolean infusingScroll) {
-		if (clientScriptData == null) {
+		if (params == null) {
 			return null;
 		}
 		List<Item> items = new ArrayList<Item>();
 		int requiredId = -1;
 		int requiredAmount = -1;
-		for (int key : clientScriptData.keySet()) {
-			Object value = clientScriptData.get(key);
+		for (int key : params.keySet()) {
+			Object value = params.get(key);
 			if (value instanceof String) {
 				continue;
 			}
@@ -1352,14 +1380,14 @@ public final class ItemDefinitions {
 	}
 
 	public HashMap<Integer, Integer> getCreateItemRequirements() {
-		if (clientScriptData == null) {
+		if (params == null) {
 			return null;
 		}
 		HashMap<Integer, Integer> items = new HashMap<Integer, Integer>();
 		int requiredId = -1;
 		int requiredAmount = -1;
-		for (int key : clientScriptData.keySet()) {
-			Object value = clientScriptData.get(key);
+		for (int key : params.keySet()) {
+			Object value = params.get(key);
 			if (value instanceof String) {
 				continue;
 			}
