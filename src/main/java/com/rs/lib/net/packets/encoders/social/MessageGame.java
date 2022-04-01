@@ -50,14 +50,14 @@ public class MessageGame extends PacketEncoder {
 
 		if (target != null) {
 			maskData |= 0x1;
-			maskData |= 0x2;
+			//maskData |= 0x2;
 		}
 		stream.writeSmart(type.getValue());
 		stream.writeInt(0); //junk
 		stream.writeByte(maskData);
 		if (target != null) {
 			stream.writeString(target.getDisplayName());
-			stream.writeString(target.getUsername());
+			//stream.writeString(target.getDisplayName());
 		}
 		stream.writeString(message);
 	}
