@@ -1490,6 +1490,15 @@ public final class Utils {
 		}
 		return classes;
 	}
+	
+	public static List<Class<?>> getSubClasses(String packageName, Class<?> superClass) throws ClassNotFoundException, IOException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		try (ScanResult scanResult = new ClassGraph().enableClassInfo().acceptPackages(packageName).scan()) {
+			for (ClassInfo classInfo : scanResult.getSubclasses(superClass.getName()))
+				classes.add(classInfo.loadClass());
+		}
+		return classes;
+	}
 
 	public static String[] SYMBOLS = { ":", ";" };
 
