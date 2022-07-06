@@ -18,16 +18,12 @@ package com.rs.cache.loaders;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
 import com.rs.cache.Store;
 import com.rs.lib.Constants;
-import com.rs.lib.game.Item;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.util.Utils;
@@ -1338,73 +1334,6 @@ public final class ItemDefinitions {
 	
 	public boolean isEquipType(int type) {
 		return wearPos3 == type || wearPos2 == type;
-	}
-
-	public List<Item> getCreateItemRequirements(boolean infusingScroll) {
-		if (params == null) {
-			return null;
-		}
-		List<Item> items = new ArrayList<Item>();
-		int requiredId = -1;
-		int requiredAmount = -1;
-		for (int key : params.keySet()) {
-			Object value = params.get(key);
-			if (value instanceof String) {
-				continue;
-			}
-			if (key >= 536 && key <= 770) {
-				if (key % 2 == 0) {
-					requiredId = (Integer) value;
-				} else {
-					requiredAmount = (Integer) value;
-				}
-				if (requiredId != -1 && requiredAmount != -1) {
-					if (infusingScroll) {
-						requiredId = getId();
-						requiredAmount = 1;
-					}
-					if (items.size() == 0 && !infusingScroll) {
-						items.add(new Item(requiredAmount, 1));
-					} else {
-						items.add(new Item(requiredId, requiredAmount));
-					}
-					requiredId = -1;
-					requiredAmount = -1;
-					if (infusingScroll) {
-						break;
-					}
-				}
-			}
-		}
-		return items;
-	}
-
-	public HashMap<Integer, Integer> getCreateItemRequirements() {
-		if (params == null) {
-			return null;
-		}
-		HashMap<Integer, Integer> items = new HashMap<Integer, Integer>();
-		int requiredId = -1;
-		int requiredAmount = -1;
-		for (int key : params.keySet()) {
-			Object value = params.get(key);
-			if (value instanceof String) {
-				continue;
-			}
-			if (key >= 538 && key <= 770) {
-				if (key % 2 == 0) {
-					requiredId = (Integer) value;
-				} else {
-					requiredAmount = (Integer) value;
-				}
-				if (requiredId != -1 && requiredAmount != -1) {
-					items.put(requiredAmount, requiredId);
-					requiredId = -1;
-					requiredAmount = -1;
-				}
-			}
-		}
-		return items;
 	}
 
 	public boolean isBinded() {
