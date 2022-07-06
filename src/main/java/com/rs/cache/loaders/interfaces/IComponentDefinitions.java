@@ -203,9 +203,9 @@ public class IComponentDefinitions {
 		System.out.println(Utils.toInterfaceHash(747, 9));
 		System.out.println(Utils.interfaceIdFromHash(48890055) + " - " + Utils.componentIdFromHash(48890055));
 		
-//		IComponentDefinitions[] defs = getInterface(747);
-//		for (IComponentDefinitions def : defs)
-//			System.out.println(def);
+		IComponentDefinitions[] defs = getInterface(793);
+		for (IComponentDefinitions def : defs)
+			System.out.println(def);
 		
 //		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
