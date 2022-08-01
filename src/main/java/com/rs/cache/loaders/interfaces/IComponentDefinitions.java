@@ -191,7 +191,7 @@ public class IComponentDefinitions {
 		Cache.init("../cache/");
 		COMPONENT_DEFINITIONS = new IComponentDefinitions[Utils.getInterfaceDefinitionsSize()][];
 
-		int scriptId = 4102;
+		int scriptId = 787;
 		
 		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
 			IComponentDefinitions[] defs = getInterface(id);
@@ -200,12 +200,12 @@ public class IComponentDefinitions {
 					System.out.println("Interface: " + id + ", " + comp);
 			}
 		}
-		System.out.println(Utils.toInterfaceHash(747, 9));
-		System.out.println(Utils.interfaceIdFromHash(48890055) + " - " + Utils.componentIdFromHash(48890055));
-		
-		IComponentDefinitions[] defs = getInterface(793);
-		for (IComponentDefinitions def : defs)
-			System.out.println(def);
+//		System.out.println(Utils.toInterfaceHash(747, 9));
+		System.out.println(Utils.interfaceIdFromHash(25428066) + " - " + Utils.componentIdFromHash(25428066));
+//		
+//		IComponentDefinitions[] defs = getInterface(793);
+//		for (IComponentDefinitions def : defs)
+//			System.out.println(def);
 		
 //		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
