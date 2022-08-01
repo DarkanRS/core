@@ -17,12 +17,8 @@
 package com.rs.lib.web;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import com.google.gson.JsonIOException;
@@ -32,11 +28,20 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.Headers;
 import io.undertow.util.StatusCodes;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class APIUtil {
 	
-	private static HttpClient CLIENT = HttpClient.newHttpClient();
-		
+	private static OkHttpClient client = new OkHttpClient.Builder()
+			.readTimeout(10, TimeUnit.SECONDS)
+			.build();
+			
 	public static void sendResponse(HttpServerExchange exchange, int stateCode, Object responseObject) {
 		exchange.setStatusCode(stateCode);
 		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
@@ -63,37 +68,56 @@ public class APIUtil {
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
 		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
-		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
-		CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-		.thenApply(HttpResponse::body)
-		.thenAccept(res -> {
-			try {
-				if (cb != null)
-					cb.accept(JsonFileManager.fromJSONString(res, returnType));
-			} catch (JsonIOException | IOException e) {
-				if (cb != null)
+		Request request = new Request.Builder()
+				.url(url)
+				.post(RequestBody.create(JsonFileManager.toJson(body), MediaType.parse("application/json")))
+				.header("accept", "application/json")
+				.header("key", apiKey)
+				.build();
+
+		Call call = client.newCall(request);
+		call.enqueue(new Callback() {
+			public void onResponse(Call call, Response response) throws IOException {
+				String json = response.body().string();
+				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
+				try {
+					T res = JsonFileManager.fromJSONString(json, returnType);
+					cb.accept(res);
+				} catch (Exception e) {
+					System.err.println("Error parsing body into " + returnType + ": " + json);
 					cb.accept(null);
-				System.err.println("Exception handling POST " + url + " - " + e.getMessage());
+				}
 			}
-		}).exceptionally(e -> {
-			System.err.println("Exception handling POST " + url + " - " + e.getMessage());
-			if (cb != null)
+
+			public void onFailure(Call call, IOException e) {
+				java.util.logging.Logger.getLogger("Web").finest("Request failed...");
 				cb.accept(null);
-			return null;
+			}
 		});
 	}
 	
 	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
 		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
-		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(2)).POST(HttpRequest.BodyPublishers.ofString(JsonFileManager.toJson(body))).header("accept", "application/json").header("key", apiKey).build();
-		HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-		java.util.logging.Logger.getLogger("Web").finest("Request finished: " + response.body());
-		if (returnType == null)
-			return null;
+		Request request = new Request.Builder()
+				.url(url)
+				.post(RequestBody.create(JsonFileManager.toJson(body), MediaType.parse("application/json")))
+				.header("accept", "application/json")
+				.header("key", apiKey)
+				.build();
+
+		Call call = client.newCall(request);
 		try {
-			return JsonFileManager.fromJSONString(response.body(), returnType);
-		} catch (Exception e) {
-			System.err.println("Error parsing body into " + returnType + ": " + response.body());
+			Response response = call.execute();
+			String json = response.body().string();
+			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
+			try {
+				return JsonFileManager.fromJSONString(json, returnType);
+			} catch(Exception e) {
+				System.err.println("Error parsing body into " + returnType + ": " + json);
+				return null;
+			}
+		} catch(Exception e) {
+			java.util.logging.Logger.getLogger("Web").finest("Request failed...");
 			return null;
 		}
 	}
