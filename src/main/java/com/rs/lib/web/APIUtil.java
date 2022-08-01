@@ -18,6 +18,7 @@ package com.rs.lib.web;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import com.google.gson.JsonIOException;
@@ -37,7 +38,9 @@ import okhttp3.Response;
 
 public class APIUtil {
 	
-	private static OkHttpClient client = new OkHttpClient.Builder().build();
+	private static OkHttpClient client = new OkHttpClient.Builder()
+			.readTimeout(10, TimeUnit.SECONDS)
+			.build();
 			
 	public static void sendResponse(HttpServerExchange exchange, int stateCode, Object responseObject) {
 		exchange.setStatusCode(stateCode);
@@ -75,12 +78,14 @@ public class APIUtil {
 		Call call = client.newCall(request);
 		call.enqueue(new Callback() {
 			public void onResponse(Call call, Response response) throws IOException {
-				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + response.body().string());
+				String json = response.body().string();
+				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
 				try {
-					T res = JsonFileManager.fromJSONString(response.body().string(), returnType);
+					T res = JsonFileManager.fromJSONString(json, returnType);
 					cb.accept(res);
 				} catch (Exception e) {
-					System.err.println("Error parsing body into " + returnType + ": " + response.body().string());
+					System.err.println("Error parsing body into " + returnType + ": " + json);
+					cb.accept(null);
 				}
 			}
 
@@ -103,11 +108,12 @@ public class APIUtil {
 		Call call = client.newCall(request);
 		try {
 			Response response = call.execute();
-			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + response.body().string());
+			String json = response.body().string();
+			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
 			try {
-				return JsonFileManager.fromJSONString(response.body().string(), returnType);
+				return JsonFileManager.fromJSONString(json, returnType);
 			} catch(Exception e) {
-				System.err.println("Error parsing body into " + returnType + ": " + response.body().string());
+				System.err.println("Error parsing body into " + returnType + ": " + json);
 				return null;
 			}
 		} catch(Exception e) {
