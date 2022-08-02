@@ -37,7 +37,6 @@ public class ReflectionCheck {
 	
 	private Type type;
 	private String className;
-	private String modifiers;
 	private String returnType;
 	private String methodName;
 	private String[] paramTypes;
@@ -64,19 +63,17 @@ public class ReflectionCheck {
 		this.fieldValue = fieldValue;
 	}
 	
-	public ReflectionCheck(String className, String modifiers, String returnType, String methodName, String[] paramTypes) {
+	public ReflectionCheck(String className, String returnType, String methodName, String[] paramTypes) {
 		this.type = Type.GET_METHOD_MODIFIERS;
 		this.className = className;
-		this.modifiers = modifiers;
 		this.returnType = returnType;
 		this.methodName = methodName;
 		this.paramTypes = paramTypes;
 	}
 	
-	public ReflectionCheck(String className, String modifiers, String returnType, String methodName, Object[] paramValues) {
+	public ReflectionCheck(String className, String returnType, String methodName, Object[] paramValues) {
 		this.type = Type.GET_METHOD_RETURN_VALUE;
 		this.className = className;
-		this.modifiers = modifiers;
 		this.returnType = returnType;
 		this.methodName = methodName;
 		this.paramTypes = new String[paramValues.length];
@@ -162,20 +159,19 @@ public class ReflectionCheck {
 	public String getClassName() {
 		return className;
 	}
+	
 	public String getReturnType() {
 		return returnType;
 	}
+	
 	public String getMethodName() {
 		return methodName;
 	}
+	
 	public String[] getParamTypes() {
 		return paramTypes;
 	}
-
-	public String getModifiers() {
-		return modifiers;
-	}
-
+	
 	public Type getType() {
 		return type;
 	}
