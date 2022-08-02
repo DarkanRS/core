@@ -19,6 +19,7 @@ package com.rs.lib.util.reflect;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Modifier;
 
 import com.rs.lib.io.InputStream;
 import com.rs.lib.io.OutputStream;
@@ -109,8 +110,11 @@ public class ReflectionCheck {
 		response = new ReflectionResponse(code);
 		switch(type) {
 		case GET_INT, GET_FIELD_MODIFIERS, GET_METHOD_MODIFIERS -> {
-			if (code == ResponseCode.SUCCESS)
+			if (code == ResponseCode.SUCCESS) {
 				response.setData(stream.readInt());
+				if (type == Type.GET_FIELD_MODIFIERS || type == Type.GET_METHOD_MODIFIERS)
+					response.setStringData(Modifier.toString((int) response.getData()));
+			}
 		}
 		case GET_METHOD_RETURN_VALUE -> {
 			switch(code) {
