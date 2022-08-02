@@ -44,10 +44,16 @@ public class ReflectionCheck {
 	private int fieldValue;
 	private ReflectionResponse response;
 	
-	public ReflectionCheck(String className, String methodName, boolean field) {
-		this.type = field ? Type.GET_FIELD_MODIFIERS : Type.GET_METHOD_MODIFIERS;
+	public ReflectionCheck(String className, String fieldName, boolean getInt) {
+		this.type = Type.GET_INT;
 		this.className = className;
-		this.methodName = methodName;
+		this.methodName = fieldName;
+	}
+	
+	public ReflectionCheck(String className, String fieldName) {
+		this.type = Type.GET_FIELD_MODIFIERS;
+		this.className = className;
+		this.methodName = fieldName;
 	}
 	
 	public ReflectionCheck(String className, String methodName, int fieldValue) {
