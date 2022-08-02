@@ -104,27 +104,6 @@ public class ReflectionCheck {
 		this.paramValues = paramValues;
 	}
 	
-	public String getClassName() {
-		return className;
-	}
-	public String getReturnType() {
-		return returnType;
-	}
-	public String getMethodName() {
-		return methodName;
-	}
-	public String[] getParamTypes() {
-		return paramTypes;
-	}
-
-	public String getModifiers() {
-		return modifiers;
-	}
-
-	public Type getType() {
-		return type;
-	}
-	
 	public void decode(InputStream stream) {
 		ResponseCode code = ResponseCode.forId(stream.readByte());
 		response = new ReflectionResponse(code);
@@ -174,5 +153,30 @@ public class ReflectionCheck {
 			}
 		}
 		}
+	}
+	
+	public String getClassName() {
+		return className;
+	}
+	public String getReturnType() {
+		return returnType;
+	}
+	public String getMethodName() {
+		return methodName;
+	}
+	public String[] getParamTypes() {
+		return paramTypes;
+	}
+
+	public String getModifiers() {
+		return modifiers;
+	}
+
+	public Type getType() {
+		return type;
+	}
+	
+	public ReflectionResponse getResponse() {
+		return response;
 	}
 }

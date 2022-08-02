@@ -30,4 +30,9 @@ public class ReflectionResponse {
 	public void setStringData(String stringData) {
 		this.stringData = stringData;
 	}
+	
+	@Override
+	public String toString() {
+		return "{ " + code + ", " + data + ", " + stringData + " }";
+	}
 }
