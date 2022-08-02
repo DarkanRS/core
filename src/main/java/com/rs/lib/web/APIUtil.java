@@ -81,17 +81,25 @@ public class APIUtil {
 				String json = response.body().string();
 				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
 				try {
-					T res = JsonFileManager.fromJSONString(json, returnType);
-					cb.accept(res);
+					if (returnType != null) {
+						if (cb != null)
+							cb.accept(JsonFileManager.fromJSONString(json, returnType));
+					} else {
+						if (cb != null)
+							cb.accept(null);
+					}
 				} catch (Exception e) {
 					System.err.println("Error parsing body into " + returnType + ": " + json);
-					cb.accept(null);
+					e.printStackTrace();
+					if (cb != null)
+						cb.accept(null);
 				}
 			}
 
 			public void onFailure(Call call, IOException e) {
 				java.util.logging.Logger.getLogger("Web").finest("Request failed...");
-				cb.accept(null);
+				if (cb != null)
+					cb.accept(null);
 			}
 		});
 	}
@@ -111,9 +119,12 @@ public class APIUtil {
 			String json = response.body().string();
 			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
 			try {
-				return JsonFileManager.fromJSONString(json, returnType);
+				if (returnType != null)
+					return JsonFileManager.fromJSONString(json, returnType);
+				return null;
 			} catch(Exception e) {
 				System.err.println("Error parsing body into " + returnType + ": " + json);
+				e.printStackTrace();
 				return null;
 			}
 		} catch(Exception e) {
