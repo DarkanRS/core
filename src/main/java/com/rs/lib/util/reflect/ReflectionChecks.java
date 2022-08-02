@@ -9,6 +9,7 @@ public class ReflectionChecks {
 	
 	public ReflectionChecks(ReflectionCheck... checks) {
 		this.id = Utils.random(Integer.MAX_VALUE-1);
+		this.checks = checks;
 	}
 
 	public int getId() {
