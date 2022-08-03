@@ -19,6 +19,8 @@ package com.rs.cache.loaders.animations;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.rs.cache.ArchiveType;
@@ -49,7 +51,7 @@ public class AnimationDefinitions {
 	public boolean tweened;
 	public int[] soundDurations;
 	public int[] anIntArray5927;
-	public boolean aBool5928;
+	public boolean vorbisSound;
 	public int maxLoops = 1;
 	public int[][] soundFlags;
 	private AnimationFrameSet[] frameSets;
@@ -229,7 +231,7 @@ public class AnimationDefinitions {
 			tweened = true;
 		else if (opcode != 16) {
 			if (18 == opcode)
-				aBool5928 = true;
+				vorbisSound = true;
 			else if (19 == opcode) {
 				if (soundDurations == null) {
 					soundDurations = new int[soundSettings.length];
@@ -261,6 +263,18 @@ public class AnimationDefinitions {
 				}
 			}
 		}
+	}
+	
+	public Set<Integer> getUsedSynthSoundIds() {
+		Set<Integer> set = new HashSet<>();
+		if (this.vorbisSound || this.soundFlags == null || this.soundFlags.length <= 0)
+			return set;
+		for (int i = 0;i < soundFlags.length;i++) {
+			if (soundFlags[i] == null)
+				continue;
+			set.add(soundFlags[i][0]);
+		}
+		return set;
 	}
 	
 	void method11143() {

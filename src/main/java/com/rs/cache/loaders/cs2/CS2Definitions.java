@@ -31,25 +31,36 @@ public class CS2Definitions {
 	private static HashMap<Integer, CS2Script> scripts = new HashMap<Integer, CS2Script>();
 	
 	public static void main(String[] args) throws IOException {
-		Cache.init("../darkan-cache/");
+		Cache.init("../cache/");
 		int id = 3239;
-//		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
-//			CS2Script s = getScript(i);
-//			if (s == null)
-//				continue;
-//			if (s.name != null)
-//				System.out.println(s.name);
-//			for (int x = 0;x < s.operations.length;x++) {
-//				if (s.operations[x] == CS2Instruction.instr6698) {
-//					System.out.println(i);
-//					System.out.println(Arrays.toString(s.operations));
-//					id = i;
-//					break;
-//				}
-//			}
-//		}
-//		if (id == 0)
-//			return;
+		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
+			CS2Script s = getScript(i);
+			if (s == null)
+				continue;
+			if (s.name != null)
+				System.out.println(s.name);
+			for (int x = 0;x < s.operations.length;x++) {
+				if (s.operations[x] == CS2Instruction.SOUND_SYNTH) {
+					System.out.println(i);
+					System.out.println(Arrays.toString(s.operations));
+					id = i;
+					break;
+				}
+				if (s.operations[x] == CS2Instruction.SOUND_SYNTH_RATE) {
+					System.out.println(i);
+					System.out.println(Arrays.toString(s.operations));
+					id = i;
+					break;
+				}
+				if (s.operations[x] == CS2Instruction.SOUND_SYNTH_VOLUME) {
+					System.out.println(i);
+					System.out.println(Arrays.toString(s.operations));
+					id = i;
+					break;
+				}
+
+			}
+		}
 		
 		CS2Script script = getScript(id);
 		System.out.println(script);
