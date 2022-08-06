@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
+import com.rs.cache.loaders.ObjectDefinitions;
 import com.rs.cache.loaders.animations.AnimationDefinitions;
 import com.rs.cache.loaders.cs2.CS2Definitions;
 import com.rs.cache.loaders.cs2.CS2Instruction;
@@ -58,6 +59,18 @@ public class SoundEffect {
 		
 		for (int i = 0;i < Utils.getAnimationDefinitionsSize();i++)
 			autoUsedIds.addAll(AnimationDefinitions.getDefs(i).getUsedSynthSoundIds());
+		
+		for (int i = 0;i < Utils.getObjectDefinitionsSize();i++) {
+			ObjectDefinitions defs = ObjectDefinitions.getDefs(i);
+			if (defs == null)
+				continue;
+			if (defs.ambientSoundId > 0 && !defs.midiSound)
+				autoUsedIds.add(ObjectDefinitions.getDefs(i).ambientSoundId);
+			if (defs.soundEffectsTimed != null && defs.soundEffectsTimed.length > 0 && !defs.midiSoundEffectsTimed)
+				for (int sound : defs.soundEffectsTimed)
+					if (sound > 0)
+						autoUsedIds.add(sound);
+		}
 		
 		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
 			CS2Script s = CS2Definitions.getScript(i);
