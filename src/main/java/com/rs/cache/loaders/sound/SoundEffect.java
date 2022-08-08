@@ -16,14 +16,18 @@
 //
 package com.rs.cache.loaders.sound;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import com.google.common.io.Files;
+import java.util.HashSet;
+import java.util.Set;
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
+import com.rs.cache.loaders.ObjectDefinitions;
+import com.rs.cache.loaders.animations.AnimationDefinitions;
+import com.rs.cache.loaders.cs2.CS2Definitions;
+import com.rs.cache.loaders.cs2.CS2Instruction;
+import com.rs.cache.loaders.cs2.CS2Script;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.util.Utils;
@@ -49,9 +53,65 @@ public class SoundEffect {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		//Cache.init();
-				
-		Files.write(getEffect(168).toWAV(), new File("./one.wav"));
+		Cache.init("../cache/");
+		
+		Set<Integer> autoUsedIds = new HashSet<>();
+		
+		for (int i = 0;i < Utils.getAnimationDefinitionsSize();i++)
+			autoUsedIds.addAll(AnimationDefinitions.getDefs(i).getUsedSynthSoundIds());
+		
+		for (int i = 0;i < Utils.getObjectDefinitionsSize();i++) {
+			ObjectDefinitions defs = ObjectDefinitions.getDefs(i);
+			if (defs == null)
+				continue;
+			if (defs.ambientSoundId > 0 && !defs.midiSound)
+				autoUsedIds.add(ObjectDefinitions.getDefs(i).ambientSoundId);
+			if (defs.soundEffectsTimed != null && defs.soundEffectsTimed.length > 0 && !defs.midiSoundEffectsTimed)
+				for (int sound : defs.soundEffectsTimed)
+					if (sound > 0)
+						autoUsedIds.add(sound);
+		}
+		
+		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CS2_SCRIPTS).getLastArchiveId();i++) {
+			CS2Script s = CS2Definitions.getScript(i);
+			if (s == null)
+				continue;
+			for (int x = 0;x < s.operations.length;x++) {
+				if (s.operations[x] == CS2Instruction.SOUND_SYNTH) {
+					for (int op = 0;op < s.operations.length;op++) {
+						if (s.operations[op] == CS2Instruction.SOUND_SYNTH && op-3 >= 0 && s.intOpValues[op-3] > 1)
+							autoUsedIds.add(s.intOpValues[op-3]);
+					}
+					break;
+				}
+				if (s.operations[x] == CS2Instruction.SOUND_SYNTH_RATE) {
+					for (int op = 0;op < s.operations.length;op++) {
+						if (s.operations[op] == CS2Instruction.SOUND_SYNTH_RATE && op-5 >= 0 && s.intOpValues[op-5] > 1)
+							autoUsedIds.add(s.intOpValues[op-5]);
+					}
+					break;
+				}
+				if (s.operations[x] == CS2Instruction.SOUND_SYNTH_VOLUME) {
+					for (int op = 0;op < s.operations.length;op++) {
+						if (s.operations[op] == CS2Instruction.SOUND_SYNTH_VOLUME && op-4 >= 0 && s.intOpValues[op-4] > 1)
+							autoUsedIds.add(s.intOpValues[op-4]);
+					}
+					break;
+				}
+
+			}
+		}
+		
+		for (int i = 0;i < Cache.STORE.getIndex(IndexType.SOUND_EFFECTS).getLastArchiveId() + 1;i++) {
+			SoundEffect effect = getEffect(i);
+			if (effect == null)
+				continue;
+			if (autoUsedIds.contains(i))
+				continue;
+			System.out.println(i);
+		}
+		
+		//Files.write(getEffect(168).toWAV(), new File("./one.wav"));
 	}
 	
 	public static SoundEffect getEffect(int id) {

@@ -16,8 +16,10 @@
 //
 package com.rs.cache.loaders;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
@@ -102,7 +104,6 @@ public final class ItemDefinitions {
 	public int pickSizeShift = 0;
 	public int bindId = -1;
 	public int bindTemplateId = -1;
-	
 
 	// extra added
 	public boolean noted;
@@ -110,6 +111,15 @@ public final class ItemDefinitions {
 
 	private HashMap<Integer, Object> params;
 	private HashMap<Integer, Integer> wieldRequirements;
+	
+	public static void main(String[] args) throws IOException {
+		Cache.init("../cache/");
+		for (int i = 0;i < Utils.getItemDefinitionsSize();i++) {
+			ItemDefinitions def = ItemDefinitions.getDefs(i);
+			if (def.originalTextureIds != null && def.originalTextureIds.length > 0)
+				System.out.println(i + " - " + def.name + " - " + Arrays.toString(def.originalTextureIds) + " - " + Arrays.toString(def.originalModelColors));
+		}
+	}
 
 	/**
 	 * 1 = thrown weapons? and cannonballs 2 = arrows 3 = bolts 4 = construction

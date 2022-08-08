@@ -88,7 +88,7 @@ public class ObjectDefinitions {
 	public boolean obstructsGround;
 	public boolean ignoreAltClip;
 	public int supportsItems;
-	public int[] audioTracks;
+	public int[] soundEffectsTimed;
 	public int mapSpriteId;
 	public int varpBit;
 	public static short[] aShortArray5691 = new short[256];
@@ -96,11 +96,11 @@ public class ObjectDefinitions {
 	public int ambientSoundHearDistance;
 	public int anInt5694;
 	public int ambientSoundVolume;
-	public boolean aBool5696;
+	public boolean midiSound;
 	public byte groundContoured;
 	public int anInt5698;
 	public boolean aBool5699;
-	public boolean aBool5700;
+	public boolean midiSoundEffectsTimed;
 	public boolean hidden;
 	public boolean aBool5702;
 	public boolean aBool5703;
@@ -386,9 +386,9 @@ public class ObjectDefinitions {
 			anInt5698 = stream.readUnsignedShort();
 			ambientSoundHearDistance = stream.readUnsignedByte();
 			int i_18_ = stream.readUnsignedByte();
-			audioTracks = new int[i_18_];
+			soundEffectsTimed = new int[i_18_];
 			for (int i_19_ = 0; i_19_ < i_18_; i_19_++)
-				audioTracks[i_19_] = stream.readUnsignedShort();
+				soundEffectsTimed[i_19_] = stream.readUnsignedShort();
 		} else if (81 == opcode) {
 			groundContoured = (byte) 2;
 			anInt5654 = stream.readUnsignedByte() * 256;
@@ -467,9 +467,9 @@ public class ObjectDefinitions {
 		else if (167 == opcode)
 			anInt5704 = stream.readUnsignedShort();
 		else if (168 == opcode)
-			aBool5696 = true;
+			midiSound = true;
 		else if (169 == opcode)
-			aBool5700 = true;
+			midiSoundEffectsTimed = true;
 		else if (opcode == 170)
 			anInt5684 = stream.readUnsignedSmart();
 		else if (opcode == 171)
@@ -634,10 +634,10 @@ public class ObjectDefinitions {
 		ambientSoundHearDistance = 0;
 		anInt5694 = 0;
 		ambientSoundVolume = -1;
-		aBool5696 = false;
+		midiSound = false;
 		anInt5667 = 0;
 		anInt5698 = 0;
-		aBool5700 = false;
+		midiSoundEffectsTimed = false;
 		aBool5702 = true;
 		hidden = false;
 		aBool5703 = true;
