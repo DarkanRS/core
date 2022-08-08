@@ -26,14 +26,14 @@ public class VarcString extends PacketEncoder {
 	private String string;
 
 	public VarcString(int id, String string) {
-		super(string.length() > 253 ? ServerPacket.CLIENT_SETVARCSTR_LARGE : ServerPacket.CLIENT_SETVARCSTR_SMALL);
+		super(string.length()+2 > Byte.MAX_VALUE ? ServerPacket.CLIENT_SETVARCSTR_LARGE : ServerPacket.CLIENT_SETVARCSTR_SMALL);
 		this.id = id;
 		this.string = string;
 	}
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		if (string.length() > 253) {
+		if (string.length()+2 > Byte.MAX_VALUE) {
 			stream.writeShortLE(id);
 			stream.writeString(string);
 		} else {
