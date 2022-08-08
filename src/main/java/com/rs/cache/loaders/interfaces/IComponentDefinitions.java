@@ -191,21 +191,25 @@ public class IComponentDefinitions {
 		Cache.init("../cache/");
 		COMPONENT_DEFINITIONS = new IComponentDefinitions[Utils.getInterfaceDefinitionsSize()][];
 
-		int scriptId = 787;
-		
-		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
-			IComponentDefinitions[] defs = getInterface(id);
-			for (int comp = 0;comp < defs.length;comp++) {
-				if (defs[comp].usesScript(scriptId))
-					System.out.println("Interface: " + id + ", " + comp);
+//		int scriptId = 787;
+//		
+//		for (int id = 0;id < COMPONENT_DEFINITIONS.length;id++) {
+//			IComponentDefinitions[] defs = getInterface(id);
+//			for (int comp = 0;comp < defs.length;comp++) {
+//				if (defs[comp].usesScript(scriptId))
+//					System.out.println("Interface: " + id + ", " + comp);
+//			}
+//		}
+//		System.out.println(Utils.toInterfaceHash(747, 9));
+//		System.out.println(Utils.interfaceIdFromHash(25428066) + " - " + Utils.componentIdFromHash(25428066));
+//		
+		IComponentDefinitions[] defs = getInterface(300);
+		for (IComponentDefinitions def : defs) {
+			if (def.text != null && !def.text.isEmpty() && !def.text.contains("Bar")) {
+				System.out.println(def.componentId + " - " + def.text);
+				System.out.println(defs[def.componentId-1]);
 			}
 		}
-//		System.out.println(Utils.toInterfaceHash(747, 9));
-		System.out.println(Utils.interfaceIdFromHash(25428066) + " - " + Utils.componentIdFromHash(25428066));
-//		
-//		IComponentDefinitions[] defs = getInterface(793);
-//		for (IComponentDefinitions def : defs)
-//			System.out.println(def);
 		
 //		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
