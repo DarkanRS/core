@@ -28,25 +28,25 @@ public class MouseMoveJav extends Packet {
 				int posHash = stream.readInt();
 				int dY = posHash >> 16;
 				int dX = posHash & 0xFFFF;
-				steps.add(new MouseTrailStep(Type.SET_POSITION, frames, dX, dY, true));
+				p.steps.add(new MouseTrailStep(Type.SET_POSITION, frames, dX, dY, true));
 			} else if (peek >= 192) {
 				int frames = stream.readUnsignedByte() - 192;
 				int posHash = stream.readInt();
 				int dY = posHash >> 16;
 				int dX = posHash & 0xFFFF;
-				steps.add(new MouseTrailStep(Type.SET_POSITION, frames, dX, dY, true));
+				p.steps.add(new MouseTrailStep(Type.SET_POSITION, frames, dX, dY, true));
 			} else if (peek >= 128) {
 				int frames = stream.readUnsignedByte() - 128;
 				int posHash = stream.readUnsignedShort();
 				int dY = posHash >> 8;
 				int dX = posHash & 0xFF;
-				steps.add(new MouseTrailStep(Type.MOVE_OFFSET, frames, dX, dY, true));
+				p.steps.add(new MouseTrailStep(Type.MOVE_OFFSET, frames, dX, dY, true));
 			} else {
 				int hash = stream.readUnsignedShort();
 				int frames = hash >> 12;
 				int dX = hash >> 6 & 0x3F;
 				int dY = hash & 0x3F;
-				steps.add(new MouseTrailStep(Type.MOVE_OFFSET, frames, dX, dY, true));
+				p.steps.add(new MouseTrailStep(Type.MOVE_OFFSET, frames, dX, dY, true));
 			}
 		}
 		return p;

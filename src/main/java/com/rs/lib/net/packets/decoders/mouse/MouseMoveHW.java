@@ -47,7 +47,7 @@ public class MouseMoveHW extends Packet {
 				dX = hash >> 6 & 0x3F;
 				dY = hash & 0x3F;
 			}
-			steps.add(new MouseTrailStep(type, frames, dX, dY, stream.readByte() == 0));
+			p.steps.add(new MouseTrailStep(type, frames, dX, dY, stream.readByte() == 0));
 		}
 		return p;
 	}
