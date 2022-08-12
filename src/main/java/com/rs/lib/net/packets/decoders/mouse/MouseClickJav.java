@@ -22,7 +22,7 @@ import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
 @PacketDecoder(ClientPacket.MOUSE_CLICK)
-public class MouseClick extends Packet {
+public class MouseClickJav extends Packet {
 
 	private int mouseButton;
 	private int time;
@@ -30,7 +30,7 @@ public class MouseClick extends Packet {
 	
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
-		MouseClick p = new MouseClick();
+		MouseClickJav p = new MouseClickJav();
 		int positionHash = stream.readIntLE();
 		int mouseHash = stream.readShort();
 		p.mouseButton = mouseHash >> 15;
