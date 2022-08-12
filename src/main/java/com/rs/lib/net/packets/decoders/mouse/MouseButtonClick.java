@@ -41,6 +41,10 @@ public class MouseButtonClick extends Packet {
 		p.hardware = (flags - (p.mouseButton << 1)) == 0;
 		return p;
 	}
+	
+	public int getMouseButton() {
+		return mouseButton;
+	}
 
 	public int getX() {
 		return x;
