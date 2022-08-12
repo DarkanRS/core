@@ -14,7 +14,7 @@
 //  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.net.packets.decoders;
+package com.rs.lib.net.packets.decoders.mouse;
 
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.ClientPacket;
