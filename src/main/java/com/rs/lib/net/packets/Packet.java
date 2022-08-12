@@ -21,6 +21,7 @@ import com.rs.lib.net.ClientPacket;
 
 public abstract class Packet {
 	private ClientPacket opcode;
+	private long timeRecieved;
 	
 	public abstract Packet decodeAndCreateInstance(InputStream stream);
 	
@@ -29,7 +30,12 @@ public abstract class Packet {
 	}
 	
 	public final Packet setOpcode(ClientPacket opcode) {
+		this.timeRecieved = System.currentTimeMillis();
 		this.opcode = opcode;
 		return this;
+	}
+
+	public long getTimeRecieved() {
+		return timeRecieved;
 	}
 }
