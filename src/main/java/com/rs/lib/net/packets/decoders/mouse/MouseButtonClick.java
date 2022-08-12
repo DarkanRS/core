@@ -14,45 +14,48 @@
 //  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.net.packets.decoders;
+package com.rs.lib.net.packets.decoders.mouse;
 
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
-@PacketDecoder(ClientPacket.MOUSE_CLICK)
-public class MouseClick extends Packet {
+@PacketDecoder(ClientPacket.MOUSE_BUTTON_CLICK)
+public class MouseButtonClick extends Packet {
 
 	private int mouseButton;
 	private int time;
 	private int x, y;
+	private boolean hardware;
 	
 	@Override
 	public Packet decodeAndCreateInstance(InputStream stream) {
-		MouseClick p = new MouseClick();
+		MouseButtonClick p = new MouseButtonClick();
 		int positionHash = stream.readIntLE();
-		int mouseHash = stream.readShort();
-		p.mouseButton = mouseHash >> 15;
-		p.time = mouseHash - (p.mouseButton << 15);
+		int flags = stream.readByte128();
+		p.time = stream.readShortLE();
 		p.y = positionHash >> 16;
 		p.x = positionHash - (p.y << 16);
+		p.mouseButton = flags >> 1;
+		p.hardware = (flags - (p.mouseButton << 1)) == 0;
 		return p;
 	}
 
-	public int getMouseButton() {
-		return mouseButton;
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
 	}
 
 	public int getTime() {
 		return time;
 	}
 
-	public int getX() {
-		return x;
+	public boolean isHardware() {
+		return hardware;
 	}
 
-	public int getY() {
-		return y;
-	}
 }
