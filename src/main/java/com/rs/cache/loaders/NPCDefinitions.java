@@ -16,10 +16,14 @@
 //
 package com.rs.cache.loaders;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,13 +117,30 @@ public final class NPCDefinitions {
 	private boolean usesCrawlWalkBAS;
 	
 	public static void main(String[] args) throws IOException {
-		//Cache.init();
-//		for (int i = 0;i < Utils.getNPCDefinitionsSize();i++) {
-//			NPCDefinitions defs = getDefs(i);
-//			if (defs.hasMarkOption())
-//				System.out.println(i + ": " + defs.getName());
-//		}
-		System.out.println(getDefs(4239));
+		Cache.init("../cache/");
+		File file = new File("npcModifiedColorsTextures.txt");
+		if (file.exists())
+			file.delete();
+		else
+			file.createNewFile();
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		writer.append("//Version = 727\n");
+		writer.flush();
+		for (int i = 0;i < Utils.getNPCDefinitionsSize();i++) {
+			NPCDefinitions defs = getDefs(i);
+			if (defs.modifiedColors != null || defs.modifiedTextures != null) {
+				writer.append(i + ": " + defs.getName());
+				writer.newLine();
+				writer.append("Models:" + Arrays.toString(defs.modelIds));
+				writer.newLine();
+				writer.append("Colors: " + Arrays.toString(defs.modifiedColors)); 
+				writer.newLine();
+				writer.append("Textures: " + Arrays.toString(defs.modifiedTextures));
+				writer.newLine();
+				writer.flush();
+			}
+		}
+		writer.close();
 	}
 	
 	public boolean transformsTo(int id) {

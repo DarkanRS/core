@@ -16,10 +16,13 @@
 //
 package com.rs.cache.loaders.animations;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,6 +63,31 @@ public class AnimationDefinitions {
 	
 	private static final ConcurrentHashMap<Integer, AnimationDefinitions> animDefs = new ConcurrentHashMap<Integer, AnimationDefinitions>();
 	private static final HashMap<Integer, Integer> itemAnims = new HashMap<Integer, Integer>();
+	
+	public static void main(String[] args) throws IOException {
+		Cache.init("../cache/");
+		
+		int[] itemIds = { 1351, 1349, 1353, 1361, 1355, 1357, 1359, 6739, 13661 };
+		Map<Integer, Map<Integer, Integer>> mapping = new HashMap<>();
+		
+		for (int i = 0;i < Utils.getAnimationDefinitionsSize();i++) {
+			AnimationDefinitions def = AnimationDefinitions.getDefs(i);
+			for (int itemId : itemIds) {
+				if (def.rightHandItem == itemId || def.leftHandItem == itemId) {
+					Map<Integer, Integer> sets = mapping.get(itemId);
+					if (sets == null)
+						sets = new HashMap<>();
+					
+					int hash = Arrays.hashCode(def.frameHashes);
+					sets.put(hash, def.id);
+					mapping.put(itemId, sets);
+				}
+			}
+		}
+		
+//		AnimationDefinitions def = AnimationDefinitions.getDefs(12322);
+//		System.out.println(def);
+	}
 	
 	public static void init() {
 		for (int i = 0; i < Utils.getAnimationDefinitionsSize(); i++) {

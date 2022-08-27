@@ -133,4 +133,71 @@ public class APIUtil {
 		}
 	}
 	
+	public static <T> void get(Class<T> returnType, String url, String apiKey, Consumer<T> cb) {
+		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
+		Request request = new Request.Builder()
+				.url(url)
+				.get()
+				.header("accept", "application/json")
+				.header("key", apiKey)
+				.build();
+
+		Call call = client.newCall(request);
+		call.enqueue(new Callback() {
+			public void onResponse(Call call, Response response) throws IOException {
+				String json = response.body().string();
+				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
+				try {
+					if (returnType != null) {
+						if (cb != null)
+							cb.accept(JsonFileManager.fromJSONString(json, returnType));
+					} else {
+						if (cb != null)
+							cb.accept(null);
+					}
+				} catch (Exception e) {
+					System.err.println("Error parsing body into " + returnType + ": " + json);
+					e.printStackTrace();
+					if (cb != null)
+						cb.accept(null);
+				}
+			}
+
+			public void onFailure(Call call, IOException e) {
+				java.util.logging.Logger.getLogger("Web").finest("Request failed...");
+				if (cb != null)
+					cb.accept(null);
+			}
+		});
+	}
+	
+	public static <T> T getSync(Class<T> returnType, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
+		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
+		Request request = new Request.Builder()
+				.url(url)
+				.get()
+				.header("accept", "application/json")
+				.header("key", apiKey)
+				.build();
+
+		Call call = client.newCall(request);
+		try {
+			Response response = call.execute();
+			String json = response.body().string();
+			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
+			try {
+				if (returnType != null)
+					return JsonFileManager.fromJSONString(json, returnType);
+				return null;
+			} catch(Exception e) {
+				System.err.println("Error parsing body into " + returnType + ": " + json);
+				e.printStackTrace();
+				return null;
+			}
+		} catch(Exception e) {
+			java.util.logging.Logger.getLogger("Web").finest("Request failed...");
+			return null;
+		}
+	}
+	
 }
