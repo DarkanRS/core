@@ -114,11 +114,12 @@ public final class ItemDefinitions {
 	
 	public static void main(String[] args) throws IOException {
 		Cache.init("../cache/");
-		for (int i = 0;i < Utils.getItemDefinitionsSize();i++) {
-			ItemDefinitions def = ItemDefinitions.getDefs(i);
-			if (def.originalTextureIds != null && def.originalTextureIds.length > 0)
-				System.out.println(i + " - " + def.name + " - " + Arrays.toString(def.originalTextureIds) + " - " + Arrays.toString(def.originalModelColors));
-		}
+//		for (int i = 0;i < Utils.getItemDefinitionsSize();i++) {
+//			ItemDefinitions def = ItemDefinitions.getDefs(i);
+//			if (def.originalTextureIds != null && def.originalTextureIds.length > 0)
+//				System.out.println(i + " - " + def.name + " - " + Arrays.toString(def.originalTextureIds) + " - " + Arrays.toString(def.originalModelColors));
+//		}
+		System.out.println(ItemDefinitions.getDefs(5341));
 	}
 
 	/**
