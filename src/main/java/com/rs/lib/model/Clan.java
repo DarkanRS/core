@@ -63,7 +63,7 @@ public class Clan {
 		guestsInChatCanTalk = true;
 		minimumRankForKick = ClanRank.OWNER;
 		worldId = 1;
-		mottifColors = Arrays.copyOf(ItemDefinitions.getDefs(20709).originalModelColors, 4);
+		mottifColors = Arrays.copyOf(ItemDefinitions.getDefs(20709).modifiedModelColors, 4);
 	}
 
 	public MemberData addMember(Account account, ClanRank rank) {
