@@ -19,7 +19,6 @@ package com.rs.cache.loaders;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.HashMap;
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
@@ -119,7 +118,7 @@ public final class ItemDefinitions {
 //			if (def.originalTextureIds != null && def.originalTextureIds.length > 0)
 //				System.out.println(i + " - " + def.name + " - " + Arrays.toString(def.originalTextureIds) + " - " + Arrays.toString(def.originalModelColors));
 //		}
-		System.out.println(ItemDefinitions.getDefs(5341));
+		System.out.println(ItemDefinitions.getDefs(20771));
 	}
 
 	/**

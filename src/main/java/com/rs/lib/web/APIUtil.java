@@ -17,6 +17,8 @@
 package com.rs.lib.web;
 
 import java.io.IOException;
+import java.util.Deque;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -199,5 +201,17 @@ public class APIUtil {
 			return null;
 		}
 	}
-	
+
+	public static Optional<String> pathParam(HttpServerExchange exchange, String name) {
+		return Optional.ofNullable(exchange.getQueryParameters().get(name)).map(Deque::getFirst);
+	}
+
+	public static Optional<Long> pathParamAsLong(HttpServerExchange exchange, String name) {
+		return pathParam(exchange, name).map(Long::parseLong);
+	}
+
+	public static Optional<Integer> pathParamAsInteger(HttpServerExchange exchange, String name) {
+		return pathParam(exchange, name).map(Integer::parseInt);
+	}
+
 }
