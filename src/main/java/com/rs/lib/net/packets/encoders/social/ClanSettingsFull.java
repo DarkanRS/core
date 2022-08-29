@@ -17,10 +17,9 @@
 package com.rs.lib.net.packets.encoders.social;
 
 import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
-
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.Clan;
+import com.rs.lib.model.DisplayNamePair;
 import com.rs.lib.model.MemberData;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
@@ -28,11 +27,11 @@ import com.rs.lib.net.packets.PacketEncoder;
 public class ClanSettingsFull extends PacketEncoder {
 	
 	private Clan clan;
-	private Map<String, SimpleEntry<String, String>> displayNameMap;
+	private Map<String, DisplayNamePair> displayNameMap;
 	private boolean guest;
 	private int updateNum;
 
-	public ClanSettingsFull(Clan clan, Map<String, SimpleEntry<String, String>> displayNameMap, boolean guest, int updateNum) {
+	public ClanSettingsFull(Clan clan, Map<String, DisplayNamePair> displayNameMap, boolean guest, int updateNum) {
 		super(ServerPacket.CLANSETTINGS_FULL);
 		this.clan = clan;
 		this.displayNameMap = displayNameMap;
@@ -63,7 +62,7 @@ public class ClanSettingsFull extends PacketEncoder {
 		for (String username : clan.getMembers().keySet()) {
 			MemberData data = clan.getMembers().get(username);
 			// stream.writeLong(
-			stream.writeString(displayNameMap.get(username).getKey());
+			stream.writeString(displayNameMap.get(username).getCurrent());
 			stream.writeByte(data.getRank().getIconId());
 			if (version >= 2)
 				stream.writeInt(0); // unknown
@@ -72,7 +71,7 @@ public class ClanSettingsFull extends PacketEncoder {
 		}
 		for (String bannedUser : clan.getBannedUsers()) {
 			// stream.writeLong(bannedUser);
-			stream.writeString(displayNameMap.get(bannedUser).getKey());
+			stream.writeString(displayNameMap.get(bannedUser).getCurrent());
 		}
 		if (version >= 3) {
 			int count = 2;
