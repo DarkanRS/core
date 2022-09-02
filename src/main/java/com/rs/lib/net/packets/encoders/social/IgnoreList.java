@@ -17,6 +17,7 @@
 package com.rs.lib.net.packets.encoders.social;
 
 import java.util.Map;
+
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.DisplayNamePair;
 import com.rs.lib.net.ServerPacket;

@@ -39,6 +39,7 @@ public final class MapXTEAs {
 	}
 
 	public static void loadKeys() throws JsonIOException, IOException {
+		Logger.info(new Object() {}, "Loading XTEAs...");
 		if (!new File(PATH).exists())
 			throw new FileNotFoundException("No map keys file found!");
 		else

@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
+
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
 import com.rs.cache.loaders.ObjectDefinitions;

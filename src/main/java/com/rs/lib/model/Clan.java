@@ -47,6 +47,8 @@ public class Clan {
 	private int[] mottifColors;
 
 	private ClanRank minimumRankForKick;
+	
+	private byte[] updateBlock;
 
 	public Clan(String name, Account leader) {
 		this.name = name;
@@ -210,5 +212,13 @@ public class Clan {
 
 	public void setMottifColour(int index, int colorId) {
 		mottifColors[index] = colorId;
+	}
+
+	public byte[] getUpdateBlock() {
+		return updateBlock;
+	}
+
+	public void setUpdateBlock(byte[] updateBlock) {
+		this.updateBlock = updateBlock;
 	}
 }

@@ -49,6 +49,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 	private Class<? extends Decoder> baseDecoderClass;
 
 	public static final void init(int port, Class<? extends Decoder> baseDecoderClass) {
+		Logger.info(new Object() {}, "Putting server online... (" + baseDecoderClass + ")");
 		new ServerChannelHandler(port, baseDecoderClass);
 	}
 
@@ -88,7 +89,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 			if (Globals.DEBUG)
 				System.out.println("Connection from " + ctx.channel().remoteAddress());
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-			Logger.handle(e1);
+			Logger.handle(this, e1);
 		}
 	}
 
@@ -132,7 +133,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 					session.bufferOffset = 0;
 				}
 			} catch (Throwable er) {
-				Logger.handle(er);
+				Logger.handle(this, er);
 			}
 		}
 	}

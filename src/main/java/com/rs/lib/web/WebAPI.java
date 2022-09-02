@@ -43,7 +43,7 @@ public class WebAPI extends Thread {
 		this.setName("WebAPI Thread");
 		this.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread th, Throwable ex) {
-				Logger.handle(ex);
+				Logger.handle(this, ex);
 			}
 		});
 	}
