@@ -45,7 +45,7 @@ public final class GameDecoder extends Decoder {
 	
 	public static void loadPacketDecoders() throws InvocationTargetException, NoSuchMethodException {
 		try {
-			Logger.log("WorldPacketsDecoder", "Initializing packet decoders...");
+			Logger.info(GameDecoder.class, "loadPacketDecoders", "Initializing packet decoders...");
 			List<Class<?>> classes = Utils.getClassesWithAnnotation("com.rs.lib.net.packets.decoders", PacketDecoder.class);
 			for (Class<?> clazz : classes) {
 				ClientPacket[] packets = clazz.getAnnotation(PacketDecoder.class).value();
@@ -63,8 +63,8 @@ public final class GameDecoder extends Decoder {
 			}
 			
 			int handled = ClientPacket.values().length - missing.size();
-			Logger.log("WorldPacketsDecoder", "Packet decoders loaded for " + handled + " packets...");
-			Logger.log("WorldPacketsDecoder", "Packets missing: " + missing);
+			Logger.info(GameDecoder.class, "loadPacketsDecoder", "Packet decoders loaded for " + handled + " packets...");
+			Logger.info(GameDecoder.class, "loadPacketsDecoder", "Packets missing: " + missing);
 		} catch (ClassNotFoundException | IOException | IllegalArgumentException | SecurityException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
@@ -100,7 +100,7 @@ public final class GameDecoder extends Decoder {
 				currPacket = null;
 				queuePacket(packet, new InputStream(data));
 			} catch (Throwable e) {
-				Logger.handle(e);
+				Logger.handle(GameDecoder.class, "decode", e);
 			}
 		}
 		return stream.getOffset();

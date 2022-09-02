@@ -43,7 +43,7 @@ public class WebAPI extends Thread {
 		this.setName("WebAPI Thread");
 		this.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread th, Throwable ex) {
-				Logger.handle(ex);
+				Logger.handle(WebAPI.class, th.getName(), ex);
 			}
 		});
 	}
@@ -58,7 +58,7 @@ public class WebAPI extends Thread {
 	
 	@Override
 	public void run() {
-		System.out.println("Starting " + getClass().getSimpleName() + " on 0.0.0.0:" + port);
+		Logger.info(WebAPI.class, "run", "Starting " + getClass().getSimpleName() + " on 0.0.0.0:" + port);
 		server = new APIServer(prefixPath, port, new ExceptionHandler(routes) {
 			@Override
 			public void handleRequest(HttpServerExchange exchange) throws Exception {
@@ -67,7 +67,7 @@ public class WebAPI extends Thread {
 			}
 		});
 		server.start();
-		System.out.println(getClass().getSimpleName() + " listening on 0.0.0.0:" + port);
+		Logger.info(WebAPI.class, "run", getClass().getSimpleName() + " listening on 0.0.0.0:" + port);
 	}
 	
 }

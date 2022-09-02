@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.rs.lib.db.model.ErrorLogManager;
 
 public class DBConnection {
 	
@@ -32,10 +33,13 @@ public class DBConnection {
 	private String mongoUrl;
 	private String dbName;
 	private Set<DBItemManager> collections = new HashSet<>();
+
+	private static ErrorLogManager ERROR_LOG_MANAGER = new ErrorLogManager();
 	
 	public DBConnection(String mongoUrl, String dbName) {
 		this.mongoUrl = mongoUrl;
 		this.dbName = dbName;
+		addItemManager(ERROR_LOG_MANAGER);
 	}
 
 	public void init() {
@@ -58,8 +62,15 @@ public class DBConnection {
 		collections.add(mgr);
 	}
 	
+	public MongoClient getClient() {
+		return client;
+	}
+	
 	public MongoDatabase getDb() {
 		return database;
 	}
 
+	public static ErrorLogManager getErrors() {
+		return ERROR_LOG_MANAGER;
+	}
 }

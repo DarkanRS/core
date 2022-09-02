@@ -1,48 +1,65 @@
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-//  Copyright (C) 2021 Trenton Kress
-//  This file is part of project: Darkan
-//
 package com.rs.lib.util;
 
-import com.rs.lib.file.FileManager;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+
+import com.rs.lib.db.DBConnection;
 
 public final class Logger {
+	private static final String ROOT_KEY = "DarkanRS";
+	private static final java.util.logging.Logger DARKAN_ROOT_LOGGER = java.util.logging.Logger.getLogger(ROOT_KEY);
 
-	public static void handle(Throwable throwable) {
-		FileManager.logError(throwable);
-		System.out.println("ERROR! THREAD NAME: " + Thread.currentThread().getName());
-		throwable.printStackTrace();
+	public static final void setupFormat() {
+		//System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n");
+		System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT %1$tL] [%4$-7s] %5$s %n");
+		DARKAN_ROOT_LOGGER.addHandler(new ConsoleHandler());
+		DARKAN_ROOT_LOGGER.setUseParentHandlers(false);
 	}
 
-	public static void debug(long processTime) {
-		log(Logger.class, "---DEBUG--- start");
-		log(Logger.class, "WorldProcessTime: " + processTime);
-		log(Logger.class, "---DEBUG--- end");
+	public static final void setLevel(Level level) {
+		DARKAN_ROOT_LOGGER.setLevel(level);
+		for (Handler handler : DARKAN_ROOT_LOGGER.getHandlers())
+			handler.setLevel(level);
 	}
 
-	public static void log(Object classInstance, Object message) {
-		log(classInstance.getClass().getSimpleName(), message);
+	public static final void handle(Class<?> source, String method, Throwable e) {
+		if (DBConnection.getErrors() != null && DBConnection.getErrors().getDocs() != null)
+			DBConnection.getErrors().logError(method, e);
+		DARKAN_ROOT_LOGGER.log(Level.SEVERE, "[" + source.getSimpleName() + "." + method + "] " + (e.getClass().getEnclosingMethod() != null ? "["+e.getClass().getEnclosingMethod().getName() + "]: " : ""), e);
 	}
 
-	public static void log(String className, Object message) {
-		String text = "[" + className + "]" + " " + message.toString();
-		System.out.println(text);
+	public static final void handle(Class<?> source, String method, String message, Throwable e) {
+		if (DBConnection.getErrors() != null && DBConnection.getErrors().getDocs() != null) {
+			if (e == null)
+				DBConnection.getErrors().logError(method, message);
+			else
+				DBConnection.getErrors().logError(method, message, e);
+		}
+		handleNoRecord(source, method, message, e);
 	}
 
-	private Logger() {
-
+	public static final void handleNoRecord(Class<?> source, String method, String message, Throwable e) {
+		DARKAN_ROOT_LOGGER.log(Level.SEVERE, "[" + source.getSimpleName() + "." + method + "] " + (e.getClass().getEnclosingMethod() != null ? "["+e.getClass().getEnclosingMethod().getName() + "]: " : "") + "" + message, e);
 	}
 
+	public static final void error(Class<?> source, String method, Object msg) {
+		DARKAN_ROOT_LOGGER.log(Level.SEVERE, "[" + source.getSimpleName() + "." + method + "] " + msg);
+	}
+	
+	public static final void warn(Class<?> source, String method, Object msg) {
+		DARKAN_ROOT_LOGGER.log(Level.WARNING, "[" + source.getSimpleName() + "." + method + "] " + msg);
+	}
+
+	public static final void info(Class<?> source, String method, Object msg) {
+		DARKAN_ROOT_LOGGER.log(Level.CONFIG, "[" + source.getSimpleName() + "." + method + "] " + msg);
+	}
+
+	public static final void debug(Class<?> source, String method, Object msg) {
+		DARKAN_ROOT_LOGGER.log(Level.FINE, "[" + source.getSimpleName() + "." + method + "] " + msg);
+	}
+
+	public static final void trace(Class<?> source, String method, Object msg) {
+		DARKAN_ROOT_LOGGER.log(Level.FINER, "[" + source.getSimpleName() + "." + method + "] " + msg);
+	}
 }

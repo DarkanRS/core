@@ -20,21 +20,22 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
 import com.rs.cache.Store;
 import com.rs.cache.loaders.ParticleProducerDefinitions;
-import com.rs.cache.loaders.animations.AnimationDefinitions;
-import com.rs.cache.loaders.animations.AnimationFrameSet;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.util.Utils;
 
 public class RSModel {
 
+	public int id;
 	public byte priority;
 	public int version = 12;
 	public int vertexCount = 0;
@@ -81,12 +82,46 @@ public class RSModel {
 	public short[] aShortArray1981;
 
 	public static void main(String[] args) throws IOException {
-		//Cache.init();
+		Cache.init("../cache/");
 		//RSMesh mesh = getMesh(NPCDefinitions.getNPCDefinitions(0).headModels[0]);
-		AnimationDefinitions defs = AnimationDefinitions.getDefs(7280);
-		RSModel mesh = getMesh(29132);
-		System.out.println(mesh.vertexBones.length);
-		System.out.println(AnimationFrameSet.getFrameSet(defs.getFrameSets()[0].id).getFrames()[0]);
+//		AnimationDefinitions defs = AnimationDefinitions.getDefs(7280);
+//		RSModel mesh = getMesh(29132);
+//		System.out.println(mesh.vertexBones.length);
+//		System.out.println(AnimationFrameSet.getFrameSet(defs.getFrameSets()[0].id).getFrames()[0]);
+		List<RSModel> meshes = new ArrayList<>();
+		for (int i = 0;i < Cache.STORE.getIndex(IndexType.MODELS).getLastArchiveId();i++) {
+			RSModel model = getMesh(i);
+			if (model.getAvgColor() == 0)
+				continue;
+			if (model != null)
+				meshes.add(model);
+		}
+		int baseCol = Utils.RGB_to_RS2HSB(255,255,0);
+		meshes.sort((m1, m2) -> {
+			//if ((m1.vertexCount + m1.faceCount) == (m2.vertexCount + m2.faceCount))
+			//	return Math.abs(m1.getAvgColor()-baseCol) - Math.abs(m2.getAvgColor()-baseCol);
+			return (m1.vertexCount + m1.faceCount + Math.abs(m1.getAvgColor()-baseCol)) / 2 - (m2.vertexCount + m2.faceCount + Math.abs(m2.getAvgColor()-baseCol)) / 2;
+		});
+		int count = 0;
+		for (RSModel model : meshes) {
+			if (count++ > 100)
+				break;
+			System.out.println(model.id + " - " + (model.vertexCount + model.faceCount) + " - " + Math.abs(model.getAvgColor()-baseCol));
+		}
+	}
+	
+	public short getAvgColor() {
+		int total = 0;
+		int count = 0;
+		for (int i = 0;i < faceCount;i++) {
+			if (faceColors[i] == Short.MAX_VALUE)
+				continue;
+			total += faceColors[i];
+			count++;
+		}
+		if (count == 0)
+			return 0;
+		return (short) (total / count);
 	}
 
 	RSModel(byte[] data, boolean rs3) {
@@ -1917,7 +1952,9 @@ public class RSModel {
 		byte[] data = store.getIndex(IndexType.MODELS).getFile(meshId, 0);
 		if (data == null)
 			return null;
-		return new RSModel(data, rs3);
+		RSModel model = new RSModel(data, rs3);
+		model.id = meshId;
+		return model;
 	}
 
 	public static RSModel getMesh(int meshId) {
