@@ -31,7 +31,7 @@ public class CatchExceptionRunnable implements Runnable {
 		try {
 			runnable.run();
 		} catch(Throwable e) {
-			Logger.handle(this, e);
+			Logger.handle(CatchExceptionRunnable.class, "run", e);
 		}
 	}
 

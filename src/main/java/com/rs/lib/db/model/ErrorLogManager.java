@@ -27,7 +27,6 @@ import org.bson.Document;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.rs.lib.Globals;
 import com.rs.lib.db.DBItemManager;
 import com.rs.lib.file.JsonFileManager;
 
@@ -64,8 +63,18 @@ public class ErrorLogManager extends DBItemManager {
 		}
 	}
 
-	public void logError(Throwable throwable) {
-		String stackTrace = throwable.getMessage() + "\r\n";
+	public void logError(String logger, Throwable throwable) {
+		String stackTrace = logger + " - " + throwable.getMessage() + "\r\n";
+		CharArrayWriter cw = new CharArrayWriter();
+		PrintWriter w = new PrintWriter(cw);
+		throwable.printStackTrace(w);
+		w.close();
+		stackTrace += cw.toString();
+		save(new LogEntry(LogEntry.LogType.ERROR, stackTrace.hashCode(), stackTrace));
+	}
+	
+	public void logError(String logger, String message, Throwable throwable) {
+		String stackTrace = logger + " - " + throwable.getMessage() + " - " + message + "\r\n";
 		CharArrayWriter cw = new CharArrayWriter();
 		PrintWriter w = new PrintWriter(cw);
 		throwable.printStackTrace(w);
@@ -74,11 +83,7 @@ public class ErrorLogManager extends DBItemManager {
 		save(new LogEntry(LogEntry.LogType.ERROR, stackTrace.hashCode(), stackTrace));
 	}
 
-	public void logError(String error) {
-		if (Globals.DEBUG) {
-			System.err.println(error);
-			return;
-		}
-		save(new LogEntry(LogEntry.LogType.ERROR, error.hashCode(), error));
+	public void logError(String logger, String error) {
+		save(new LogEntry(LogEntry.LogType.ERROR, error.hashCode(), logger + " - " + error));
 	}
 }

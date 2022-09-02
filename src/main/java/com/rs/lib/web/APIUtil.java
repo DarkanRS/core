@@ -51,7 +51,7 @@ public class APIUtil {
 			exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
 			exchange.getResponseSender().send(JsonFileManager.toJson(responseObject));
 		} catch(Throwable e) {
-			Logger.handle(new Object() {}, e);
+			Logger.handle(APIUtil.class, "sendResponse", e);
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class APIUtil {
 				T obj = JsonFileManager.fromJSONString(new String(m), clazz);
 				cb.accept(obj);
 			} catch (Throwable t) {
-				Logger.handle(new Object() {}, t);
+				Logger.handle(APIUtil.class, "readJSON", t);
 				sendResponse(ex, StatusCodes.BAD_REQUEST, new ErrorResponse("Error parsing body."));
 			}
 	    });
@@ -75,12 +75,11 @@ public class APIUtil {
 	}
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
-		Object ctx = new Object() {};
 		if (body == null) {
-			Logger.error(ctx, "Async POST connection attempted with null body " + url);
+			Logger.error(APIUtil.class, "post", "Async POST connection attempted with null body " + url);
 			cb.accept(null);
 		}
-		Logger.trace(ctx, "Sending request: " + url);
+		Logger.trace(APIUtil.class, "post", "Sending request: " + url);
 		try {
 			Builder builder = new Request.Builder()
 					.url(url)
@@ -97,7 +96,7 @@ public class APIUtil {
 				public void onResponse(Call call, Response response) {
 					try {
 						String json = response.body().string();
-						Logger.trace(ctx, "Request finished: " + json);
+						Logger.trace(APIUtil.class, "post", "Request finished: " + json);
 						if (returnType != null) {
 							if (cb != null)
 								cb.accept(JsonFileManager.fromJSONString(json, returnType));
@@ -107,32 +106,31 @@ public class APIUtil {
 						}
 					} catch (Throwable e) {
 						if (e instanceof ConnectException) {
-							Logger.error(ctx, "Async POST Connection timed out to " + url);
+							Logger.error(APIUtil.class, "post", "Async POST Connection timed out to " + url);
 							cb.accept(null);
 							return;
 						}
-						Logger.handle(ctx, "Error parsing body...", e);
+						Logger.handle(APIUtil.class, "post", "Error parsing body...", e);
 						if (cb != null)
 							cb.accept(null);
 					}
 				}
 	
 				public void onFailure(Call call, IOException e) {
-					Logger.trace(ctx, "Request failed...");
+					Logger.trace(APIUtil.class, "post", "Request failed to " + url);
 					if (cb != null)
 						cb.accept(null);
 				}
 			});
 		} catch(Throwable e) {
-			Logger.handle(ctx, "Error sending async post request.", e);
+			Logger.handle(APIUtil.class, "post", "Error sending async post request.", e);
 		}
 	}
 	
 	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) {
-		Object ctx = new Object() {};
-		Logger.trace(ctx, "Sending request: " + url);
+		Logger.trace(APIUtil.class, "postSync", "Sending request: " + url);
 		if (body == null) {
-			Logger.error(ctx, "POST connection attempted with null body " + url);
+			Logger.error(APIUtil.class, "postSync", "POST connection attempted with null body " + url);
 			return null;
 		}
 		try {
@@ -150,32 +148,31 @@ public class APIUtil {
 			try {
 				Response response = call.execute();
 				String json = response.body().string();
-				Logger.trace(ctx, "Request finished: " + json);
+				Logger.trace(APIUtil.class, "postSync", "Request finished: " + json);
 				try {
 					if (returnType != null)
 						return JsonFileManager.fromJSONString(json, returnType);
 					return null;
 				} catch(Throwable e) {
-					Logger.handle(ctx, "Error parsing body...", e);
+					Logger.handle(APIUtil.class, "postSync", "Error parsing body...", e);
 					return null;
 				}
 			} catch(Throwable e) {
 				if (e instanceof ConnectException) {
-					Logger.error(ctx, "POST Connection timed out to " + url);
+					Logger.error(APIUtil.class, "postSync", "POST Connection timed out to " + url);
 					return null;
 				}
-				Logger.handle(ctx, "Request failed...", e);
+				Logger.handle(APIUtil.class, "postSync", "Request failed to " + url, e);
 				return null;
 			}
 		} catch(Throwable e) {
-			Logger.handle(ctx, "Error sending post request.", e);
+			Logger.handle(APIUtil.class, "postSync", "Error sending post request.", e);
 			return null;
 		}
 	}
 	
 	public static <T> void get(Class<T> returnType, String url, String apiKey, Consumer<T> cb) {
-		Object ctx = new Object() {};
-		Logger.trace(ctx, "Sending request: " + url);
+		Logger.trace(APIUtil.class, "get", "Sending request: " + url);
 		try {
 			Builder builder = new Request.Builder()
 					.url(url)
@@ -192,7 +189,7 @@ public class APIUtil {
 				public void onResponse(Call call, Response response) {
 					try {
 						String json = response.body().string();
-						Logger.trace(ctx, "Request finished: " + json);
+						Logger.trace(APIUtil.class, "get", "Request finished: " + json);
 						if (returnType != null) {
 							if (cb != null)
 								cb.accept(JsonFileManager.fromJSONString(json, returnType));
@@ -202,30 +199,29 @@ public class APIUtil {
 						}
 					} catch (Throwable e) {
 						if (e instanceof ConnectException) {
-							Logger.error(ctx, "Async GET Connection timed out to " + url);
+							Logger.error(APIUtil.class, "get", "Async GET Connection timed out to " + url);
 							cb.accept(null);
 							return;
 						}
-						Logger.handle(ctx, "Error parsing body...", e);
+						Logger.handle(APIUtil.class, "get", "Error parsing body...", e);
 						if (cb != null)
 							cb.accept(null);
 					}
 				}
 	
 				public void onFailure(Call call, IOException e) {
-					Logger.handle(ctx, "Get request failed... " + url, e);
+					Logger.handle(APIUtil.class, "get", "Get request failed... " + url, e);
 					if (cb != null)
 						cb.accept(null);
 				}
 			});
 		} catch(Throwable e) {
-			Logger.handle(ctx, "Error sending async get request.", e);
+			Logger.handle(APIUtil.class, "get", "Error sending async get request.", e);
 		}
 	}
 	
 	public static <T> T getSync(Class<T> returnType, String url, String apiKey) {
-		Object ctx = new Object() {};
-		Logger.trace(ctx, "Sending request: " + url);
+		Logger.trace(APIUtil.class, "getSync", "Sending request: " + url);
 		try {
 			Builder builder = new Request.Builder()
 					.url(url)
@@ -241,25 +237,25 @@ public class APIUtil {
 			try {
 				Response response = call.execute();
 				String json = response.body().string();
-				Logger.trace(ctx, "Request finished: " + json);
+				Logger.trace(APIUtil.class, "getSync", "Request finished: " + json);
 				try {
 					if (returnType != null)
 						return JsonFileManager.fromJSONString(json, returnType);
 					return null;
 				} catch(Throwable e) {
-					Logger.handle(ctx, "Error parsing body into " + returnType, e);
+					Logger.handle(APIUtil.class, "getSync", "Error parsing body into " + returnType, e);
 					return null;
 				}
 			} catch(Throwable e) {
 				if (e instanceof ConnectException) {
-					Logger.error(ctx, "GET Connection timed out to " + url);
+					Logger.error(APIUtil.class, "getSync", "GET Connection timed out to " + url);
 					return null;
 				}
-				Logger.handle(ctx, "Request failed...", e);
+				Logger.handle(APIUtil.class, "getSync", "Request failed... " + url, e);
 				return null;
 			}
 		} catch(Throwable e) {
-			Logger.handle(ctx, "Error sending get request.", e);
+			Logger.handle(APIUtil.class, "getSync", "Error sending get request.", e);
 			return null;
 		}
 	}

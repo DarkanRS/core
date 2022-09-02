@@ -34,7 +34,7 @@ public class CatchExceptionTimerTask implements TimerTask {
 		try {
 			task.run(timeout);
 		} catch(Throwable e) {
-			Logger.handle(this, e);
+			Logger.handle(CatchExceptionTimerTask.class, "run", e);
 		}
 	}
 

@@ -29,7 +29,7 @@ public final class Cache {
 	}
 	
 	public static void init(String path) throws IOException {
-		Logger.info(new Object() {}, "Loading cache...");
+		Logger.info(Cache.class, "init", "Loading cache at "+path+"...");
 		STORE = new Store(path, false);
 	}
 }

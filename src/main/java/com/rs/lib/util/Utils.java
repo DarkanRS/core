@@ -857,7 +857,7 @@ public final class Utils {
 				algorithm.reset();
 				return digest;
 			} catch (Throwable e) {
-				Logger.handle(new Object() {}, e);
+				Logger.handle(Utils.class, "encryptUsingMD5", e);
 			}
 			return null;
 		}
