@@ -17,6 +17,7 @@
 package com.rs.lib.net.packets.encoders.social;
 
 import java.util.Map;
+
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.Clan;
 import com.rs.lib.model.DisplayNamePair;
@@ -26,24 +27,17 @@ import com.rs.lib.net.packets.PacketEncoder;
 
 public class ClanSettingsFull extends PacketEncoder {
 	
-	private Clan clan;
-	private Map<String, DisplayNamePair> displayNameMap;
 	private boolean guest;
-	private int updateNum;
+	private byte[] block;
 
-	public ClanSettingsFull(Clan clan, Map<String, DisplayNamePair> displayNameMap, boolean guest, int updateNum) {
+	public ClanSettingsFull(byte[] block, boolean guest) {
 		super(ServerPacket.CLANSETTINGS_FULL);
-		this.clan = clan;
-		this.displayNameMap = displayNameMap;
+		this.block = block;
 		this.guest = guest;
-		this.updateNum = updateNum;
 	}
-
-	@Override
-	public void encodeBody(OutputStream stream) {
-		stream.writeByte(guest ? 0 : 1);
-		if (clan == null)
-			return;
+	
+	public static byte[] generateBlock(Clan clan, Map<String, DisplayNamePair> displayNameMap, int updateNum) {
+		OutputStream stream = new OutputStream();
 		int version = 3;
 		stream.writeByte(version); // lowest clan version protocol
 		stream.writeByte(0x2); // read name as string, 0x1 for long
@@ -111,6 +105,15 @@ public class ClanSettingsFull extends PacketEncoder {
 			stream.writeInt(18 | 0 << 30);
 			stream.writeInt(clan.getMottifColors()[2] | clan.getMottifColors()[3] << 16);
 		}
+		return stream.getBuffer();
+	}
+
+	@Override
+	public void encodeBody(OutputStream stream) {
+		stream.writeByte(guest ? 0 : 1);
+		if (block == null)
+			return;
+		stream.writeBytes(block);
 	}
 	
 	public static final char[] VALID_CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };

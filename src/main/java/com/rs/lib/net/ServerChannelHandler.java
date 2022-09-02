@@ -19,7 +19,6 @@ package com.rs.lib.net;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 
-import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.decoders.GameDecoder;
 import com.rs.lib.util.Logger;
@@ -49,6 +48,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 	private Class<? extends Decoder> baseDecoderClass;
 
 	public static final void init(int port, Class<? extends Decoder> baseDecoderClass) {
+		Logger.info(ServerChannelHandler.class, "init", "Putting server online... (" + baseDecoderClass + ")");
 		new ServerChannelHandler(port, baseDecoderClass);
 	}
 
@@ -85,17 +85,15 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 	public void channelActive(ChannelHandlerContext ctx) {
 		try {
 			ctx.channel().attr(SESSION_KEY).set(new Session(ctx.channel(), baseDecoderClass.getConstructor().newInstance()));
-			if (Globals.DEBUG)
-				System.out.println("Connection from " + ctx.channel().remoteAddress());
+			Logger.debug(ServerChannelHandler.class, "channelActive", "Connection from " + ctx.channel().remoteAddress());
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-			Logger.handle(e1);
+			Logger.handle(ServerChannelHandler.class, "channelActive", e1);
 		}
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) {
-		if (Globals.DEBUG)
-			System.out.println("Connection disconnected " + ctx.channel().remoteAddress());
+		Logger.debug(ServerChannelHandler.class, "channelInactive", "Connection disconnected " + ctx.channel().remoteAddress());
 		Session session = ctx.channel().attr(SESSION_KEY).get();
 		if (session != null) {
 			if (session.getDecoder() == null)
@@ -132,7 +130,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 					session.bufferOffset = 0;
 				}
 			} catch (Throwable er) {
-				Logger.handle(er);
+				Logger.handle(ServerChannelHandler.class, "ServerChannelHandler", er);
 			}
 		}
 	}

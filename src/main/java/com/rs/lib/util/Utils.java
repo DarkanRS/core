@@ -64,7 +64,6 @@ import com.rs.cache.loaders.cs2.CS2Instruction;
 import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.cache.loaders.sound.Instrument;
 import com.rs.lib.Constants;
-import com.rs.lib.Globals;
 import com.rs.lib.game.Item;
 import com.rs.lib.game.WorldTile;
 
@@ -281,8 +280,8 @@ public final class Utils {
 		rate99 = (int) (percModifier * (double) rate99);
 		double perc = (double) level / 99.0;
 		int chance = clampI((int) ((double) rate1 + (((double) rate99 - (double) rate1) * perc)), 0, maxSuccess);
-		if (Globals.DEBUG)
-			System.out.println("Skilling chance: " + chance + "/256 - " + Utils.formatDouble(((double) chance / 256.0) * 100.0) + "%");
+//		if (Globals.DEBUG)
+//			System.out.println("Skilling chance: " + chance + "/256 - " + Utils.formatDouble(((double) chance / 256.0) * 100.0) + "%");
 		return random(255) <= chance;
 	}
 
@@ -858,7 +857,7 @@ public final class Utils {
 				algorithm.reset();
 				return digest;
 			} catch (Throwable e) {
-				Logger.handle(e);
+				Logger.handle(Utils.class, "encryptUsingMD5", e);
 			}
 			return null;
 		}

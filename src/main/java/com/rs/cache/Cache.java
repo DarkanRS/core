@@ -18,6 +18,8 @@ package com.rs.cache;
 
 import java.io.IOException;
 
+import com.rs.lib.util.Logger;
+
 public final class Cache {
 
 	public static Store STORE;
@@ -27,6 +29,7 @@ public final class Cache {
 	}
 	
 	public static void init(String path) throws IOException {
+		Logger.info(Cache.class, "init", "Loading cache at "+path+"...");
 		STORE = new Store(path, false);
 	}
 }

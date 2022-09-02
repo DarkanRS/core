@@ -27,24 +27,17 @@ import com.rs.lib.net.packets.PacketEncoder;
 
 public class ClanChannelFull extends PacketEncoder {
 	
-	private Clan clan;
 	private boolean guest;
-	private int updateNum;
-	private List<MinimalSocial> chatters;
+	private byte[] block;
 
-	public ClanChannelFull(Clan clan, boolean guest, int updateNum, List<MinimalSocial> chatters) {
+	public ClanChannelFull(byte[] block, boolean guest) {
 		super(ServerPacket.CLANCHANNEL_FULL);
-		this.clan = clan;
 		this.guest = guest;
-		this.updateNum = updateNum;
-		this.chatters = chatters;
+		this.block = block;
 	}
-
-	@Override
-	public void encodeBody(OutputStream stream) {
-		stream.writeByte(guest ? 0 : 1);
-		if (clan == null)
-			return;
+	
+	public static byte[] generateBlock(Clan clan, int updateNum, List<MinimalSocial> chatters) {
+		OutputStream stream = new OutputStream();
 		stream.writeByte(0x2); // read name as string, 0x1 for long
 		stream.writeLong(4062231702422979939L); // uid
 		stream.writeLong(updateNum);
@@ -61,6 +54,15 @@ public class ClanChannelFull extends PacketEncoder {
 			stream.writeByte(data == null ? -1 : data.getRank().getIconId());
 			stream.writeShort(player.getWorld().getNumber());
 		}
+		return stream.getBuffer();
+	}
+
+	@Override
+	public void encodeBody(OutputStream stream) {
+		stream.writeByte(guest ? 0 : 1);
+		if (block == null)
+			return;
+		stream.writeBytes(block);
 	}
 
 }

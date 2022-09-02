@@ -17,14 +17,14 @@
 package com.rs.lib.web;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.Deque;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import com.google.gson.JsonIOException;
 import com.rs.lib.file.JsonFileManager;
+import com.rs.lib.util.Logger;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
@@ -35,6 +35,7 @@ import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Request.Builder;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -45,9 +46,13 @@ public class APIUtil {
 			.build();
 			
 	public static void sendResponse(HttpServerExchange exchange, int stateCode, Object responseObject) {
-		exchange.setStatusCode(stateCode);
-		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-		exchange.getResponseSender().send(JsonFileManager.toJson(responseObject));
+		try {
+			exchange.setStatusCode(stateCode);
+			exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+			exchange.getResponseSender().send(JsonFileManager.toJson(responseObject));
+		} catch(Throwable e) {
+			Logger.handle(APIUtil.class, "sendResponse", e);
+		}
 	}
 	
 	public static <T> void readJSON(HttpServerExchange ex, Class<T> clazz, Consumer<T> cb) {
@@ -55,7 +60,8 @@ public class APIUtil {
 			try {
 				T obj = JsonFileManager.fromJSONString(new String(m), clazz);
 				cb.accept(obj);
-			} catch (JsonIOException | IOException e1) {
+			} catch (Throwable t) {
+				Logger.handle(APIUtil.class, "readJSON", t);
 				sendResponse(ex, StatusCodes.BAD_REQUEST, new ErrorResponse("Error parsing body."));
 			}
 	    });
@@ -69,135 +75,187 @@ public class APIUtil {
 	}
 	
 	public static <T> void post(Class<T> returnType, Object body, String url, String apiKey, Consumer<T> cb) {
-		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
-		Request request = new Request.Builder()
-				.url(url)
-				.post(RequestBody.create(JsonFileManager.toJson(body), MediaType.parse("application/json")))
-				.header("accept", "application/json")
-				.header("key", apiKey)
-				.build();
-
-		Call call = client.newCall(request);
-		call.enqueue(new Callback() {
-			public void onResponse(Call call, Response response) throws IOException {
-				String json = response.body().string();
-				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
-				try {
-					if (returnType != null) {
-						if (cb != null)
-							cb.accept(JsonFileManager.fromJSONString(json, returnType));
-					} else {
+		if (body == null) {
+			Logger.error(APIUtil.class, "post", "Async POST connection attempted with null body " + url);
+			cb.accept(null);
+		}
+		Logger.trace(APIUtil.class, "post", "Sending request: " + url);
+		try {
+			Builder builder = new Request.Builder()
+					.url(url)
+					.post(RequestBody.create(JsonFileManager.toJson(body), MediaType.parse("application/json")))
+					.header("accept", "application/json");
+			
+			if (apiKey != null)
+				builder.header("key", apiKey);
+			
+			Request request = builder.build();
+	
+			Call call = client.newCall(request);
+			call.enqueue(new Callback() {
+				public void onResponse(Call call, Response response) {
+					try {
+						String json = response.body().string();
+						Logger.trace(APIUtil.class, "post", "Request finished: " + json);
+						if (returnType != null) {
+							if (cb != null)
+								cb.accept(JsonFileManager.fromJSONString(json, returnType));
+						} else {
+							if (cb != null)
+								cb.accept(null);
+						}
+					} catch (Throwable e) {
+						if (e instanceof ConnectException) {
+							Logger.error(APIUtil.class, "post", "Async POST Connection timed out to " + url);
+							cb.accept(null);
+							return;
+						}
+						Logger.handle(APIUtil.class, "post", "Error parsing body...", e);
 						if (cb != null)
 							cb.accept(null);
 					}
-				} catch (Exception e) {
-					System.err.println("Error parsing body into " + returnType + ": " + json);
-					e.printStackTrace();
+				}
+	
+				public void onFailure(Call call, IOException e) {
+					Logger.trace(APIUtil.class, "post", "Request failed to " + url);
 					if (cb != null)
 						cb.accept(null);
 				}
-			}
-
-			public void onFailure(Call call, IOException e) {
-				java.util.logging.Logger.getLogger("Web").finest("Request failed...");
-				if (cb != null)
-					cb.accept(null);
-			}
-		});
+			});
+		} catch(Throwable e) {
+			Logger.handle(APIUtil.class, "post", "Error sending async post request.", e);
+		}
 	}
 	
-	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
-		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
-		Request request = new Request.Builder()
-				.url(url)
-				.post(RequestBody.create(JsonFileManager.toJson(body), MediaType.parse("application/json")))
-				.header("accept", "application/json")
-				.header("key", apiKey)
-				.build();
-
-		Call call = client.newCall(request);
+	public static <T> T postSync(Class<T> returnType, Object body, String url, String apiKey) {
+		Logger.trace(APIUtil.class, "postSync", "Sending request: " + url);
+		if (body == null) {
+			Logger.error(APIUtil.class, "postSync", "POST connection attempted with null body " + url);
+			return null;
+		}
 		try {
-			Response response = call.execute();
-			String json = response.body().string();
-			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
+			Builder builder = new Request.Builder()
+					.url(url)
+					.post(RequestBody.create(JsonFileManager.toJson(body), MediaType.parse("application/json")))
+					.header("accept", "application/json");
+			
+			if (apiKey != null)
+				builder.header("key", apiKey);
+			
+			Request request = builder.build();
+	
+			Call call = client.newCall(request);
 			try {
-				if (returnType != null)
-					return JsonFileManager.fromJSONString(json, returnType);
-				return null;
-			} catch(Exception e) {
-				System.err.println("Error parsing body into " + returnType + ": " + json);
-				e.printStackTrace();
+				Response response = call.execute();
+				String json = response.body().string();
+				Logger.trace(APIUtil.class, "postSync", "Request finished: " + json);
+				try {
+					if (returnType != null)
+						return JsonFileManager.fromJSONString(json, returnType);
+					return null;
+				} catch(Throwable e) {
+					Logger.handle(APIUtil.class, "postSync", "Error parsing body...", e);
+					return null;
+				}
+			} catch(Throwable e) {
+				if (e instanceof ConnectException) {
+					Logger.error(APIUtil.class, "postSync", "POST Connection timed out to " + url);
+					return null;
+				}
+				Logger.handle(APIUtil.class, "postSync", "Request failed to " + url, e);
 				return null;
 			}
-		} catch(Exception e) {
-			java.util.logging.Logger.getLogger("Web").finest("Request failed...");
+		} catch(Throwable e) {
+			Logger.handle(APIUtil.class, "postSync", "Error sending post request.", e);
 			return null;
 		}
 	}
 	
 	public static <T> void get(Class<T> returnType, String url, String apiKey, Consumer<T> cb) {
-		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
-		Request request = new Request.Builder()
-				.url(url)
-				.get()
-				.header("accept", "application/json")
-				.header("key", apiKey)
-				.build();
-
-		Call call = client.newCall(request);
-		call.enqueue(new Callback() {
-			public void onResponse(Call call, Response response) throws IOException {
-				String json = response.body().string();
-				java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
-				try {
-					if (returnType != null) {
-						if (cb != null)
-							cb.accept(JsonFileManager.fromJSONString(json, returnType));
-					} else {
+		Logger.trace(APIUtil.class, "get", "Sending request: " + url);
+		try {
+			Builder builder = new Request.Builder()
+					.url(url)
+					.get()
+					.header("accept", "application/json");
+			
+			if (apiKey != null)
+				builder.header("key", apiKey);
+			
+			Request request = builder.build();
+	
+			Call call = client.newCall(request);
+			call.enqueue(new Callback() {
+				public void onResponse(Call call, Response response) {
+					try {
+						String json = response.body().string();
+						Logger.trace(APIUtil.class, "get", "Request finished: " + json);
+						if (returnType != null) {
+							if (cb != null)
+								cb.accept(JsonFileManager.fromJSONString(json, returnType));
+						} else {
+							if (cb != null)
+								cb.accept(null);
+						}
+					} catch (Throwable e) {
+						if (e instanceof ConnectException) {
+							Logger.error(APIUtil.class, "get", "Async GET Connection timed out to " + url);
+							cb.accept(null);
+							return;
+						}
+						Logger.handle(APIUtil.class, "get", "Error parsing body...", e);
 						if (cb != null)
 							cb.accept(null);
 					}
-				} catch (Exception e) {
-					System.err.println("Error parsing body into " + returnType + ": " + json);
-					e.printStackTrace();
+				}
+	
+				public void onFailure(Call call, IOException e) {
+					Logger.handle(APIUtil.class, "get", "Get request failed... " + url, e);
 					if (cb != null)
 						cb.accept(null);
 				}
-			}
-
-			public void onFailure(Call call, IOException e) {
-				java.util.logging.Logger.getLogger("Web").finest("Request failed...");
-				if (cb != null)
-					cb.accept(null);
-			}
-		});
+			});
+		} catch(Throwable e) {
+			Logger.handle(APIUtil.class, "get", "Error sending async get request.", e);
+		}
 	}
 	
-	public static <T> T getSync(Class<T> returnType, String url, String apiKey) throws InterruptedException, ExecutionException, IOException {
-		java.util.logging.Logger.getLogger("Web").finest("Sending request: " + url);
-		Request request = new Request.Builder()
-				.url(url)
-				.get()
-				.header("accept", "application/json")
-				.header("key", apiKey)
-				.build();
-
-		Call call = client.newCall(request);
+	public static <T> T getSync(Class<T> returnType, String url, String apiKey) {
+		Logger.trace(APIUtil.class, "getSync", "Sending request: " + url);
 		try {
-			Response response = call.execute();
-			String json = response.body().string();
-			java.util.logging.Logger.getLogger("Web").finest("Request finished: " + json);
+			Builder builder = new Request.Builder()
+					.url(url)
+					.get()
+					.header("accept", "application/json");
+			
+			if (apiKey != null)
+				builder.header("key", apiKey);
+			
+			Request request = builder.build();
+	
+			Call call = client.newCall(request);
 			try {
-				if (returnType != null)
-					return JsonFileManager.fromJSONString(json, returnType);
-				return null;
-			} catch(Exception e) {
-				System.err.println("Error parsing body into " + returnType + ": " + json);
-				e.printStackTrace();
+				Response response = call.execute();
+				String json = response.body().string();
+				Logger.trace(APIUtil.class, "getSync", "Request finished: " + json);
+				try {
+					if (returnType != null)
+						return JsonFileManager.fromJSONString(json, returnType);
+					return null;
+				} catch(Throwable e) {
+					Logger.handle(APIUtil.class, "getSync", "Error parsing body into " + returnType, e);
+					return null;
+				}
+			} catch(Throwable e) {
+				if (e instanceof ConnectException) {
+					Logger.error(APIUtil.class, "getSync", "GET Connection timed out to " + url);
+					return null;
+				}
+				Logger.handle(APIUtil.class, "getSync", "Request failed... " + url, e);
 				return null;
 			}
-		} catch(Exception e) {
-			java.util.logging.Logger.getLogger("Web").finest("Request failed...");
+		} catch(Throwable e) {
+			Logger.handle(APIUtil.class, "getSync", "Error sending get request.", e);
 			return null;
 		}
 	}
