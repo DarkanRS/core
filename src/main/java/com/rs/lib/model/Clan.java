@@ -22,8 +22,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.rs.cache.loaders.ClanVarSettingsDefinitions;
 import com.rs.cache.loaders.EnumDefinitions;
 import com.rs.cache.loaders.ItemDefinitions;
+import com.rs.cache.loaders.cs2.CS2Type;
+import com.rs.lib.util.Logger;
 
 public class Clan {
 	
@@ -42,9 +45,9 @@ public class Clan {
 	private boolean guestsInChatCanTalk;
 	private String threadId;
 	private String motto;
-
 	private int mottifTop, mottifBottom;
 	private int[] mottifColors;
+	private Map<Integer, Object> vars;
 
 	private ClanRank minimumRankForKick;
 	
@@ -220,5 +223,79 @@ public class Clan {
 
 	public void setUpdateBlock(byte[] updateBlock) {
 		this.updateBlock = updateBlock;
+	}
+
+	public Map<Integer, Object> getVars() {
+		if (vars == null)
+			vars = new HashMap<>();
+		return vars;
+	}
+	
+	public void setVarInt(int varId, int value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setVarInt", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.INT) {
+			Logger.error(Clan.class, "setVarInt", "Tried to set int value for " + varId + " which is " + def.type);
+			return;
+		}
+		if (def.baseVar != -1) {
+			Logger.error(Clan.class, "setVarBit", "Var " + varId + " should be a varbit.");
+			return;
+		}
+		vars.put(varId, value);
+	}
+	
+	public void setVarBit(int varId, int value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setVarBit", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.INT) {
+			Logger.error(Clan.class, "setVarBit", "Tried to set int value for " + varId + " which is " + def.type);
+			return;
+		}
+		if (def.baseVar == -1) {
+			Logger.error(Clan.class, "setVarBit", "Var " + varId + " is not a valid varbit.");
+			return;
+		}
+		int startMask = (1 << def.startBit) - 1;
+        int endMask = def.endBit == 31 ? -1 : (1 << def.endBit + 1) - 1;
+        int mask = endMask ^ startMask;
+        value <<= def.startBit;
+        value &= mask;
+        int orig = vars.get(def.baseVar) != null ? (int) vars.get(def.baseVar) : 0;
+        orig &= ~mask;
+        orig |= value;
+		vars.put(def.baseVar, orig);
+	}
+	
+	public void setVarLong(int varId, long value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setVarLong", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.LONG) {
+			Logger.error(Clan.class, "setVarLong", "Tried to set long value for " + varId + " which is " + def.type);
+			return;
+		}
+		vars.put(varId, value);
+	}
+	
+	public void setVarString(int varId, String value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setVarLong", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.STRING) {
+			Logger.error(Clan.class, "setVarLong", "Tried to set string value for " + varId + " which is " + def.type);
+			return;
+		}
+		vars.put(varId, value);
 	}
 }
