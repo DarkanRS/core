@@ -4,6 +4,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
+import com.rs.lib.Globals;
 import com.rs.lib.db.DBConnection;
 
 public final class Logger {
@@ -27,6 +28,8 @@ public final class Logger {
 		if (DBConnection.getErrors() != null && DBConnection.getErrors().getDocs() != null)
 			DBConnection.getErrors().logError(method, e);
 		DARKAN_ROOT_LOGGER.log(Level.SEVERE, "[" + source.getSimpleName() + "." + method + "] " + (e.getClass().getEnclosingMethod() != null ? "["+e.getClass().getEnclosingMethod().getName() + "]: " : ""), e);
+		if (Globals.DEBUG && e != null)
+			e.printStackTrace();
 	}
 
 	public static final void handle(Class<?> source, String method, String message, Throwable e) {
@@ -41,6 +44,8 @@ public final class Logger {
 
 	public static final void handleNoRecord(Class<?> source, String method, String message, Throwable e) {
 		DARKAN_ROOT_LOGGER.log(Level.SEVERE, "[" + source.getSimpleName() + "." + method + "] " + (e.getClass().getEnclosingMethod() != null ? "["+e.getClass().getEnclosingMethod().getName() + "]: " : "") + "" + message, e);
+		if (Globals.DEBUG && e != null)
+			e.printStackTrace();
 	}
 
 	public static final void error(Class<?> source, String method, Object msg) {

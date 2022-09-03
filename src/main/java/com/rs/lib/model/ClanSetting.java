@@ -1,18 +1,20 @@
 package com.rs.lib.model;
 
+import com.rs.cache.loaders.ClanVarSettingsDefinitions;
+
 public enum ClanSetting {
 /*0	    int 	2147483647*/ GAME_TIME(0),
-/*1	    string	*/
+/*1	    string	*/			 MOTTO(1),
 /*2	    long	2147483647*/ FORUM_QFC(2),
 /*3	    int 	2147483647*/
 /*4	    int 	1*/			 IS_RECRUITING(4),
-/*5	    int 	1*/			 HAS_TIMEZONE(5),
+/*5	    int 	1*/			 USES_CLANTIMEZONE(5),
 /*6	    int 	128*/		 HOME_WORLD(6),
 /*7	    int 	1024*/		 NATIONAL_FLAG(7),
 /*8	    int 	1*/
-/*9	    int 	1*/
+/*9	    int 	1*/			 HIDE_MOTTO(9),
 /*10	int 	1*/
-/*11	int 	1*/
+/*11	int 	1*/			 HIDE_FLAG(11),
 /*12	int 	1*/
 /*13	int 	2147483647*/
 /*14	int 	32768*/		 MOTIF_TOP_ICON(14),
@@ -340,4 +342,7 @@ public enum ClanSetting {
 		return id;
 	}
 
+	public ClanVarSettingsDefinitions getDef() {
+		return ClanVarSettingsDefinitions.getDefs(id);
+	}
 }

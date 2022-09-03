@@ -46,7 +46,10 @@ public class ClanSettingsFull extends PacketEncoder {
 		stream.writeByte(0x2); // read name as string, 0x1 for long
 		stream.writeInt(updateNum);
 		stream.writeInt(0); // probably had same usage anyway doesnt anymore
-		stream.writeShort(clan.getMembers().size());
+		int fillerCount = 5 - clan.getMembers().size();
+		if (fillerCount < 0)
+			fillerCount = 0;
+		stream.writeShort(clan.getMembers().size() + fillerCount);
 		stream.writeByte(clan.getBannedUsers().size());
 		stream.writeString(clan.getName());
 		if (version >= 4)
@@ -65,6 +68,16 @@ public class ClanSettingsFull extends PacketEncoder {
 				stream.writeInt(0); // memberInt1
 			if (version >= 5)
 				stream.writeShort(0); // memberShort1
+		}
+		if (fillerCount > 0) {
+			for (int i = 0;i < fillerCount;i++) {
+				stream.writeString("FILLER_CHARACTER"+i);
+				stream.writeByte(0);
+				if (version >= 2)
+					stream.writeInt(0);
+				if (version >= 5)
+					stream.writeShort(0);
+			}
 		}
 		for (String bannedUser : clan.getBannedUsers()) {
 			// stream.writeLong(bannedUser);
@@ -94,10 +107,10 @@ public class ClanSettingsFull extends PacketEncoder {
 		}
 		if (def.type == CS2Type.INT) {
 			stream.writeInt(varId | 0 << 30);
-			stream.writeInt((int) value);
+			stream.writeInt(value instanceof Double d ? d.intValue() : (int) value);
 		} else if (def.type == CS2Type.LONG) {
 			stream.writeInt(varId | 1 << 30);
-			stream.writeLong((long) value);
+			stream.writeLong(value instanceof Double d ? d.intValue() : (long) value);
 		} else if (def.type == CS2Type.STRING) {
 			stream.writeInt(varId | 2 << 30);
 			stream.writeString((String) value);
