@@ -21,18 +21,18 @@ import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
-@PacketDecoder(ClientPacket.CC_CREATE)
-public class CCCreate extends Packet {
+@PacketDecoder(ClientPacket.CC_BAN)
+public class CCBan extends Packet {
 
-	private String name;
+	private String clan;
 	
-	public CCCreate() {
+	public CCBan() {
 		
 	}
 	
-	public CCCreate(String name) {
-		this.setOpcode(ClientPacket.CC_CREATE);
-		this.name = name;
+	public CCBan(String clan) {
+		this.setOpcode(ClientPacket.CC_BAN);
+		this.clan = clan;
 	}
 	
 	@Override
@@ -40,8 +40,8 @@ public class CCCreate extends Packet {
 		return null;
 	}
 
-	public String getName() {
-		return name;
+	public String getClan() {
+		return clan;
 	}
 	
 }

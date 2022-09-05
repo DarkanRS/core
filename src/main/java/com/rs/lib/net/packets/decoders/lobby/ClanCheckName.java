@@ -21,18 +21,20 @@ import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
-@PacketDecoder(ClientPacket.CC_JOIN)
-public class CCJoin extends Packet {
+@PacketDecoder(ClientPacket.CLAN_CHECKNAME)
+public class ClanCheckName extends Packet {
 
-	private String clan;
+	private String name;
+	private boolean approved;
 	
-	public CCJoin() {
+	public ClanCheckName() {
 		
 	}
 	
-	public CCJoin(String guestChatName) {
-		this.setOpcode(ClientPacket.CC_JOIN);
-		this.clan = guestChatName;
+	public ClanCheckName(String name, boolean approved) {
+		this.setOpcode(ClientPacket.CLAN_CHECKNAME);
+		this.name = name;
+		this.approved = approved;
 	}
 	
 	@Override
@@ -40,8 +42,12 @@ public class CCJoin extends Packet {
 		return null;
 	}
 
-	public String getClan() {
-		return clan;
+	public String getName() {
+		return name;
+	}
+
+	public boolean isApproved() {
+		return approved;
 	}
 	
 }
