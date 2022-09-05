@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
@@ -41,9 +43,17 @@ public class ClanVarSettingsDefinitions {
 	
 	public static void main(String[] args) throws IOException {
 		Cache.init("../cache/");
+		Set<Integer> varbits = new HashSet<>();
 		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CONFIG).getLastFileId(ArchiveType.CLAN_VAR_SETTINGS.getId()) + 1;i++) {
 			ClanVarSettingsDefinitions defs = getDefs(i);
-			System.out.println(i + "\t" + defs.type + "\t" + defs.getMaxSize());
+			if (defs.baseVar != -1)
+				varbits.add(defs.baseVar);
+		}
+		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CONFIG).getLastFileId(ArchiveType.CLAN_VAR_SETTINGS.getId()) + 1;i++) {
+			ClanVarSettingsDefinitions defs = getDefs(i);
+			if (varbits.contains(i))
+				continue;
+			System.out.println("/*"+i + "\t" + defs.type + "\t" + defs.getMaxSize() +"\t\t*/");
 		}
 	}
 	
@@ -82,12 +92,12 @@ public class ClanVarSettingsDefinitions {
 		}
 	}
 	
-	public int getMaxSize() {
+	public long getMaxSize() {
 		if (baseVar == -1) {
 			if (type == CS2Type.INT)
 				return Integer.MAX_VALUE;
 			else if (type == CS2Type.LONG)
-				return Integer.MAX_VALUE;
+				return Long.MAX_VALUE;
 			else
 				return -1;
 		} else {

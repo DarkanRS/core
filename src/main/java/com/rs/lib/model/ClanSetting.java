@@ -6,7 +6,6 @@ public enum ClanSetting {
 /*0	    int 	2147483647*/ GAME_TIME(0),
 /*1	    string	*/			 MOTTO(1),
 /*2	    long	2147483647*/ FORUM_QFC(2),
-/*3	    int 	2147483647*/
 /*4	    int 	1*/			 IS_RECRUITING(4),
 /*5	    int 	1*/			 USES_CLANTIMEZONE(5),
 /*6	    int 	128*/		 HOME_WORLD(6),
@@ -16,18 +15,12 @@ public enum ClanSetting {
 /*10	int 	1*/
 /*11	int 	1*/			 HIDE_FLAG(11),
 /*12	int 	1*/
-/*13	int 	2147483647*/
 /*14	int 	32768*/		 MOTIF_TOP_ICON(14),
 /*15	int 	32768*/		 MOTIF_BOTTOM_ICON(15),
 /*16	int 	2147483647*/ MOTIF_TOP_COLOR(16),
 /*17	int 	2147483647*/ MOTIF_BOTTOM_COLOR(17),
 /*18	int 	2147483647*/ MOTIF_PRIMARY_COLOR(18),
 /*19	int 	2147483647*/ MOTIF_SECONDARY_COLOR(19),
-/*20	int 	2147483647*/
-/*21	int 	2147483647*/
-/*22	int 	2147483647*/
-/*23	int 	2147483647*/
-/*24	int 	2147483647*/
 /*25	int 	32*/
 /*26	int 	512*/
 /*27	int 	32*/
@@ -48,26 +41,6 @@ public enum ClanSetting {
 /*42	int 	512*/
 /*43	int 	32*/
 /*44	int 	512*/
-/*45	int 	2147483647*/
-/*46	int 	2147483647*/
-/*47	int 	2147483647*/
-/*48	int 	2147483647*/
-/*49	int 	2147483647*/
-/*50	int 	2147483647*/
-/*51	int 	2147483647*/
-/*52	int 	2147483647*/
-/*53	int 	2147483647*/
-/*54	int 	2147483647*/
-/*55	int 	2147483647*/
-/*56	int 	2147483647*/
-/*57	int 	2147483647*/
-/*58	int 	2147483647*/
-/*59	int 	2147483647*/
-/*60	int 	2147483647*/
-/*61	int 	2147483647*/
-/*62	int 	2147483647*/
-/*63	int 	2147483647*/
-/*64	int 	2147483647*/
 /*65	int 	2147483647*/ EVENT0_OPEN_TO_RANK(65), //3716 enum
 /*66	int 	2147483647*/ EVENT1_OPEN_TO_RANK(66),
 /*67	int 	2147483647*/ EVENT2_OPEN_TO_RANK(67),
@@ -76,7 +49,6 @@ public enum ClanSetting {
 /*70	int 	2147483647*/ EVENT5_OPEN_TO_RANK(70),
 /*71	int 	2147483647*/ EVENT6_OPEN_TO_RANK(71),
 /*72	int 	2147483647*/ EVENT7_OPEN_TO_RANK(72),
-/*73	int 	2147483647*/
 /*74	int 	128*/   EVENT0_ACTIVITY_CATEGORY(74), //3687 -> 3689 enum
 /*75	int 	128*/   EVENT1_ACTIVITY_CATEGORY(75),
 /*76	int 	128*/   EVENT2_ACTIVITY_CATEGORY(76),
@@ -144,11 +116,6 @@ public enum ClanSetting {
 /*138	int 	1*/     EVENT6_ATTENDANCE_MANDATORY(138),
 /*139	int 	1*/     EVENT7_ATTENDANCE_MANDATORY(139),
 /*140	int 	1*/
-/*141	int 	2147483647*/
-/*142	int 	2147483647*/
-/*143	int 	2147483647*/
-/*144	int 	2147483647*/
-/*145	int 	2147483647*/
 /*146	int 	1*/
 /*147	int 	1*/
 /*148	int 	1*/
@@ -297,7 +264,6 @@ public enum ClanSetting {
 /*291	int 	1*/
 /*292	int 	2*/
 /*293	int 	1*/
-/*294	int 	2147483647*/
 /*295	int 	1*/
 /*296	int 	1*/
 /*297	int 	1*/
@@ -312,7 +278,6 @@ public enum ClanSetting {
 /*306	int 	1*/
 /*307	int 	4*/
 /*308	int 	2147483647*/
-/*309	int 	2147483647*/
 /*310	int 	1*/
 /*311	int 	1*/
 /*312	int 	1*/
