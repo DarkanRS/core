@@ -21,17 +21,17 @@ import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
-@PacketDecoder(ClientPacket.CC_ADD_PLAYER)
-public class CCAddPlayer extends Packet {
+@PacketDecoder(ClientPacket.CLAN_CREATE)
+public class ClanCreate extends Packet {
 
 	private String name;
 	
-	public CCAddPlayer() {
+	public ClanCreate() {
 		
 	}
 	
-	public CCAddPlayer(String name) {
-		this.setOpcode(ClientPacket.CC_ADD_PLAYER);
+	public ClanCreate(String name) {
+		this.setOpcode(ClientPacket.CLAN_CREATE);
 		this.name = name;
 	}
 	

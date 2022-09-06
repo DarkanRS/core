@@ -21,20 +21,18 @@ import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
-@PacketDecoder(ClientPacket.CC_CHECKNAME)
-public class CCCheckName extends Packet {
-
-	private String name;
-	private boolean approved;
+@PacketDecoder(ClientPacket.CC_LEAVE)
+public class CCLeave extends Packet {
 	
-	public CCCheckName() {
+	private boolean guest;
+	
+	public CCLeave() {
 		
 	}
-	
-	public CCCheckName(String name, boolean approved) {
-		this.setOpcode(ClientPacket.CC_CHECKNAME);
-		this.name = name;
-		this.approved = approved;
+
+	public CCLeave(boolean guest) {
+		this.setOpcode(ClientPacket.CC_LEAVE);
+		this.guest = guest;
 	}
 	
 	@Override
@@ -42,12 +40,7 @@ public class CCCheckName extends Packet {
 		return null;
 	}
 
-	public String getName() {
-		return name;
+	public boolean isGuest() {
+		return guest;
 	}
-
-	public boolean isApproved() {
-		return approved;
-	}
-	
 }

@@ -18,12 +18,15 @@ package com.rs.lib.net.packets.encoders.social;
 
 import java.util.Map;
 
+import com.rs.cache.loaders.ClanVarSettingsDefinitions;
+import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.Clan;
 import com.rs.lib.model.DisplayNamePair;
 import com.rs.lib.model.MemberData;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
+import com.rs.lib.util.Logger;
 
 public class ClanSettingsFull extends PacketEncoder {
 	
@@ -43,69 +46,79 @@ public class ClanSettingsFull extends PacketEncoder {
 		stream.writeByte(0x2); // read name as string, 0x1 for long
 		stream.writeInt(updateNum);
 		stream.writeInt(0); // probably had same usage anyway doesnt anymore
-		stream.writeShort(clan.getMembers().size());
+		int fillerCount = 5 - clan.getMembers().size();
+		if (fillerCount < 0)
+			fillerCount = 0;
+		stream.writeShort(clan.getMembers().size() + fillerCount);
 		stream.writeByte(clan.getBannedUsers().size());
 		stream.writeString(clan.getName());
 		if (version >= 4)
 			stream.writeInt(0);
 		stream.writeByte(clan.isGuestsInChatCanEnter() ? 1 : 0);
-		stream.writeByte(1); // unknown
-		stream.writeByte(0); // some rank for something in clan channel
-		stream.writeByte(0); // unknown
-		stream.writeByte(0); // unknown
+		stream.writeByte(0); // talkRank
+		stream.writeByte(clan.getMinimumRankForKick().getIconId());
+		stream.writeByte(0); // lootshareRank
+		stream.writeByte(0); // lootshareRank
 		for (String username : clan.getMembers().keySet()) {
 			MemberData data = clan.getMembers().get(username);
 			// stream.writeLong(
 			stream.writeString(displayNameMap.get(username).getCurrent());
 			stream.writeByte(data.getRank().getIconId());
 			if (version >= 2)
-				stream.writeInt(0); // unknown
+				stream.writeInt(0); // memberInt1
 			if (version >= 5)
-				stream.writeShort(0); // unknown
+				stream.writeShort(0); // memberShort1
+		}
+		if (fillerCount > 0) {
+			for (int i = 0;i < fillerCount;i++) {
+				stream.writeString("FILLER_CHARACTER"+i);
+				stream.writeByte(0);
+				if (version >= 2)
+					stream.writeInt(0);
+				if (version >= 5)
+					stream.writeShort(0);
+			}
 		}
 		for (String bannedUser : clan.getBannedUsers()) {
 			// stream.writeLong(bannedUser);
 			stream.writeString(displayNameMap.get(bannedUser).getCurrent());
 		}
 		if (version >= 3) {
-			int count = 2;
-			if (clan.getTimeZone() != 0)
-				count++;
-			if (clan.getMotto() != null)
-				count++;
-			if (clan.getThreadId() != null)
-				count++;
-			if (clan.isRecruiting() || clan.isClanTime() || clan.getWorldId() != 0 || clan.getClanFlag() != 0)
-				count++;
-			if (clan.getMottifTop() != 0 || clan.getMottifBottom() != 0)
-				count++;
-			stream.writeShort(count); // configsCount
-			if (clan.getTimeZone() != 0) {
-				stream.writeInt(0 | 0 << 30);
-				stream.writeInt(clan.getTimeZone());
+			int offset = stream.getOffset();
+			stream.writeShort(0);
+			int count = 0;
+			for (int key : clan.getVars().keySet()) {
+				if (writeClanVar(stream, key, clan.getVars().get(key)))
+					count++;
 			}
-			if (clan.getMotto() != null) {
-				stream.writeInt(1 | 2 << 30);
-				stream.writeString(clan.getMotto());
-			}
-			if (clan.getThreadId() != null) {
-				stream.writeInt(2 | 1 << 30);
-				stream.writeLong(convertToLong(clan.getThreadId()));
-			}
-			if (clan.isRecruiting() || clan.isClanTime() || clan.getWorldId() != 0 || clan.getClanFlag() != 0) {
-				stream.writeInt(3 | 0 << 30);
-				stream.writeInt((clan.isRecruiting() ? 1 : 0) | (clan.isClanTime() ? 1 : 0) << 1 | clan.getWorldId() << 2 | clan.getClanFlag() << 10);
-			}
-			if (clan.getMottifTop() != 0 || clan.getMottifBottom() != 0) {
-				stream.writeInt(13 | 0 << 30);
-				stream.writeInt(clan.getMottifTop() | clan.getMottifBottom() << 16);
-			}
-			stream.writeInt(16 | 0 << 30);
-			stream.writeInt(clan.getMottifColors()[0] | clan.getMottifColors()[1] << 16);
-			stream.writeInt(18 | 0 << 30);
-			stream.writeInt(clan.getMottifColors()[2] | clan.getMottifColors()[3] << 16);
+			int end = stream.getOffset();
+			stream.setOffset(offset);
+			stream.writeShort(count);
+			stream.setOffset(end);
 		}
 		return stream.getBuffer();
+	}
+	
+	public static boolean writeClanVar(OutputStream stream, int varId, Object value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(ClanSettingsFull.class, "writeClanVar", "No def found for clan var setting " + varId);
+			return false;
+		}
+		if (def.type == CS2Type.INT) {
+			stream.writeInt(varId | 0 << 30);
+			stream.writeInt(value instanceof Double d ? d.intValue() : (int) value);
+		} else if (def.type == CS2Type.LONG) {
+			stream.writeInt(varId | 1 << 30);
+			stream.writeLong(value instanceof Double d ? d.intValue() : (long) value);
+		} else if (def.type == CS2Type.STRING) {
+			stream.writeInt(varId | 2 << 30);
+			stream.writeString((String) value);
+		} else {
+			Logger.error(ClanSettingsFull.class, "writeClanVar", "Unsupported var type " + def.type + " for var " + varId);
+			return false;
+		}
+		return true;
 	}
 
 	@Override
