@@ -18,6 +18,7 @@ package com.rs.lib.web;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -105,7 +106,7 @@ public class APIUtil {
 								cb.accept(null);
 						}
 					} catch (Throwable e) {
-						if (e instanceof ConnectException) {
+						if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
 							Logger.error(APIUtil.class, "post", "Async POST Connection timed out to " + url);
 							cb.accept(null);
 							return;
@@ -158,7 +159,7 @@ public class APIUtil {
 					return null;
 				}
 			} catch(Throwable e) {
-				if (e instanceof ConnectException) {
+				if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
 					Logger.error(APIUtil.class, "postSync", "POST Connection timed out to " + url);
 					return null;
 				}
@@ -198,7 +199,7 @@ public class APIUtil {
 								cb.accept(null);
 						}
 					} catch (Throwable e) {
-						if (e instanceof ConnectException) {
+						if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
 							Logger.error(APIUtil.class, "get", "Async GET Connection timed out to " + url);
 							cb.accept(null);
 							return;
@@ -247,7 +248,7 @@ public class APIUtil {
 					return null;
 				}
 			} catch(Throwable e) {
-				if (e instanceof ConnectException) {
+				if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
 					Logger.error(APIUtil.class, "getSync", "GET Connection timed out to " + url);
 					return null;
 				}
