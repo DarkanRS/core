@@ -99,6 +99,10 @@ public class Clan {
 		members.put(account.getUsername(), member);
 		return member;
 	}
+	
+	public void removeMember(String username) {
+		members.remove(username);
+	}
 
 	public void setClanLeaderUsername(String username) {
 		clanLeaderUsername = username;

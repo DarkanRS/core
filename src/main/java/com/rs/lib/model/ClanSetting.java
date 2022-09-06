@@ -12,7 +12,7 @@ public enum ClanSetting {
 /*7	    int 	1024*/		 NATIONAL_FLAG(7),
 /*8	    int 	1*/
 /*9	    int 	1*/			 HIDE_MOTTO(9),
-/*10	int 	1*/
+/*10	int 	1*/			 HIDE_MOTIF(10),
 /*11	int 	1*/			 HIDE_FLAG(11),
 /*12	int 	1*/
 /*14	int 	32768*/		 MOTIF_TOP_ICON(14),

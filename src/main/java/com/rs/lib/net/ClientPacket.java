@@ -131,7 +131,9 @@ public enum ClientPacket {
 	CC_BAN(5002, 0),
 	CLAN_CHECKNAME(5003, 0),
 	CLAN_CREATE(5004, 0),
-	CLAN_LEAVE(5005, 0)
+	CLAN_LEAVE(5005, 0),
+	CLAN_ADDMEMBER(5006, 0),
+	CLAN_KICKMEMBER(5007, 0)
 	;
 
 	private int id;
