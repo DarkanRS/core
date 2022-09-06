@@ -42,19 +42,20 @@ public class VarManager {
 
 	private transient HashSet<Integer> modified;
 	private transient final Object lock = new Object();
-	private transient int[] values;
+	private transient int[] varpValues;
 	private transient Session session;
 	private Map<Integer, Integer> vars;
 
 	public VarManager() {
-		values = new int[Cache.STORE.getIndex(IndexType.CONFIG).getLastFileId(ArchiveType.VARS.getId()) + 1];
-		modified = new HashSet<>();
+		
 	}
 	
 	public void setSession(Session session) {
 		this.session = session;
 		if (vars == null)
 			vars = new HashMap<>();
+		varpValues = new int[Cache.STORE.getIndex(IndexType.CONFIG).getLastFileId(ArchiveType.VARS.getId()) + 1];
+		modified = new HashSet<>();
 		for (int varId : vars.keySet())
 			setVar(varId, vars.get(varId));
 	}
@@ -63,11 +64,11 @@ public class VarManager {
 		synchronized(lock) {
 			if (forceSend)
 				modified.add(id);
-			if (id < 0 || id >= values.length)
+			if (id < 0 || id >= varpValues.length)
 				return;
-			if (values[id] == value)
+			if (varpValues[id] == value)
 				return;
-			values[id] = value;
+			varpValues[id] = value;
 			if (save)
 				vars.put(id, value);
 			modified.add(id);
@@ -93,8 +94,8 @@ public class VarManager {
 			value = 0;
 		}
 		mask <<= defs.startBit;
-		int varpValue = (values[defs.baseVar] & (mask ^ 0xffffffff) | value << defs.startBit & mask);
-		if (varpValue != values[defs.baseVar]) {
+		int varpValue = (varpValues[defs.baseVar] & (mask ^ 0xffffffff) | value << defs.startBit & mask);
+		if (varpValue != varpValues[defs.baseVar]) {
 			setVar(defs.baseVar, varpValue, forceSend, save);
 		}
 	}
@@ -112,31 +113,30 @@ public class VarManager {
 	}
 
 	public int getVar(int id) {
-		return values[id];
+		return varpValues[id];
 	}
 	
 	public int getVarBit(int id) {
 		VarBitDefinitions defs = VarBitDefinitions.getDefs(id);
-		return values[defs.baseVar] >> defs.startBit & BIT_MASKS[defs.endBit - defs.startBit];
+		return varpValues[defs.baseVar] >> defs.startBit & BIT_MASKS[defs.endBit - defs.startBit];
 	}
 	
 	public boolean bitFlagged(int id, int bit) {
-		return (values[id] & (1 << bit)) != 0;
+		return (varpValues[id] & (1 << bit)) != 0;
 	}
 
 	public void syncVarsToClient() {
 		synchronized(lock) {
 			for (int id : modified) {
-				session.writeToQueue(new Varp(id, values[id]));
+				session.writeToQueue(new Varp(id, varpValues[id]));
 			}
 			modified.clear();
 		}
 	}
 	
 	public void clearVars() {
-		for (int i = 0;i < values.length;i++) {
-			values[i] = 0;
-		}
+		for (int i = 0;i < varpValues.length;i++)
+			varpValues[i] = 0;
 		session.writeToQueue(ServerPacket.CLEAR_VARPS);
 	}
 }

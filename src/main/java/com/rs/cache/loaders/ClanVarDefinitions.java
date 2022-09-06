@@ -16,6 +16,7 @@
 //
 package com.rs.cache.loaders;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
+import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.util.Utils;
 
@@ -32,9 +34,18 @@ public class ClanVarDefinitions {
 	
 	public int id;
 	public char aChar4832;
-	public int baseVar;
+	public CS2Type type;
+	public int baseVar = -1;
 	public int startBit;
 	public int endBit;
+	
+	public static void main(String[] args) throws IOException {
+		Cache.init("../cache/");
+		for (int i = 0;i < Cache.STORE.getIndex(IndexType.CONFIG).getLastFileId(ArchiveType.CLAN_VAR.getId()) + 1;i++) {
+			ClanVarDefinitions defs = getDefs(i);
+			System.out.println(i + " - " + defs.baseVar + " - " + defs.type);
+		}
+	}
 	
 	public static final ClanVarDefinitions getDefs(int id) {
 		ClanVarDefinitions defs = CACHE.get(id);
@@ -63,6 +74,7 @@ public class ClanVarDefinitions {
 	private void readValues(InputStream stream, int opcode) {
 		if (opcode == 1) {
 			this.aChar4832 = Utils.cp1252ToChar((byte) stream.readByte());
+			this.type = CS2Type.forJagexDesc(this.aChar4832);
 		} else if (opcode == 3) {
 			this.baseVar = stream.readUnsignedShort();
 			this.startBit = stream.readUnsignedByte();

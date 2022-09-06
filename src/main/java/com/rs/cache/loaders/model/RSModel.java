@@ -31,6 +31,7 @@ import com.rs.cache.Store;
 import com.rs.cache.loaders.ParticleProducerDefinitions;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.io.OutputStream;
+import com.rs.lib.util.RSColor;
 import com.rs.lib.util.Utils;
 
 public class RSModel {
@@ -96,7 +97,7 @@ public class RSModel {
 			if (model != null)
 				meshes.add(model);
 		}
-		int baseCol = Utils.RGB_to_RS2HSB(255,255,0);
+		int baseCol = RSColor.RGB_to_HSL(255,255,0);
 		meshes.sort((m1, m2) -> {
 			//if ((m1.vertexCount + m1.faceCount) == (m2.vertexCount + m2.faceCount))
 			//	return Math.abs(m1.getAvgColor()-baseCol) - Math.abs(m2.getAvgColor()-baseCol);
