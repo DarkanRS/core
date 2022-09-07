@@ -14,7 +14,7 @@
 //  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.model;
+package com.rs.lib.model.clan;
 
 public enum ClanRank {
 	NONE(-1),
@@ -23,8 +23,8 @@ public enum ClanRank {
 	SERGEANT(2),
 	LIEUTENANT(3),
 	CAPTAIN(4),
-	ADMIN(100),
 	GENERAL(5),
+	ADMIN(100),
 	ORGANIZER(101),
 	COORDINATOR(102),
 	OVERSEER(103),

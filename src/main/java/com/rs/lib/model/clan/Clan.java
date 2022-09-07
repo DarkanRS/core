@@ -14,7 +14,7 @@
 //  Copyright (C) 2021 Trenton Kress
 //  This file is part of project: Darkan
 //
-package com.rs.lib.model;
+package com.rs.lib.model.clan;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +26,8 @@ import com.rs.cache.loaders.ClanVarSettingsDefinitions;
 import com.rs.cache.loaders.EnumDefinitions;
 import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.cache.loaders.cs2.CS2Type;
+import com.rs.lib.model.Account;
+import com.rs.lib.model.MemberData;
 import com.rs.lib.util.Logger;
 
 public class Clan {
