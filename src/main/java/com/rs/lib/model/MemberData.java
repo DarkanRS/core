@@ -16,6 +16,8 @@
 //
 package com.rs.lib.model;
 
+import com.rs.lib.model.clan.ClanRank;
+
 public class MemberData {
 	private ClanRank rank;
 	private int job;

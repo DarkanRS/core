@@ -203,12 +203,14 @@ public class IComponentDefinitions {
 //		System.out.println(Utils.toInterfaceHash(747, 9));
 //		System.out.println(Utils.interfaceIdFromHash(25428066) + " - " + Utils.componentIdFromHash(25428066));
 //		
-		IComponentDefinitions[] defs = getInterface(300);
+		IComponentDefinitions[] defs = getInterface(1259);
 		for (IComponentDefinitions def : defs) {
-			if (def.text != null && !def.text.isEmpty() && !def.text.contains("Bar")) {
-				System.out.println(def.componentId + " - " + def.text);
-				System.out.println(defs[def.componentId-1]);
-			}
+			if (def.usesScripts)
+				System.out.println(def);
+//			if (def.text != null && !def.text.isEmpty() && !def.text.contains("Bar")) {
+//				System.out.println(def.componentId + " - " + def.text);
+//				System.out.println(defs[def.componentId-1]);
+//			}
 		}
 		
 //		System.out.println(defs[1]);

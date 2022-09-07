@@ -21,9 +21,9 @@ import java.util.Map;
 import com.rs.cache.loaders.ClanVarSettingsDefinitions;
 import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.lib.io.OutputStream;
-import com.rs.lib.model.Clan;
 import com.rs.lib.model.DisplayNamePair;
 import com.rs.lib.model.MemberData;
+import com.rs.lib.model.clan.Clan;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 import com.rs.lib.util.Logger;
@@ -87,8 +87,8 @@ public class ClanSettingsFull extends PacketEncoder {
 			int offset = stream.getOffset();
 			stream.writeShort(0);
 			int count = 0;
-			for (int key : clan.getVars().keySet()) {
-				if (writeClanVar(stream, key, clan.getVars().get(key)))
+			for (int key : clan.getSettings().keySet()) {
+				if (writeClanSetting(stream, key, clan.getSettings().get(key)))
 					count++;
 			}
 			int end = stream.getOffset();
@@ -99,10 +99,10 @@ public class ClanSettingsFull extends PacketEncoder {
 		return stream.getBuffer();
 	}
 	
-	public static boolean writeClanVar(OutputStream stream, int varId, Object value) {
+	public static boolean writeClanSetting(OutputStream stream, int varId, Object value) {
 		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
 		if (def == null) {
-			Logger.error(ClanSettingsFull.class, "writeClanVar", "No def found for clan var setting " + varId);
+			Logger.error(ClanSettingsFull.class, "writeClanSetting", "No def found for clan var setting " + varId);
 			return false;
 		}
 		if (def.type == CS2Type.INT) {
@@ -115,7 +115,7 @@ public class ClanSettingsFull extends PacketEncoder {
 			stream.writeInt(varId | 2 << 30);
 			stream.writeString((String) value);
 		} else {
-			Logger.error(ClanSettingsFull.class, "writeClanVar", "Unsupported var type " + def.type + " for var " + varId);
+			Logger.error(ClanSettingsFull.class, "writeClanSetting", "Unsupported var type " + def.type + " for var " + varId);
 			return false;
 		}
 		return true;
