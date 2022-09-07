@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.rs.lib.Globals;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.Decoder;
@@ -76,8 +75,7 @@ public final class GameDecoder extends Decoder {
 			int opcode = currPacket != null ? currPacket.getOpcode() : stream.readPacket(session.getIsaac());
 			ClientPacket packet = currPacket = ClientPacket.forOpcode(opcode);
 			if (packet == null) {
-				if (Globals.DEBUG)
-					System.out.println("Invalid opcode: " + opcode + ".");
+				Logger.error(GameDecoder.class, "decode", "Invalid opcode: " + opcode + ".");
 				return -1;
 			}
 			int start = stream.getOffset();
@@ -111,7 +109,7 @@ public final class GameDecoder extends Decoder {
 		if (decoder != null)
 			session.queuePacket(decoder.decodeAndCreateInstance(stream).setOpcode(packet));
 		else
-			System.out.println("Unhandled packet: " + packet);
+			Logger.warn(GameDecoder.class, "queuePacket", "Unhandled packet: " + packet);
 	}
 
 	public static Map<ClientPacket, Packet> getDecoders() {
