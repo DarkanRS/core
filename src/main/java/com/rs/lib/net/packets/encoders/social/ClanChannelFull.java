@@ -19,9 +19,9 @@ package com.rs.lib.net.packets.encoders.social;
 import java.util.List;
 
 import com.rs.lib.io.OutputStream;
-import com.rs.lib.model.Clan;
 import com.rs.lib.model.MemberData;
 import com.rs.lib.model.MinimalSocial;
+import com.rs.lib.model.clan.Clan;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 

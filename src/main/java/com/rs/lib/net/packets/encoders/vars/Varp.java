@@ -33,12 +33,16 @@ public class Varp extends PacketEncoder {
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
-			stream.writeIntV2(value);
-			stream.writeShortLE128(id);
-		} else {
+		switch(getPacket()) {
+		case VARP_SMALL -> {
 			stream.writeByte(value);
 			stream.writeShortLE128(id);
+		}
+		case VARP_LARGE -> {
+			stream.writeIntV2(value);
+			stream.writeShortLE128(id);
+		}
+		default -> throw new IllegalArgumentException("Unexpected value: " + getPacket());
 		}
 	}
 
