@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.rs.cache.loaders.ClanVarDefinitions;
 import com.rs.cache.loaders.ClanVarSettingsDefinitions;
 import com.rs.cache.loaders.EnumDefinitions;
 import com.rs.cache.loaders.ItemDefinitions;
@@ -40,6 +41,7 @@ public class Clan {
 	private Set<String> bannedUsers;
 	private boolean guestsInChatCanEnter;
 	private boolean guestsInChatCanTalk;
+	private Map<Integer, Object> settings;
 	private Map<Integer, Object> vars;
 
 	private ClanRank minimumRankForKick;
@@ -56,10 +58,10 @@ public class Clan {
 	}
 
 	public void setDefaults() {
-		setVar(ClanSetting.IS_RECRUITING, 1);
-		setVar(ClanSetting.HOME_WORLD, 1);
-		setVar(ClanSetting.MOTIF_TOP_ICON, 1);
-		setVar(ClanSetting.MOTIF_BOTTOM_ICON, 2);
+		setSetting(ClanSetting.IS_RECRUITING, 1);
+		setSetting(ClanSetting.HOME_WORLD, 1);
+		setSetting(ClanSetting.MOTIF_TOP_ICON, 1);
+		setSetting(ClanSetting.MOTIF_BOTTOM_ICON, 2);
 		guestsInChatCanEnter = true;
 		guestsInChatCanTalk = true;
 		minimumRankForKick = ClanRank.OWNER;
@@ -77,23 +79,23 @@ public class Clan {
 	
 	public void setMotifColor(int index, int color) {
 		switch(index) {
-		case 0 -> setVar(ClanSetting.MOTIF_TOP_COLOR, color);
-		case 1 -> setVar(ClanSetting.MOTIF_BOTTOM_COLOR, color);
-		case 2 -> setVar(ClanSetting.MOTIF_PRIMARY_COLOR, color);
-		case 3 -> setVar(ClanSetting.MOTIF_SECONDARY_COLOR, color);
+		case 0 -> setSetting(ClanSetting.MOTIF_TOP_COLOR, color);
+		case 1 -> setSetting(ClanSetting.MOTIF_BOTTOM_COLOR, color);
+		case 2 -> setSetting(ClanSetting.MOTIF_PRIMARY_COLOR, color);
+		case 3 -> setSetting(ClanSetting.MOTIF_SECONDARY_COLOR, color);
 		}
 	}
 	
 	public int getMotifTopIcon() {
-		return (int) getVar(ClanSetting.MOTIF_TOP_ICON);
+		return (int) getSetting(ClanSetting.MOTIF_TOP_ICON);
 	}
 	
 	public int getMotifBottomIcon() {
-		return (int) getVar(ClanSetting.MOTIF_BOTTOM_ICON);
+		return (int) getSetting(ClanSetting.MOTIF_BOTTOM_ICON);
 	}
 	
 	public int[] getMotifColors() {
-		return new int[] { (int) getVar(ClanSetting.MOTIF_TOP_COLOR), (int) getVar(ClanSetting.MOTIF_BOTTOM_COLOR), (int) getVar(ClanSetting.MOTIF_PRIMARY_COLOR), (int) getVar(ClanSetting.MOTIF_SECONDARY_COLOR) };
+		return new int[] { (int) getSetting(ClanSetting.MOTIF_TOP_COLOR), (int) getSetting(ClanSetting.MOTIF_BOTTOM_COLOR), (int) getSetting(ClanSetting.MOTIF_PRIMARY_COLOR), (int) getSetting(ClanSetting.MOTIF_SECONDARY_COLOR) };
 	}
 
 	public MemberData addMember(Account account, ClanRank rank) {
@@ -123,7 +125,7 @@ public class Clan {
 	}
 
 	public void switchRecruiting() {
-		setVar(ClanSetting.IS_RECRUITING, (int) getVar(ClanSetting.IS_RECRUITING) == 0 ? 1 : 0);
+		setSetting(ClanSetting.IS_RECRUITING, (int) getSetting(ClanSetting.IS_RECRUITING) == 0 ? 1 : 0);
 	}
 
 	public ClanRank getMinimumRankForKick() {
@@ -155,11 +157,11 @@ public class Clan {
 	}
 	
 	public void setMotto(String motto) {
-		setVar(ClanSetting.MOTTO, motto);
+		setSetting(ClanSetting.MOTTO, motto);
 	}
 
 	public int[] getMotifTextures() {
-		return new int[] { getMotifTexture((int) getVar(ClanSetting.MOTIF_TOP_ICON)), getMotifTexture((int) getVar(ClanSetting.MOTIF_BOTTOM_ICON)) };
+		return new int[] { getMotifTexture((int) getSetting(ClanSetting.MOTIF_TOP_ICON)), getMotifTexture((int) getSetting(ClanSetting.MOTIF_BOTTOM_ICON)) };
 	}
 	
 	public static int getMotifTexture(int slotId) {
@@ -174,20 +176,161 @@ public class Clan {
 		this.updateBlock = updateBlock;
 	}
 
-	public Map<Integer, Object> getVars() {
-		if (vars == null) {
-			vars = new HashMap<>();
+	public Map<Integer, Object> getSettings() {
+		if (settings == null) {
+			settings = new HashMap<>();
 			setDefaults();
 		}
+		return settings;
+	}
+	
+	public Object getSetting(ClanSetting setting) {
+		return getSetting(setting.getId());
+	}
+	
+	public Object getSetting(int id) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(id);
+		try {
+			boolean varBit = def.baseVar != -1;
+			if (varBit) {
+				return getSettingBit(id);
+			} else if (def.type == CS2Type.LONG) {
+				if (getSettings().get(id) == null)
+					return 0;
+				if (getSettings().get(id) instanceof Double d)
+					return d.intValue();
+				return (long) getSettings().get(id);
+			} else if (def.type == CS2Type.INT) {
+				if (getSettings().get(id) == null)
+					return 0;
+				if (getSettings().get(id) instanceof Double d)
+					return d.intValue();
+				return (int) getSettings().get(id);
+			} else if (def.type == CS2Type.STRING) {
+				if (getSettings().get(id) == null)
+					return null;
+				return (String) getSettings().get(id);
+			}
+		} catch(Throwable e) {
+			Logger.handle(Clan.class, "getSetting", e);
+		}
+		return null;
+	}
+	
+    public int getSettingBit(ClanSetting setting) {
+		return getSettingBit(setting.getId());
+	}
+    
+    public int getSettingBit(int id) {
+    	ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(id);
+    	if (def.baseVar == -1) {
+    		Logger.error(Clan.class, "getSettingBit", "Setting " + id + " is not a varbit.");
+			return 0;
+    	}
+		int val = (int) getSetting(def.baseVar);
+		int endMask = def.endBit == 31 ? -1 : (1 << def.endBit + 1) - 1;
+		return Integer.valueOf((val & endMask) >>> def.startBit);
+	}
+	
+	public void setSetting(ClanSetting setting, Object value) {
+		try {
+			boolean varBit = setting.getDef().baseVar != -1;
+			if (varBit) {
+				setSettingBit(setting.getId(), (int) value);
+			} else if (setting.getDef().type == CS2Type.LONG) {
+				setSettingLong(setting.getId(), (long) value);
+			} else if (setting.getDef().type == CS2Type.INT) {
+				setSettingInt(setting.getId(), (int) value);
+			} else if (setting.getDef().type == CS2Type.STRING) {
+				setSettingString(setting.getId(), (String) value);
+			}
+		} catch(Throwable e) {
+			Logger.handle(Clan.class, "setSetting", e);
+		}
+	}
+	
+	public void setSettingInt(int varId, int value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setSettingInt", "No def found for clan setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.INT) {
+			Logger.error(Clan.class, "setSettingInt", "Tried to set int value for " + varId + " which is " + def.type);
+			return;
+		}
+		if (def.baseVar != -1) {
+			Logger.error(Clan.class, "setSettingInt", "Setting " + varId + " should be a varbit.");
+			return;
+		}
+		getSettings().put(varId, value);
+	}
+	
+	public void setSettingBit(int varId, int value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setSettingBit", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.INT) {
+			Logger.error(Clan.class, "setSettingBit", "Tried to set int value for " + varId + " which is " + def.type);
+			return;
+		}
+		if (def.baseVar == -1) {
+			Logger.error(Clan.class, "setSettingBit", "Var " + varId + " is not a valid varbit.");
+			return;
+		}
+		int startMask = (1 << def.startBit) - 1;
+        int endMask = def.endBit == 31 ? -1 : (1 << def.endBit + 1) - 1;
+        int mask = endMask ^ startMask;
+        value <<= def.startBit;
+        value &= mask;
+        int orig = (int) getSetting(def.baseVar);
+        orig &= ~mask;
+        orig |= value;
+        getSettings().put(def.baseVar, orig);
+	}
+	
+	public void setSettingLong(int varId, long value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setSettingLong", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.LONG) {
+			Logger.error(Clan.class, "setSettingLong", "Tried to set long value for " + varId + " which is " + def.type);
+			return;
+		}
+		getSettings().put(varId, value);
+	}
+	
+	public void setSettingString(int varId, String value) {
+		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		if (def == null) {
+			Logger.error(Clan.class, "setSettingString", "No def found for clan var setting " + varId);
+			return;
+		}
+		if (def.type != CS2Type.STRING) {
+			Logger.error(Clan.class, "setSettingString", "Tried to set string value for " + varId + " which is " + def.type);
+			return;
+		}
+		if (value.length() > 80)
+			value = value.substring(0, 80);
+		getSettings().put(varId, value);
+	}
+
+	public Map<Integer, Object> getVars() {
+		if (vars == null)
+			vars = new HashMap<>();
 		return vars;
 	}
 	
-	public Object getVar(ClanSetting setting) {
-		return getVar(setting.getId());
+	public Object getVar(ClanVar var) {
+		return getVar(var.getId());
 	}
 	
 	public Object getVar(int id) {
-		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(id);
+		ClanVarDefinitions def = ClanVarDefinitions.getDefs(id);
 		try {
 			boolean varBit = def.baseVar != -1;
 			if (varBit) {
@@ -210,17 +353,17 @@ public class Clan {
 				return (String) getVars().get(id);
 			}
 		} catch(Throwable e) {
-			Logger.handle(Clan.class, "setVar", e);
+			Logger.handle(Clan.class, "getVar", e);
 		}
 		return null;
 	}
 	
-    public int getVarBit(ClanSetting setting) {
-		return getVarBit(setting.getId());
+    public int getVarBit(ClanVar var) {
+		return getVarBit(var.getId());
 	}
     
     public int getVarBit(int id) {
-    	ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(id);
+    	ClanVarDefinitions def = ClanVarDefinitions.getDefs(id);
     	if (def.baseVar == -1) {
     		Logger.error(Clan.class, "getVarBit", "Var " + id + " is not a varbit.");
 			return 0;
@@ -230,17 +373,26 @@ public class Clan {
 		return Integer.valueOf((val & endMask) >>> def.startBit);
 	}
 	
-	public void setVar(ClanSetting setting, Object value) {
+	public void setVar(ClanVar var, Object value) {
 		try {
-			boolean varBit = setting.getDef().baseVar != -1;
+			setVar(var.getId(), value);
+		} catch(Throwable e) {
+			Logger.handle(Clan.class, "setVar", e);
+		}
+	}
+	
+	public void setVar(int var, Object value) {
+		ClanVarDefinitions def = ClanVarDefinitions.getDefs(var);
+		try {
+			boolean varBit = def.baseVar != -1;
 			if (varBit) {
-				setVarBit(setting.getId(), (int) value);
-			} else if (setting.getDef().type == CS2Type.LONG) {
-				setVarLong(setting.getId(), (long) value);
-			} else if (setting.getDef().type == CS2Type.INT) {
-				setVarInt(setting.getId(), (int) value);
-			} else if (setting.getDef().type == CS2Type.STRING) {
-				setVarString(setting.getId(), (String) value);
+				setVarBit(var, (int) value);
+			} else if (def.type == CS2Type.LONG) {
+				setVarLong(var, (long) value);
+			} else if (def.type == CS2Type.INT) {
+				setVarInt(var, (int) value);
+			} else if (def.type == CS2Type.STRING) {
+				setVarString(var, (String) value);
 			}
 		} catch(Throwable e) {
 			Logger.handle(Clan.class, "setVar", e);
@@ -248,9 +400,9 @@ public class Clan {
 	}
 	
 	public void setVarInt(int varId, int value) {
-		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		ClanVarDefinitions def = ClanVarDefinitions.getDefs(varId);
 		if (def == null) {
-			Logger.error(Clan.class, "setVarInt", "No def found for clan var setting " + varId);
+			Logger.error(Clan.class, "setVarInt", "No def found for clan var " + varId);
 			return;
 		}
 		if (def.type != CS2Type.INT) {
@@ -265,9 +417,9 @@ public class Clan {
 	}
 	
 	public void setVarBit(int varId, int value) {
-		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		ClanVarDefinitions def = ClanVarDefinitions.getDefs(varId);
 		if (def == null) {
-			Logger.error(Clan.class, "setVarBit", "No def found for clan var setting " + varId);
+			Logger.error(Clan.class, "setVarBit", "No def found for clan var " + varId);
 			return;
 		}
 		if (def.type != CS2Type.INT) {
@@ -290,9 +442,9 @@ public class Clan {
 	}
 	
 	public void setVarLong(int varId, long value) {
-		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		ClanVarDefinitions def = ClanVarDefinitions.getDefs(varId);
 		if (def == null) {
-			Logger.error(Clan.class, "setVarLong", "No def found for clan var setting " + varId);
+			Logger.error(Clan.class, "setVarLong", "No def found for clan var " + varId);
 			return;
 		}
 		if (def.type != CS2Type.LONG) {
@@ -303,9 +455,9 @@ public class Clan {
 	}
 	
 	public void setVarString(int varId, String value) {
-		ClanVarSettingsDefinitions def = ClanVarSettingsDefinitions.getDefs(varId);
+		ClanVarDefinitions def = ClanVarDefinitions.getDefs(varId);
 		if (def == null) {
-			Logger.error(Clan.class, "setVarLong", "No def found for clan var setting " + varId);
+			Logger.error(Clan.class, "setVarLong", "No def found for clan var " + varId);
 			return;
 		}
 		if (def.type != CS2Type.STRING) {
