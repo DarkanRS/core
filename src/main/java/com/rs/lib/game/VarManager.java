@@ -26,7 +26,7 @@ import com.rs.cache.IndexType;
 import com.rs.cache.loaders.VarBitDefinitions;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.Session;
-import com.rs.lib.net.packets.encoders.vars.Varp;
+import com.rs.lib.net.packets.encoders.vars.SetVarp;
 
 public class VarManager {
 
@@ -128,7 +128,7 @@ public class VarManager {
 	public void syncVarsToClient() {
 		synchronized(lock) {
 			for (int id : modified) {
-				session.writeToQueue(new Varp(id, varpValues[id]));
+				session.writeToQueue(new SetVarp(id, varpValues[id]));
 			}
 			modified.clear();
 		}

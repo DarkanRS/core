@@ -20,12 +20,12 @@ import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 
-public class Varc extends PacketEncoder {
+public class SetVarc extends PacketEncoder {
 	
 	private int id;
 	private int value;
 
-	public Varc(int id, int value) {
+	public SetVarc(int id, int value) {
 		super((value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) ? ServerPacket.CLIENT_SETVARC_LARGE : ServerPacket.CLIENT_SETVARC_SMALL);
 		this.id = id;
 		this.value = value;
