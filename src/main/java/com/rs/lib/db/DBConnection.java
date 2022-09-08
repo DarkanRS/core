@@ -52,9 +52,7 @@ public class DBConnection {
 			for (DBItemManager coll : collections)
 				coll.init(this);
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Error connecting to mongo database.");
-
+			com.rs.lib.util.Logger.handleNoRecord(DBConnection.class, "init", "Error connecting to mongodb", e);
 		}
 	}
 	

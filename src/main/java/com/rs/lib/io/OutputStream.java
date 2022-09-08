@@ -17,6 +17,7 @@
 package com.rs.lib.io;
 
 import com.rs.lib.model.Account;
+import com.rs.lib.util.Logger;
 import com.rs.lib.util.Utils;
 
 public final class OutputStream extends Stream {
@@ -236,7 +237,7 @@ public final class OutputStream extends Stream {
 			writeShort(32768 + i);
 			return;
 		} else {
-			System.out.println("Error psmarts out of range:");
+			Logger.error(OutputStream.class, "writePSmarts", "Error psmarts out of range: " + i);
 			return;
 		}
 	}

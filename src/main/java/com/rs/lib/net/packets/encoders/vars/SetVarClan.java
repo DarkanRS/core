@@ -6,13 +6,14 @@ import com.rs.lib.io.OutputStream;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 
-public class VarClan extends PacketEncoder {
+public class SetVarClan extends PacketEncoder {
 	private int id;
 	private Object value;
 	
-	public VarClan(int id, Object value) {
+	public SetVarClan(int id, Object value) {
 		super(getPacketForValue(id, value));
-		
+		this.id = id;
+		this.value = value;
 	}
 
 	private static ServerPacket getPacketForValue(int id, Object value) {
@@ -30,9 +31,9 @@ public class VarClan extends PacketEncoder {
 		if (def.type == CS2Type.INT) {
 			if (!(value instanceof Long) && !(value instanceof Integer))
 				throw new RuntimeException("Clan var " + id + " should be a long or integer.");
-			return ((long) value < Byte.MIN_VALUE || (long) value > Byte.MAX_VALUE) ? ServerPacket.VARCLAN_SET_INT : ServerPacket.VARCLAN_SET_BYTE;
+			return ((int) value < Byte.MIN_VALUE || (int) value > Byte.MAX_VALUE) ? ServerPacket.VARCLAN_SET_INT : ServerPacket.VARCLAN_SET_BYTE;
 		}
-		throw new RuntimeException("Error getting packet for clan var " + id);
+		throw new RuntimeException("Mismatching types for var " + id);
 	}
 
 	@Override
