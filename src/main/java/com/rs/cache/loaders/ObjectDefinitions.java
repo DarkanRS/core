@@ -117,8 +117,8 @@ public class ObjectDefinitions {
 	public int accessBlockFlag;
 
 	public static void main(String[] args) throws IOException {
-		//Cache.init();
-		ObjectDefinitions defs = getDefs(782);
+		Cache.init("../cache/");
+		ObjectDefinitions defs = getDefs(40953);
 		System.out.println(defs);
 		
 //		for (int i = 0;i < Utils.getObjectDefinitionsSize();i++) {
