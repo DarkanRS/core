@@ -42,14 +42,14 @@ public class IFOpenSubActiveNPC extends PacketEncoder {
 		int[] xteas = new int[4];
 		int topUid = topId << 16 | topChildId;
 		
-		stream.writeIntLE(xteas[3]);
-        stream.writeByte(overlay ? 1 : 0);
-        stream.writeIntV1(xteas[0]);
-        stream.writeShort(subId);
-        stream.writeInt(xteas[1]);
-        stream.writeIntV1(topUid);
-        stream.writeIntV1(xteas[2]);
-        stream.writeShortLE(npcSid);
+		stream.writeShort128(npcSid);
+        stream.writeIntLE(xteas[1]);
+        stream.writeByteC(overlay ? 1 : 0);
+        stream.writeInt(topUid);
+        stream.writeIntLE(xteas[3]);
+        stream.writeShortLE128(subId);
+        stream.writeInt(xteas[2]);
+        stream.writeInt(xteas[0]);
 	}
 
 }
