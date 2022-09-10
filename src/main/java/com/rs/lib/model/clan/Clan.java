@@ -16,7 +16,6 @@
 //
 package com.rs.lib.model.clan;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,7 +24,6 @@ import java.util.Set;
 import com.rs.cache.loaders.ClanVarDefinitions;
 import com.rs.cache.loaders.ClanVarSettingsDefinitions;
 import com.rs.cache.loaders.EnumDefinitions;
-import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.cache.loaders.cs2.CS2Type;
 import com.rs.lib.model.Account;
 import com.rs.lib.model.MemberData;
@@ -39,12 +37,11 @@ public class Clan {
 	private String name;
 	private Map<String, MemberData> members;
 	private Set<String> bannedUsers;
-	private boolean guestsInChatCanEnter;
-	private boolean guestsInChatCanTalk;
 	private Map<Integer, Object> settings;
 	private Map<Integer, Object> vars;
 
-	private ClanRank minimumRankForKick;
+	private ClanRank ccChatRank;
+	private ClanRank ccKickRank;
 	
 	private byte[] updateBlock;
 
@@ -58,14 +55,13 @@ public class Clan {
 	}
 
 	public void setDefaults() {
-		setSetting(ClanSetting.IS_RECRUITING, 1);
-		setSetting(ClanSetting.HOME_WORLD, 1);
-		setSetting(ClanSetting.MOTIF_TOP_ICON, 1);
-		setSetting(ClanSetting.MOTIF_BOTTOM_ICON, 2);
-		guestsInChatCanEnter = true;
-		guestsInChatCanTalk = true;
-		minimumRankForKick = ClanRank.OWNER;
-		setMotifColor(Arrays.copyOf(ItemDefinitions.getDefs(20709).modifiedModelColors, 4));
+		settings.clear();
+		vars.clear();
+		setCcChatRank(ClanRank.NONE);
+		setCcKickRank(ClanRank.ADMIN);
+		for (ClanSetting setting : ClanSetting.values())
+			if (setting.getDefault() != null)
+				setSetting(setting, setting.getDefault());
 	}
 	
 	public void setMotifColor(int[] colors) {
@@ -128,34 +124,10 @@ public class Clan {
 		setSetting(ClanSetting.IS_RECRUITING, (int) getSetting(ClanSetting.IS_RECRUITING) == 0 ? 1 : 0);
 	}
 
-	public ClanRank getMinimumRankForKick() {
-		return minimumRankForKick;
-	}
-
-	public void setMinimumRankForKick(ClanRank minimumRankForKick) {
-		this.minimumRankForKick = minimumRankForKick;
-	}
-
-	public boolean isGuestsInChatCanEnter() {
-		return guestsInChatCanEnter;
-	}
-
-	public void switchGuestsInChatCanEnter() {
-		this.guestsInChatCanEnter = !guestsInChatCanEnter;
-	}
-
 	public String getClanLeaderUsername() {
 		return clanLeaderUsername;
 	}
 
-	public boolean isGuestsInChatCanTalk() {
-		return guestsInChatCanTalk;
-	}
-
-	public void switchGuestsInChatCanTalk() {
-		guestsInChatCanTalk = !guestsInChatCanTalk;
-	}
-	
 	public void setMotto(String motto) {
 		setSetting(ClanSetting.MOTTO, motto);
 	}
@@ -358,6 +330,24 @@ public class Clan {
 		return null;
 	}
 	
+	public boolean hasPermissions(String username, ClanRank rank) {
+		MemberData data = members.get(username);
+		if (data == null)
+			return false;
+		return data.getRank().ordinal() >= rank.ordinal();
+	}
+	
+	public boolean hasPermissions(String username, ClanPermission permission) {
+		return permission.hasPermission(this, getRank(username));
+	}
+	
+	public ClanRank getRank(String username) {
+		MemberData data = members.get(username);
+		if (data == null)
+			return ClanRank.NONE;
+		return data.getRank();
+	}
+	
     public int getVarBit(ClanVar var) {
 		return getVarBit(var.getId());
 	}
@@ -467,5 +457,25 @@ public class Clan {
 		if (value.length() > 80)
 			value = value.substring(0, 80);
 		getVars().put(varId, value);
+	}
+
+	public ClanRank getCcChatRank() {
+		if (ccChatRank == null)
+			setDefaults();
+		return ccChatRank;
+	}
+
+	public void setCcChatRank(ClanRank ccChatRank) {
+		this.ccChatRank = ccChatRank;
+	}
+
+	public ClanRank getCcKickRank() {
+		if (ccChatRank == null)
+			setDefaults();
+		return ccKickRank;
+	}
+
+	public void setCcKickRank(ClanRank ccKickRank) {
+		this.ccKickRank = ccKickRank;
 	}
 }

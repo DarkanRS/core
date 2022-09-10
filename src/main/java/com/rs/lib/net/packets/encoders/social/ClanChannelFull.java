@@ -43,8 +43,8 @@ public class ClanChannelFull extends PacketEncoder {
 		stream.writeLong(updateNum);
 		stream.writeString(clan.getName());
 		stream.writeByte(0); // unused
-		stream.writeByte(clan.getMinimumRankForKick().getIconId());
-		stream.writeByte(clan.isGuestsInChatCanTalk() ? -1 : 0); // getMinimumRankForChat
+		stream.writeByte(clan.getCcKickRank().getIconId());
+		stream.writeByte(clan.getCcChatRank().getIconId());
 		// maybe
 		stream.writeShort(chatters.size());
 		for (MinimalSocial player : chatters) {
