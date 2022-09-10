@@ -29,7 +29,8 @@ public enum ClanRank {
 	COORDINATOR(102),
 	OVERSEER(103),
 	DEPUTY_OWNER(125),
-	OWNER(126);
+	OWNER(126),
+	JMOD(127);
 	
 	public static ClanRank forId(int rank) {
 		for (ClanRank r : ClanRank.values())

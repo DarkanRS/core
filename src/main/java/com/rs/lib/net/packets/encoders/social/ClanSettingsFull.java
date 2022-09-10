@@ -24,6 +24,7 @@ import com.rs.lib.io.OutputStream;
 import com.rs.lib.model.DisplayNamePair;
 import com.rs.lib.model.MemberData;
 import com.rs.lib.model.clan.Clan;
+import com.rs.lib.model.clan.ClanRank;
 import com.rs.lib.net.ServerPacket;
 import com.rs.lib.net.packets.PacketEncoder;
 import com.rs.lib.util.Logger;
@@ -54,9 +55,9 @@ public class ClanSettingsFull extends PacketEncoder {
 		stream.writeString(clan.getName());
 		if (version >= 4)
 			stream.writeInt(0);
-		stream.writeByte(clan.isGuestsInChatCanEnter() ? 1 : 0);
-		stream.writeByte(0); // talkRank
-		stream.writeByte(clan.getMinimumRankForKick().getIconId());
+		stream.writeByte(clan.getCcChatRank() == ClanRank.NONE ? 1 : 0);
+		stream.writeByte(clan.getCcChatRank().getIconId());
+		stream.writeByte(clan.getCcKickRank().getIconId());
 		stream.writeByte(0); // lootshareRank
 		stream.writeByte(0); // lootshareRank
 		for (String username : clan.getMembers().keySet()) {
