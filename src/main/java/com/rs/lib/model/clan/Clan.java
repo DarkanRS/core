@@ -55,8 +55,8 @@ public class Clan {
 	}
 
 	public void setDefaults() {
-		settings.clear();
-		vars.clear();
+		settings = new HashMap<>();
+		vars = new HashMap<>();
 		setCcChatRank(ClanRank.NONE);
 		setCcKickRank(ClanRank.ADMIN);
 		for (ClanSetting setting : ClanSetting.values())
