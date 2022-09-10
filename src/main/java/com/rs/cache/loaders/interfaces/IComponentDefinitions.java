@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
+import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.util.Utils;
 
@@ -159,6 +161,8 @@ public class IComponentDefinitions {
 	public int anInt1293 = 0;
 	public int anInt1334 = 0;
 	public int anInt1335 = 2;
+	public int parentBase = -1;
+	public int parentComponent = -1;
 	public int interfaceId = -1;
 	public int componentId = -1;
 	public List<IComponentDefinitions> children = new ArrayList<>();
@@ -203,15 +207,14 @@ public class IComponentDefinitions {
 //		System.out.println(Utils.toInterfaceHash(747, 9));
 //		System.out.println(Utils.interfaceIdFromHash(25428066) + " - " + Utils.componentIdFromHash(25428066));
 //		
-		IComponentDefinitions[] defs = getInterface(1177);
-		getInterface(746)[48].children.clear();
-		System.out.println(getInterface(746)[48]);
+		IComponentDefinitions[] defs = getInterface(1096);
+		defs[604].children.clear();
+		System.out.println(defs[483]);
 		for (IComponentDefinitions def : defs) {
-			//if (def.parent == -1) {
-				def.children.clear();
-				System.out.println(def);
-			//}
+			
 		}
+		
+		System.out.println((72548390 >> 16) + " - " + (72548390 & 0xFFFF));
 		
 //		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
@@ -323,6 +326,10 @@ public class IComponentDefinitions {
 			this.parent = -1;
 		} else {
 			this.parent += this.uid & ~0xffff;
+		}
+		if (parent != -1) {
+			parentBase = parent >> 16;
+			parentComponent = parent & 0xFFFF;
 		}
 		int i_4 = stream.readUnsignedByte();
 		this.hidden = (i_4 & 0x1) != 0;
