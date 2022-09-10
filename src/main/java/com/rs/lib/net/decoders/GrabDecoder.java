@@ -21,6 +21,7 @@ import com.rs.lib.io.InputStream;
 import com.rs.lib.net.Decoder;
 import com.rs.lib.net.Session;
 import com.rs.lib.net.encoders.GrabEncoder;
+import com.rs.lib.util.Logger;
 
 public final class GrabDecoder extends Decoder {
 
@@ -31,7 +32,7 @@ public final class GrabDecoder extends Decoder {
 	@Override
 	public final int decode(InputStream stream) {
 		if (stream.getRemaining() > 750) {
-			System.out.println("Incoming crash from: " + session.getIP() + " - Size: " + stream.getRemaining());
+			Logger.error(GrabDecoder.class, "decode", "Incoming crash from: " + session.getIP() + " - Size: " + stream.getRemaining());
 			session.getChannel().close();
 		}
 		while (stream.getRemaining() >= 6 && session.getChannel().isActive()) {
