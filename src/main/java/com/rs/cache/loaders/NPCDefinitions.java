@@ -118,29 +118,30 @@ public final class NPCDefinitions {
 	
 	public static void main(String[] args) throws IOException {
 		Cache.init("../cache/");
-		File file = new File("npcModifiedColorsTextures.txt");
-		if (file.exists())
-			file.delete();
-		else
-			file.createNewFile();
-		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-		writer.append("//Version = 727\n");
-		writer.flush();
-		for (int i = 0;i < Utils.getNPCDefinitionsSize();i++) {
-			NPCDefinitions defs = getDefs(i);
-			if (defs.modifiedColors != null || defs.modifiedTextures != null) {
-				writer.append(i + ": " + defs.getName());
-				writer.newLine();
-				writer.append("Models:" + Arrays.toString(defs.modelIds));
-				writer.newLine();
-				writer.append("Colors: " + Arrays.toString(defs.modifiedColors)); 
-				writer.newLine();
-				writer.append("Textures: " + Arrays.toString(defs.modifiedTextures));
-				writer.newLine();
-				writer.flush();
-			}
-		}
-		writer.close();
+		System.out.println(NPCDefinitions.getDefs(5092).basId);
+//		File file = new File("npcModifiedColorsTextures.txt");
+//		if (file.exists())
+//			file.delete();
+//		else
+//			file.createNewFile();
+//		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//		writer.append("//Version = 727\n");
+//		writer.flush();
+//		for (int i = 0;i < Utils.getNPCDefinitionsSize();i++) {
+//			NPCDefinitions defs = getDefs(i);
+//			if (defs.modifiedColors != null || defs.modifiedTextures != null) {
+//				writer.append(i + ": " + defs.getName());
+//				writer.newLine();
+//				writer.append("Models:" + Arrays.toString(defs.modelIds));
+//				writer.newLine();
+//				writer.append("Colors: " + Arrays.toString(defs.modifiedColors)); 
+//				writer.newLine();
+//				writer.append("Textures: " + Arrays.toString(defs.modifiedTextures));
+//				writer.newLine();
+//				writer.flush();
+//			}
+//		}
+//		writer.close();
 	}
 	
 	public boolean transformsTo(int id) {
