@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.Map;
 
 import com.rs.cache.Cache;
 import com.rs.cache.IndexType;
-import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.util.Utils;
 
@@ -207,14 +205,15 @@ public class IComponentDefinitions {
 //		System.out.println(Utils.toInterfaceHash(747, 9));
 //		System.out.println(Utils.interfaceIdFromHash(25428066) + " - " + Utils.componentIdFromHash(25428066));
 //		
-		IComponentDefinitions[] defs = getInterface(1096);
-		defs[604].children.clear();
-		System.out.println(defs[483]);
+		IComponentDefinitions[] defs = getInterface(477);
+		//defs[604].children.clear();
+		//System.out.println(defs[483]);
 		for (IComponentDefinitions def : defs) {
-			
+			def.children.clear();
+			System.out.println(def);
 		}
-		
-		System.out.println((72548390 >> 16) + " - " + (72548390 & 0xFFFF));
+//		
+		System.out.println((31260698 >> 16) + " - " + (31260698 & 0xFFFF));
 		
 //		System.out.println(defs[1]);
 //		Set<Integer> hasChildrenExisting = new HashSet<>();
