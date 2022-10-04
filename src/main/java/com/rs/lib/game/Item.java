@@ -18,6 +18,7 @@ package com.rs.lib.game;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.SuppressWarnings;
 
 import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.lib.util.Utils;

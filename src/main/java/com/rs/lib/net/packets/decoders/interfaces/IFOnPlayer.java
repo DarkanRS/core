@@ -21,6 +21,8 @@ import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
 
+import java.lang.SuppressWarnings;
+
 @PacketDecoder(ClientPacket.IF_ON_PLAYER)
 public class IFOnPlayer extends Packet {
 	

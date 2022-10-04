@@ -42,6 +42,7 @@ package com.rs.cache.utils.bzip2;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.SuppressWarnings;
 
 /**
  * An output stream that compresses into the BZip2 format (without the file

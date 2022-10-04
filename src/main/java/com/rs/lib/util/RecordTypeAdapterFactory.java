@@ -18,6 +18,7 @@ package com.rs.lib.util;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.SuppressWarnings;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;

@@ -16,6 +16,8 @@
 //
 package com.rs.lib.net.packets.decoders.interfaces;
 
+import java.lang.SuppressWarnings;
+
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
