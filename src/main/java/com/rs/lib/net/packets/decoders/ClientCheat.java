@@ -20,6 +20,7 @@ import com.rs.lib.io.InputStream;
 import com.rs.lib.net.ClientPacket;
 import com.rs.lib.net.packets.Packet;
 import com.rs.lib.net.packets.PacketDecoder;
+import java.lang.SuppressWarnings;
 
 @PacketDecoder(ClientPacket.CLIENT_CHEAT)
 public class ClientCheat extends Packet {

@@ -17,6 +17,7 @@
 package com.rs.lib.util;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.lang.SuppressWarnings;
 
 public class GenericAttribMap {
 	private ConcurrentHashMap<String, Object> attribs;

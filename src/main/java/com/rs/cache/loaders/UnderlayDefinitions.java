@@ -18,6 +18,7 @@ package com.rs.cache.loaders;
 
 import java.awt.Color;
 import java.util.concurrent.ConcurrentHashMap;
+import java.lang.SuppressWarnings;
 
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;

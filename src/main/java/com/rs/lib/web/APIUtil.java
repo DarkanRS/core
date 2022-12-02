@@ -18,7 +18,9 @@ package com.rs.lib.web;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -111,6 +113,11 @@ public class APIUtil {
 							cb.accept(null);
 							return;
 						}
+						if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
+							Logger.error(APIUtil.class, "post", "POST Connection timed out (Unknown host) to " + url);
+							cb.accept(null);
+							return;
+						}
 						Logger.handle(APIUtil.class, "post", "Error parsing body...", e);
 						if (cb != null)
 							cb.accept(null);
@@ -118,6 +125,16 @@ public class APIUtil {
 				}
 	
 				public void onFailure(Call call, IOException e) {
+					if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
+						Logger.error(APIUtil.class, "post", "POST Connection timed out to " + url);
+						cb.accept(null);
+						return;
+					}
+					if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
+						Logger.error(APIUtil.class, "post", "POST Connection timed out (Unknown host) to " + url);
+						cb.accept(null);
+						return;
+					}
 					Logger.trace(APIUtil.class, "post", "Request failed to " + url);
 					if (cb != null)
 						cb.accept(null);
@@ -163,6 +180,10 @@ public class APIUtil {
 					Logger.error(APIUtil.class, "postSync", "POST Connection timed out to " + url);
 					return null;
 				}
+				if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
+					Logger.error(APIUtil.class, "postSync", "POST Connection timed out (Unknown host) to " + url);
+					return null;
+				}
 				Logger.handle(APIUtil.class, "postSync", "Request failed to " + url, e);
 				return null;
 			}
@@ -201,6 +222,11 @@ public class APIUtil {
 					} catch (Throwable e) {
 						if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
 							Logger.error(APIUtil.class, "get", "Async GET Connection timed out to " + url);
+							cb.accept(null);
+							return;
+						}
+						if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
+							Logger.error(APIUtil.class, "get", "Async GET Connection timed out (Unknown host) to " + url);
 							cb.accept(null);
 							return;
 						}
@@ -250,6 +276,10 @@ public class APIUtil {
 			} catch(Throwable e) {
 				if (e instanceof ConnectException || e instanceof SocketTimeoutException) {
 					Logger.error(APIUtil.class, "getSync", "GET Connection timed out to " + url);
+					return null;
+				}
+				if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
+					Logger.error(APIUtil.class, "getSync", "GET Connection timed out (Unknown host) to " + url);
 					return null;
 				}
 				Logger.handle(APIUtil.class, "getSync", "Request failed... " + url, e);

@@ -18,6 +18,7 @@ package com.rs.cache.loaders;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.SuppressWarnings;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;

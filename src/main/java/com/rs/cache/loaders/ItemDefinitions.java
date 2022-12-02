@@ -19,7 +19,9 @@ package com.rs.cache.loaders;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.lang.SuppressWarnings;
 
 import com.rs.cache.ArchiveType;
 import com.rs.cache.Cache;
@@ -28,6 +30,7 @@ import com.rs.cache.Store;
 import com.rs.lib.Constants;
 import com.rs.lib.io.InputStream;
 import com.rs.lib.io.OutputStream;
+import com.rs.lib.util.RSColor;
 import com.rs.lib.util.Utils;
 
 public final class ItemDefinitions {
@@ -114,12 +117,15 @@ public final class ItemDefinitions {
 	
 	public static void main(String[] args) throws IOException {
 		Cache.init("../cache/");
-//		for (int i = 0;i < Utils.getItemDefinitionsSize();i++) {
-//			ItemDefinitions def = ItemDefinitions.getDefs(i);
-//			if (def.originalTextureIds != null && def.originalTextureIds.length > 0)
-//				System.out.println(i + " - " + def.name + " - " + Arrays.toString(def.originalTextureIds) + " - " + Arrays.toString(def.originalModelColors));
-//		}
-		System.out.println(ItemDefinitions.getDefs(20771));
+		for (int i = 0;i < Utils.getItemDefinitionsSize();i++) {
+			ItemDefinitions def = ItemDefinitions.getDefs(i);
+			if (!def.name.toLowerCase().contains("key"))
+				continue;
+			if (def.originalModelColors != null && def.originalModelColors.length > 0)
+				System.out.println(i + " - " + def.name + " - " + Arrays.toString(def.originalModelColors) + " - " + Arrays.toString(def.modifiedModelColors));
+		}
+		System.out.println(RSColor.RGB_to_HSL(255, 255, 255));
+		//6792 8867
 	}
 
 	/**

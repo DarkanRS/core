@@ -18,6 +18,7 @@ package com.rs.lib.net;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.lang.SuppressWarnings;
 
 import com.rs.lib.Constants;
 import com.rs.lib.io.IsaacKeyPair;

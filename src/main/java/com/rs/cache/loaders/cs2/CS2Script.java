@@ -17,6 +17,7 @@
 package com.rs.cache.loaders.cs2;
 
 import java.lang.reflect.Field;
+import java.lang.SuppressWarnings;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;

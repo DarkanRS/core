@@ -17,6 +17,7 @@
 package com.rs.lib.util;
 
 import java.awt.Color;
+import java.lang.SuppressWarnings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
