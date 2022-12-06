@@ -117,4 +117,16 @@ public class WorldObject {
 	public int getSlot() {
 		return type.slot;
 	}
+	
+	public int getX() {
+		return tile.getX();
+	}
+	
+	public int getY() {
+		return tile.getY();
+	}
+	
+	public int getPlane() {
+		return tile.getPlane();
+	}
 }
