@@ -20,61 +20,30 @@ import com.rs.lib.util.MapUtils;
 import com.rs.lib.util.MapUtils.Structure;
 import com.rs.lib.util.Utils;
 
-public class WorldTile {
+public record WorldTile(short x, short y, byte plane) {
 
-	private short x, y;
-	private byte plane;
-
-	public WorldTile(int x, int y, int plane) {
-		this.x = (short) x;
-		this.y = (short) y;
-		this.plane = (byte) plane;
-	}
-
-	public WorldTile(int x, int y, int plane, int size) {
-		this.x = (short) getCoordFaceX(x, size, size, -1);
-		this.y = (short) getCoordFaceY(y, size, size, -1);
-		this.plane = (byte) plane;
-	}
-
-	public WorldTile(WorldTile tile) {
-		this.x = tile.x;
-		this.y = tile.y;
-		this.plane = tile.plane;
-	}
-
-	public WorldTile(WorldTile tile, int randomize) {
-		this.x = (short) (tile.x + Utils.random(randomize * 2 + 1) - randomize);
-		this.y = (short) (tile.y + Utils.random(randomize * 2 + 1) - randomize);
-		this.plane = tile.plane;
-	}
-
-	public WorldTile(int hash) {
-		this.x = (short) (hash >> 14 & 0x3fff);
-		this.y = (short) (hash & 0x3fff);
-		this.plane = (byte) (hash >> 28);
+	public static WorldTile of(int x, int y, int plane) {
+		return new WorldTile((short) x, (short) y, (byte) plane);
 	}
 	
-	public WorldTile(int z, int regionX, int regionY, int localX, int localY) {
-		this.x = (short) (regionX << 6 | localX);
-		this.y = (short) (regionY << 6 | localY);
-		this.plane = (byte) z;
+	public static WorldTile of(int x, int y, int plane, int size) {
+		return new WorldTile((short) getCoordFaceX(x, size, size, -1), (short) getCoordFaceY(y, size, size, -1), (byte) plane);
 	}
 
-	public void moveLocation(int xOffset, int yOffset, int planeOffset) {
-		x += xOffset;
-		y += yOffset;
-		plane += planeOffset;
+	public static WorldTile of(WorldTile tile) {
+		return new WorldTile(tile.x, tile.y, tile.plane);
 	}
 
-	public final void setLocation(WorldTile tile) {
-		setLocation(tile.x, tile.y, tile.plane);
+	public static WorldTile of(WorldTile tile, int randomize) {
+		return new WorldTile((short) (tile.x + Utils.random(randomize * 2 + 1) - randomize), (short) (tile.y + Utils.random(randomize * 2 + 1) - randomize), tile.plane);
 	}
 
-	public final void setLocation(int x, int y, int plane) {
-		this.x = (short) x;
-		this.y = (short) y;
-		this.plane = (byte) plane;
+	public static WorldTile of(int hash) {
+		return new WorldTile((short) (hash >> 14 & 0x3fff), (short) (hash & 0x3fff), (byte) (hash >> 28));
+	}
+	
+	public static WorldTile of(int z, int regionX, int regionY, int localX, int localY) {
+		return new WorldTile((short) (regionX << 6 | localX), (short) (regionY << 6 | localY), (byte) z);
 	}
 
 	public boolean isAt(int x, int y) {
@@ -218,7 +187,7 @@ public class WorldTile {
 	}
 
 	public WorldTile transform(int x, int y, int plane) {
-		return new WorldTile(this.x + x, this.y + y, this.plane + plane);
+		return WorldTile.of(this.x + x, this.y + y, this.plane + plane);
 	}
 
 	public boolean matches(WorldTile other) {

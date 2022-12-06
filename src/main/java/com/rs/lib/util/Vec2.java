@@ -63,7 +63,7 @@ public class Vec2 {
 	}
 
 	public WorldTile toTile(int plane) {
-		return new WorldTile((int) Math.round(this.x), (int) Math.round(this.y), plane);
+		return WorldTile.of((int) Math.round(this.x), (int) Math.round(this.y), plane);
 	}
 	
 	@Override

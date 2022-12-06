@@ -146,7 +146,7 @@ public final class Utils {
 		} else if (valueType == CS2Type.LOCATION) {
 			if (o instanceof String)
 				return o;
-			return new WorldTile(((int) o));
+			return WorldTile.of(((int) o));
 		} else if (valueType == CS2Type.SKILL) {
 			if (o instanceof String)
 				return o;

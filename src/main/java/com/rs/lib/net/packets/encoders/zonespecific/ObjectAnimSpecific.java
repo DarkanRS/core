@@ -35,7 +35,7 @@ public class ObjectAnimSpecific extends PacketEncoder {
 
 	@Override
 	public void encodeBody(OutputStream stream) {
-		stream.writeIntV2(object.getTileHash());
+		stream.writeIntV2(object.getTile().getTileHash());
 		stream.writeIntLE(animation.getIds()[0]);
 		stream.write128Byte((object.getType().id << 2) + (object.getRotation() & 0x3));
 	}

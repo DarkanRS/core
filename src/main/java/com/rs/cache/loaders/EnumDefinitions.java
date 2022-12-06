@@ -190,7 +190,7 @@ public final class EnumDefinitions {
 			long componentId = l - (interfaceId << 16);
 			return "IComponent("+interfaceId+", "+componentId+")";
 		} else if (keyType == CS2Type.LOCATION) {
-			return new WorldTile((int) l);
+			return WorldTile.of((int) l);
 		} else if (keyType == CS2Type.SKILL) {
 			int idx = (int) l;
 			if (idx >= Constants.SKILL_NAME.length)
@@ -216,7 +216,7 @@ public final class EnumDefinitions {
 		} else if (valueType == CS2Type.LOCATION) {
 			if (o instanceof String)
 				return o;
-			return new WorldTile(((int) o));
+			return WorldTile.of(((int) o));
 		} else if (valueType == CS2Type.SKILL) {
 			if (o instanceof String)
 				return o;

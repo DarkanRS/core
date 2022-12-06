@@ -33,7 +33,7 @@ public class AddObject extends PacketEncoder {
 	@Override
 	public void encodeBody(OutputStream stream) {
 		stream.writeInt(object.getId());
-		stream.write128Byte((object.getXInChunk() << 4) | object.getYInChunk());
+		stream.write128Byte((object.getTile().getXInChunk() << 4) | object.getTile().getYInChunk());
 		stream.write128Byte((object.getType().id << 2) + (object.getRotation() & 0x3));
 	}
 

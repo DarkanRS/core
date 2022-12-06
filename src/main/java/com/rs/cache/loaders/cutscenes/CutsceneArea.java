@@ -35,7 +35,7 @@ public class CutsceneArea {
 
 	CutsceneArea(InputStream buffer) {
 		int position = buffer.readInt();
-		this.mapBase = new WorldTile(position >>> 14 & 0x3fff, position & 0x3fff, position >>> 28);
+		this.mapBase = WorldTile.of(position >>> 14 & 0x3fff, position & 0x3fff, position >>> 28);
 		this.width = buffer.readUnsignedByte();
 		this.length = buffer.readUnsignedByte();
 		this.anInt7481 = buffer.readUnsignedByte();

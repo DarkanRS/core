@@ -224,6 +224,6 @@ public class MapUtils {
 
 	public static int chunkToRegionId(int chunkId) {
 		int[] tile = Structure.CHUNK.decode(chunkId);
-		return new WorldTile(tile[0] << 3, tile[1] << 3, 0).getRegionId();
+		return WorldTile.of(tile[0] << 3, tile[1] << 3, 0).getRegionId();
 	}
 }

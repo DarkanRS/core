@@ -52,7 +52,7 @@ public class CustomizeObject extends PacketEncoder {
 		if (modifiedTextures != null)
 			flags |= 0x8;
 		stream.writeByte(flags);
-		stream.writeByte128((object.getXInChunk() << 4) | object.getYInChunk());
+		stream.writeByte128((object.getTile().getXInChunk() << 4) | object.getTile().getYInChunk());
 		
 		if ((flags & 0x2) == 2) {
 			int count = defs.getModels(object.getType()).length;

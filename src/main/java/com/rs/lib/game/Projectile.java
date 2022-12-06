@@ -108,11 +108,11 @@ public class Projectile {
 	}
 	
 	public WorldTile getSource() {
-		return new WorldTile(from.getX() + fromSizeX, from.getY() + fromSizeY, from.getPlane());
+		return WorldTile.of(from.getX() + fromSizeX, from.getY() + fromSizeY, from.getPlane());
 	}
 	
 	public WorldTile getDestination() {
-		return new WorldTile(to.getX() + toSizeX, to.getY() + toSizeY, to.getPlane());
+		return WorldTile.of(to.getX() + toSizeX, to.getY() + toSizeY, to.getPlane());
 	}
 
 }

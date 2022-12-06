@@ -31,7 +31,7 @@ public class WorldMapClick extends Packet {
 	public Packet decodeAndCreateInstance(InputStream stream) {
 		WorldMapClick packet = new WorldMapClick();
 		int coordinateHash = stream.readIntLE();
-		packet.tile = new WorldTile(coordinateHash >> 14, coordinateHash & 0x3fff, coordinateHash >> 28);
+		packet.tile = WorldTile.of(coordinateHash >> 14, coordinateHash & 0x3fff, coordinateHash >> 28);
 		return packet;
 	}
 

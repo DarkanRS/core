@@ -19,35 +19,36 @@ package com.rs.lib.game;
 import com.rs.cache.loaders.ObjectDefinitions;
 import com.rs.cache.loaders.ObjectType;
 
-public class WorldObject extends WorldTile {
+public class WorldObject {
 	
+	protected WorldTile tile;
 	protected int id;
 	protected ObjectType type;
 	protected int rotation;
 
 	public WorldObject(int id, ObjectType type, int rotation, WorldTile tile) {
-		super(tile.getX(), tile.getY(), tile.getPlane());
+		this.tile = tile;
 		this.id = id;
 		this.type = type;
 		this.rotation = rotation;
 	}
 	
 	public WorldObject(int id, int rotation, int x, int y, int plane) {
-		super(x, y, plane);
+		this.tile = WorldTile.of(x, y, plane);
 		this.id = id;
 		this.type = ObjectDefinitions.getDefs(id).getType(0);
 		this.rotation = rotation;
 	}
 
 	public WorldObject(int id, ObjectType type, int rotation, int x, int y, int plane) {
-		super(x, y, plane);
+		this.tile = WorldTile.of(x, y, plane);
 		this.id = id;
 		this.type = type;
 		this.rotation = rotation;
 	}
 
 	public WorldObject(WorldObject object) {
-		super(object.getX(), object.getY(), object.getPlane());
+		this.tile = object.tile;
 		this.id = object.id;
 		this.type = object.type;
 		this.rotation = object.rotation;
@@ -58,15 +59,15 @@ public class WorldObject extends WorldTile {
 	}
 	
 	public int getCoordFaceX() {
-		return getCoordFaceX(getDefinitions().sizeX, getDefinitions().sizeY, rotation);
+		return tile.getCoordFaceX(getDefinitions().sizeX, getDefinitions().sizeY, rotation);
 	}
 	
 	public int getCoordFaceY() {
-		return getCoordFaceY(getDefinitions().sizeX, getDefinitions().sizeY, rotation);
+		return tile.getCoordFaceY(getDefinitions().sizeX, getDefinitions().sizeY, rotation);
 	}
 	
 	public WorldTile getCoordFace() {
-		return new WorldTile(getCoordFaceX(), getCoordFaceY(), getPlane());
+		return WorldTile.of(getCoordFaceX(), getCoordFaceY(), tile.getPlane());
 	}
 	
 	public ObjectDefinitions getDefinitions() {
@@ -95,6 +96,10 @@ public class WorldObject extends WorldTile {
 
 	public void setRotation(int rotation) {
 		this.rotation = rotation;
+	}
+	
+	public WorldTile getTile() {
+		return tile;
 	}
 	
 	public ObjectType getType() {

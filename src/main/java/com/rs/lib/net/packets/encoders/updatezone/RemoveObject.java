@@ -33,7 +33,7 @@ public class RemoveObject extends PacketEncoder {
 	@Override
 	public void encodeBody(OutputStream stream) {
 		stream.writeByte128((object.getType().id << 2) + (object.getRotation() & 0x3));
-		stream.writeByte((object.getXInChunk() << 4) | object.getYInChunk());
+		stream.writeByte((object.getTile().getXInChunk() << 4) | object.getTile().getYInChunk());
 	}
 
 }

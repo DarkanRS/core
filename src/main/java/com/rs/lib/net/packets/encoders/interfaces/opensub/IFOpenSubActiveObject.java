@@ -51,7 +51,7 @@ public class IFOpenSubActiveObject extends PacketEncoder {
         stream.writeShort128(subId);
         stream.write128Byte((object.getType().id << 2) | (object.getRotation() & 0x3));
         stream.writeInt(xteas[3]);
-        stream.writeIntV2((object.getPlane() << 28) | (object.getX() << 14) | object.getY());
+        stream.writeIntV2((object.getTile().getPlane() << 28) | (object.getTile().getX() << 14) | object.getTile().getY());
         stream.writeInt(object.getId());
 	}
 
