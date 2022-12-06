@@ -899,10 +899,6 @@ public class CBZip2OutputStream extends OutputStream
         bsFinishedWithStream();
     }
 
-    protected void finalize() throws Throwable {
-        finish();
-    }
-
     public void finish() throws IOException {
         if (out != null) {
             try {
