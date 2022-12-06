@@ -102,6 +102,10 @@ public class WorldObject {
 		return tile;
 	}
 	
+	public void setTile(WorldTile tile) {
+		this.tile = tile;
+	}
+	
 	public ObjectType getType() {
 		return type;
 	}
