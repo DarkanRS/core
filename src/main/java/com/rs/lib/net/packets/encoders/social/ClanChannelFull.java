@@ -52,7 +52,7 @@ public class ClanChannelFull extends PacketEncoder {
 			MemberData data = clan.getMembers().get(player.getUsername());
 			stream.writeString(player.getDisplayName());
 			stream.writeByte(data == null ? -1 : data.getRank().getIconId());
-			stream.writeShort(player.getWorld().getNumber());
+			stream.writeShort(player.getWorld().number());
 		}
 		return stream.getBuffer();
 	}

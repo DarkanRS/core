@@ -46,16 +46,16 @@ public class FriendStatus extends PacketEncoder {
 		stream.writeByte(0); //idk, was called warnMessage in matrix?
 		stream.writeString(other.getAccount().getDisplayName());
 		stream.writeString(other.getAccount().getPrevDisplayName());
-		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().getNumber() : 0 : 0);
+		stream.writeShort(online ? other.getWorld() != null ? other.getWorld().number() : 0 : 0);
 		stream.writeByte(player.getSocial().getFriendsChat().getRank(other.getAccount().getUsername()).getId());
 		stream.writeByte(0); // 1 = referrer
 		if (online) {
 			String worldText = "None";
 			if (other.getWorld() != null) {
-				if (other.getWorld().getNumber() > 1100)
-					worldText = "Lobby " + (other.getWorld().getNumber() - 1100);
+				if (other.getWorld().number() > 1100)
+					worldText = "Lobby " + (other.getWorld().number() - 1100);
 				else
-					worldText = "World " + other.getWorld().getNumber();
+					worldText = "World " + other.getWorld().number();
 			}
 			stream.writeString(worldText);
 			stream.writeByte(0); //Platform 0 = RS, 1 = Other (Quickchat related)
