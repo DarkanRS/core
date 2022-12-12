@@ -21,12 +21,6 @@ publishing {
     }
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(19)
-    }
-}
-
 sourceCompatibility = '19'
 targetCompatibility = '19'
 
