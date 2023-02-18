@@ -16,6 +16,9 @@
 //
 package com.rs.lib.net;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum ServerPacket {
     IF_SETPLAYERHEAD(0, 4),
     CREATE_CHECK_EMAIL_REPLY(1, 1),
@@ -189,7 +192,19 @@ public enum ServerPacket {
 	public int opcode;
 	public int size;
 
-	ServerPacket(int opcode, int size) {
+    private static Map<Integer, ServerPacket> PACKET_MAP = new HashMap<>();
+
+    static {
+        for (ServerPacket packet : ServerPacket.values()) {
+            PACKET_MAP.put(packet.opcode, packet);
+        }
+    }
+
+    public static ServerPacket forOpcode(int opcode) {
+        return PACKET_MAP.get(opcode);
+    }
+
+    ServerPacket(int opcode, int size) {
 		this.opcode = opcode;
 		this.size = size;
 	}

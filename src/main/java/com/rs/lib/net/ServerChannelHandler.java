@@ -18,6 +18,7 @@ package com.rs.lib.net;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
 
 import com.rs.lib.io.InputStream;
 import com.rs.lib.net.decoders.GameDecoder;
@@ -58,17 +59,17 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 
 	private ServerChannelHandler(int port, Class<? extends Decoder> baseDecoderClass) {
 		this.baseDecoderClass = baseDecoderClass;
-		BOSS_GROUP = new NioEventLoopGroup(1);
+		BOSS_GROUP = new NioEventLoopGroup(16, Executors.newVirtualThreadPerTaskExecutor());
 		WORKER_GROUP = new NioEventLoopGroup();
 		CHANNELS = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 		BOOTSTRAP = new ServerBootstrap();
 		BOOTSTRAP.group(BOSS_GROUP, WORKER_GROUP)
-		.channel(NioServerSocketChannel.class)
-		.childHandler(this)
-		.option(ChannelOption.SO_REUSEADDR, true)
-		.childOption(ChannelOption.TCP_NODELAY, true)
-		.childOption(ChannelOption.SO_KEEPALIVE, true)
-		.bind(new InetSocketAddress(port));
+			.channel(NioServerSocketChannel.class)
+			.childHandler(this)
+			.option(ChannelOption.SO_REUSEADDR, true)
+			.childOption(ChannelOption.TCP_NODELAY, true)
+			.childOption(ChannelOption.SO_KEEPALIVE, true)
+			.bind(new InetSocketAddress(port));
 	}
 
 	@Override
@@ -112,7 +113,7 @@ public final class ServerChannelHandler extends ChannelInboundHandlerAdapter {
 		if (session != null) {
 			if (session.getDecoder() == null)
 				return;
-			
+
 			byte[] b = new byte[(session.buffer.length - session.bufferOffset) + buf.readableBytes()];
 			if ((session.buffer.length - session.bufferOffset) > 0)
 				System.arraycopy(session.buffer, session.bufferOffset, b, 0, session.buffer.length - session.bufferOffset);

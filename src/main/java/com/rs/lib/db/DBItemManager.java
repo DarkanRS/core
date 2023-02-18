@@ -34,7 +34,7 @@ public abstract class DBItemManager {
 	
 	public DBItemManager(String collection) {
 		this.collection = collection;
-		this.executor = Executors.newSingleThreadExecutor(new DBThreadFactory());
+		this.executor = Executors.newVirtualThreadPerTaskExecutor();
 	}
 
 	public void init(DBConnection conn) {

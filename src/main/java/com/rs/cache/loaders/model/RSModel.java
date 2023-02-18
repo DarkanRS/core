@@ -91,24 +91,24 @@ public class RSModel {
 //		System.out.println(mesh.vertexBones.length);
 //		System.out.println(AnimationFrameSet.getFrameSet(defs.getFrameSets()[0].id).getFrames()[0]);
 		List<RSModel> meshes = new ArrayList<>();
+		int baseCol = RSColor.RGB_to_HSL(238, 213, 54);
 		for (int i = 0;i < Cache.STORE.getIndex(IndexType.MODELS).getLastArchiveId();i++) {
 			RSModel model = getMesh(i);
 			if (model.getAvgColor() == 0)
 				continue;
-			if (model != null)
+			if (model != null && Math.abs(baseCol-model.getAvgColor()) < 100 /*&& model.faceCount < 32*/)
 				meshes.add(model);
 		}
-		int baseCol = RSColor.RGB_to_HSL(255,255,0);
 		meshes.sort((m1, m2) -> {
 			//if ((m1.vertexCount + m1.faceCount) == (m2.vertexCount + m2.faceCount))
-			//	return Math.abs(m1.getAvgColor()-baseCol) - Math.abs(m2.getAvgColor()-baseCol);
-			return (m1.vertexCount + m1.faceCount + Math.abs(m1.getAvgColor()-baseCol)) / 2 - (m2.vertexCount + m2.faceCount + Math.abs(m2.getAvgColor()-baseCol)) / 2;
+				return Math.abs(m1.getAvgColor()-baseCol) - Math.abs(m2.getAvgColor()-baseCol);
+			//return (m1.vertexCount + m1.faceCount + Math.abs(m1.getAvgColor()-baseCol)) / 2 - (m2.vertexCount + m2.faceCount + Math.abs(m2.getAvgColor()-baseCol)) / 2;
 		});
 		int count = 0;
 		for (RSModel model : meshes) {
 			if (count++ > 100)
 				break;
-			System.out.println(model.id + " - " + (model.vertexCount + model.faceCount) + " - " + Math.abs(model.getAvgColor()-baseCol));
+			System.out.println(model.id + " - v" + model.vertexCount + " - f" + model.faceCount + " - " + Math.abs(model.getAvgColor()-baseCol));
 		}
 	}
 	
